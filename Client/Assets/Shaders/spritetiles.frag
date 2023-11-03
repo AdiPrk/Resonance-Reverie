@@ -1,7 +1,7 @@
 #version 330 core
 
 in vec2 TexCoords;
-out vec4 color;
+out vec4 fragColor;
 
 uniform sampler2D image;
 uniform vec4 spriteColor;
@@ -30,7 +30,7 @@ void main()
     
     value += square_dist*.1;
     value *= 0.8 - 0.2;
-    color = vec4(pow(value, 2.), pow(value, 1.5), pow(value, 1.2), 1.);
+    fragColor = vec4(pow(value, 2.), pow(value, 1.5), pow(value, 1.2), 1.);
 
-    //color = vec4(spriteColor, 1.0f) * texture(image, TexCoords);
+    //fragColor = vec4(spriteColor, 1.0f) * texture(image, TexCoords);
 }

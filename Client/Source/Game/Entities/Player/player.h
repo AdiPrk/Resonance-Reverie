@@ -5,8 +5,16 @@
 #include "../gameObject.h"
 #include <Source/Math/rect.h>
 #include <Source/Game/Levels/gameLevel.h>
+#include "grapple.h"
+#include <Source/Game/game.h>
 
 class Texture2D;
+
+enum PlayerStates {
+    NORMAL = 0,
+    GRAPPLE = 1,
+    GRAPPLE_LAUNCH = 2
+};
 
 // BallObject holds the state of the Ball object inheriting
 // relevant state data from GameObject. Contains some extra
@@ -16,7 +24,7 @@ class Player : public GameObject
 {
 public:   
     // constructor(s)
-    Player(Texture2D _sprite);
+    Player(Texture2D _sprite, Game* game);
 
     void SetupRigidBody() override;
 
@@ -25,12 +33,23 @@ public:
     void Draw(SpriteRenderer& renderer) override;
     void SetUpdatedPosition() override;
     
+    b2Body*& GetRigidbody() { return m_RigidBody; }
+
     // Reset player
     void Respawn();
 
     const Rect Bounds() const { return m_BoundingRect; }
 
     bool isGrounded;
+    bool leftSensorGrounded = false;
+    bool rightSensorGrounded = false;
+    bool hitSolidObject = false;
+
+    void AddGrapplePoint(const glm::vec2& point);
+    void RemoveGrapplePoint(const glm::vec2& point);
+    void CheckGrapple();
+
+    const PlayerStates GetState() const { return m_State; }
 
 private:
     friend GameLevel;
@@ -49,6 +68,19 @@ private:
     float m_JumpBuffer = 0.0f, m_MaxJumpBuffer = 0.15f;
     bool m_JumpRequested = false;
 
+    // Grapple
+    SpiritGrapple m_Grapple;
+
     // Rendering
     glm::vec2 m_RenderSize;
+
+    // Other
+    PlayerStates m_State;
+
+    std::vector<glm::vec2> m_GrapplePoints;
+    glm::vec2 m_GrapplingTo;
+    bool m_Grappling = false;
+    float m_GrappleTime = 0.2f;
+    float m_LaunchTime = 0.0f;
+    Game* m_Game;
 };

@@ -17,10 +17,7 @@ void Block::SetupRigidBody() {
     glm::vec2 bodyCenter = m_Position + m_Size / 2.f;
 
     b2BodyDef bodyDef;
-    bodyDef.type = b2_staticBody; // or b2_staticBody, b2_kinematicBody, depending on your needs
-    // if you try to make it dynamic and it doesn't look right then it's cuz you didn't
-    // write set updated position function 
-
+    bodyDef.type = b2_staticBody;
     bodyDef.position = PhysicsUtils::PixelsToMeters(bodyCenter);
     bodyDef.angle = m_Rotation;
     m_RigidBody = physicsWorld.CreateBody(&bodyDef);
@@ -42,5 +39,5 @@ void Block::SetupRigidBody() {
 void Block::Draw(SpriteRenderer& renderer)
 {
     renderer.SetShader(ResourceManager::GetShader("sprite"));
-    renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
+    renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color, { 25.0f, 25.0f });
 }

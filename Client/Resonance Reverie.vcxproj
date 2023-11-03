@@ -211,8 +211,11 @@
     </ClCompile>
     <ClCompile Include="Source\Game\Entities\Blocks\block.cpp" />
     <ClCompile Include="Source\Game\Entities\Blocks\dynamicBlock.cpp" />
+    <ClCompile Include="Source\Game\Entities\Blocks\swingingBlock.cpp" />
     <ClCompile Include="Source\Game\Entities\Enemies\greyEnemy.cpp" />
     <ClCompile Include="Source\Game\Entities\Blocks\lava.cpp" />
+    <ClCompile Include="Source\Game\Entities\Interactables\grapplePoint.cpp" />
+    <ClCompile Include="Source\Game\Entities\Player\grapple.cpp" />
     <ClCompile Include="Source\Game\Entities\Player\player.cpp" />
     <ClCompile Include="Source\Game\Entities\Blocks\safeZone.cpp" />
     <ClCompile Include="Source\Game\game.cpp" />
@@ -239,8 +242,11 @@
     <ClInclude Include="PCH\pch.h" />
     <ClInclude Include="Source\Game\Entities\Blocks\block.h" />
     <ClInclude Include="Source\Game\Entities\Blocks\dynamicBlock.h" />
+    <ClInclude Include="Source\Game\Entities\Blocks\swingingBlock.h" />
     <ClInclude Include="Source\Game\Entities\Enemies\greyEnemy.h" />
     <ClInclude Include="Source\Game\Entities\Blocks\lava.h" />
+    <ClInclude Include="Source\Game\Entities\Interactables\grapplePoint.h" />
+    <ClInclude Include="Source\Game\Entities\Player\grapple.h" />
     <ClInclude Include="Source\Game\Entities\Player\player.h" />
     <ClInclude Include="Source\Game\Entities\Blocks\safeZone.h" />
     <ClInclude Include="Source\Game\game.h" />
@@ -259,6 +265,7 @@
     <ClInclude Include="Source\Graphics\Texture\texture.h" />
     <ClInclude Include="Source\Math\random.h" />
     <ClInclude Include="Source\Math\rect.h" />
+    <ClInclude Include="Source\Math\utils.h" />
     <ClInclude Include="Source\Networking\networking.h" />
   </ItemGroup>
   <ItemGroup>

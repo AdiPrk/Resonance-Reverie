@@ -23,7 +23,7 @@ void SpriteRenderer::SetShader(Shader& shader)
     shader.Use();
 }
 
-void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, float rotate, glm::vec4 color)
+void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, float rotate, glm::vec4 color, glm::vec2 repetition)
 {
     // prepare transformations
     this->shader.Use();
@@ -42,11 +42,31 @@ void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec
     // render textured quad
     this->shader.SetVector4f("spriteColor", color);
 
+    if (repetition.x != 0 && repetition.y != 0) {
+        this->shader.SetVector2f("repetition", size.x / repetition.x, size.y / repetition.y);
+    }
+    else {
+        this->shader.SetVector2f("repetition", 1.0f, 1.0f);
+    }
+
     glActiveTexture(GL_TEXTURE0);
     texture.Bind();
 
     ResourceManager::BindVAO(this->quadVAO);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+void SpriteRenderer::DrawLine(glm::vec2 p1, glm::vec2 p2, float thickness, Texture2D& texture)
+{
+    glm::vec2 direction = p2 - p1;
+    float distance = glm::length(direction);
+    float angle = atan2(direction.y, direction.x); // Angle in radians
+
+    glm::vec2 lineSize(distance, thickness); // 1.0f is the thickness of the line
+    glm::vec2 linePosition = p1 + direction / 2.0f - lineSize / 2.0f;
+
+    // Drawing the rectangle (line) with the calculated position, size, and rotation
+    DrawSprite(texture, linePosition, lineSize, angle);
 }
 
 void SpriteRenderer::initRenderData()

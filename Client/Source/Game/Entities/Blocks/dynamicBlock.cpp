@@ -8,6 +8,7 @@
 // constructor
 DynamicBlock::DynamicBlock(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D sprite)
     : GameObject(pos, size, rotation, sprite, COLOR_F_BLOCK)
+    , m_BoundingRect(0, 0, 25.f, 25.f)
 {
 }
 
@@ -17,7 +18,7 @@ void DynamicBlock::SetupRigidBody() {
     glm::vec2 bodyCenter = m_Position + m_Size / 2.f;
 
     b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody; // or b2_staticBody, b2_kinematicBody, depending on your needs
+    bodyDef.type = b2_dynamicBody;
     bodyDef.position = PhysicsUtils::PixelsToMeters(bodyCenter);
     m_RigidBody = physicsWorld.CreateBody(&bodyDef);
     //m_RigidBody->SetFixedRotation(true);
@@ -25,48 +26,44 @@ void DynamicBlock::SetupRigidBody() {
 
     b2PolygonShape boxShape;
     boxShape.SetAsBox(PhysicsUtils::PixelsToMeters(m_Size.x / 2.0f),
-        PhysicsUtils::PixelsToMeters(m_Size.y / 2.0f));
+                      PhysicsUtils::PixelsToMeters(m_Size.y / 2.0f));
 
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &boxShape;
-    fixtureDef.density = 1.0f;
+    fixtureDef.density = m_Density;
     fixtureDef.friction = 0.2f;
     fixtureDef.restitution = m_Restitution;
     fixtureDef.filter.categoryBits = F_BLOCK;
     m_RigidBody->CreateFixture(&fixtureDef);
-
-    if (m_Rotation == 0) {
-        b2BodyDef anchorDef;
-        anchorDef.type = b2_staticBody;
-        anchorDef.gravityScale = 0.0f;
-        anchorDef.fixedRotation = true;
-
-        b2Body* anchor = physicsWorld.CreateBody(&anchorDef);
-
-        b2FixtureDef anchorFixture;
-        anchorFixture.shape = &boxShape;
-        m_RigidBody->CreateFixture(&anchorFixture);
-
-        b2DistanceJointDef jd;
-        jd.Initialize(anchor, m_RigidBody, b2Vec2(bodyDef.position.x, bodyDef.position.y), bodyDef.position);
-        jd.collideConnected = false;
-        jd.length = 2.0f;
-        jd.maxLength = 100.0f;
-        jd.minLength = 0.0f;
-        b2LinearStiffness(jd.stiffness, jd.damping, 1.0f, 0.7f, jd.bodyA, jd.bodyB);
-        physicsWorld.CreateJoint(&jd);
-
-    }
 }
 
 void DynamicBlock::Draw(SpriteRenderer& renderer)
 {
+    if (!this->active) return;
+
     renderer.SetShader(ResourceManager::GetShader("sprite"));
     renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
 }
 
 void DynamicBlock::SetUpdatedPosition()
 {
+    if (!this->active) return;
+
     m_Position = PhysicsUtils::MetersToPixels(m_RigidBody->GetPosition()) - m_Size / 2.f;
     m_Rotation = m_RigidBody->GetAngle();
+
+    m_BoundingRect.left = m_Position.x;
+    m_BoundingRect.top = m_Position.y;
+    m_BoundingRect.SetScale(m_Size);
+}
+
+void DynamicBlock::UpdateOutOfBounds(const Rect& gamebounds)
+{
+    if (!m_BoundingRect.bordersOverlap(gamebounds))
+    {
+        physicsWorld.DestroyBody(m_RigidBody);
+        m_RigidBody = nullptr;
+
+        this->active = false;
+    }
 }

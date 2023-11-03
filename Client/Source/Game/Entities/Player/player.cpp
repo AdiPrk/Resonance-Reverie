@@ -5,15 +5,19 @@
 #include <Source/Game/Inputs/inputManager.h>
 #include <Source/Graphics/Texture/texture.h>
 #include <Source/Graphics/ResourceManager/resourceManager.h>
+#include <Source/Graphics/Renderer/postProcessor.h>
 
 // constructor(s)
-Player::Player(Texture2D _sprite)
+Player::Player(Texture2D _sprite, Game* game)
     : GameObject(_sprite, { 0.2f, 1.f, 0.4f, 1.f }) // sprite, color
     , m_SpawnPosition(0)
     , m_BoundingRect(0, 0, 25.f, 25.f)
     , m_initPosition(true)
     , m_Respawn(false)
     , isGrounded(false)
+    , m_State(PlayerStates::NORMAL)
+    , m_GrapplingTo()
+    , m_Game(game)
 {
     m_Size = { 21.f, 38.f };
     m_RenderSize = { 23.f, 40.f };
@@ -25,24 +29,94 @@ void Player::SetupRigidBody() {
     glm::vec2 bodyCenter = m_Position + m_Size / 2.f;
 
     b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody; // or b2_staticBody, b2_kinematicBody, depending on your needs
+    bodyDef.type = b2_dynamicBody;
     bodyDef.position = PhysicsUtils::PixelsToMeters(bodyCenter);
     m_RigidBody = physicsWorld.CreateBody(&bodyDef);
-    m_RigidBody->SetFixedRotation(true);
+    //m_RigidBody->SetFixedRotation(true);
     
     b2PolygonShape boxShape;
     boxShape.SetAsBox(PhysicsUtils::PixelsToMeters(m_Size.x / 2.0f),
-        PhysicsUtils::PixelsToMeters(m_Size.y / 2.0f));
+                      PhysicsUtils::PixelsToMeters(m_Size.y / 2.0f));
 
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &boxShape;
-    fixtureDef.density = 10.0f;
+    fixtureDef.density = 2.0f;
     fixtureDef.friction = 0.2f;
     fixtureDef.restitution = 0.0f;
 
     fixtureDef.filter.categoryBits = F_PLAYER;
     fixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(this);
     m_RigidBody->CreateFixture(&fixtureDef);
+
+    m_RigidBody->SetAngularDamping(2.0f);
+
+    // For foot sensors:
+    float sensorHalfWidth = m_Size.x / 12.0f;
+    float sensorHalfHeight = 3.0f;
+
+    // Left Foot sensor fixture
+    {
+        b2PolygonShape footSensorShape;
+        footSensorShape.SetAsBox(
+            PhysicsUtils::PixelsToMeters(sensorHalfWidth),
+            PhysicsUtils::PixelsToMeters(sensorHalfHeight),
+            b2Vec2(
+                PhysicsUtils::PixelsToMeters(m_Size.x * (-0.5f) + sensorHalfWidth),
+                PhysicsUtils::PixelsToMeters(m_Size.y * 0.5f + sensorHalfHeight)
+            ),
+            0.0f
+        );
+
+        b2FixtureDef footSensorFixtureDef;
+        footSensorFixtureDef.shape = &footSensorShape;
+        footSensorFixtureDef.isSensor = true;
+        footSensorFixtureDef.filter.categoryBits = F_PLAYER_LEFTFOOT_SENSOR;
+        footSensorFixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(this);
+        m_RigidBody->CreateFixture(&footSensorFixtureDef);
+    }
+
+    // Right Foot sensor fixture
+    {
+        b2PolygonShape footSensorShape;
+        footSensorShape.SetAsBox(
+            PhysicsUtils::PixelsToMeters(sensorHalfWidth),
+            PhysicsUtils::PixelsToMeters(sensorHalfHeight),
+            b2Vec2(
+                PhysicsUtils::PixelsToMeters(m_Size.x * 0.5f - sensorHalfWidth),
+                PhysicsUtils::PixelsToMeters(m_Size.y * 0.5f + sensorHalfHeight)
+            ),
+            0.0f
+        );
+
+        b2FixtureDef footSensorFixtureDef;
+        footSensorFixtureDef.shape = &footSensorShape;
+        footSensorFixtureDef.isSensor = true;
+        footSensorFixtureDef.filter.categoryBits = F_PLAYER_RIGHTFOOT_SENSOR;
+        footSensorFixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(this);
+        m_RigidBody->CreateFixture(&footSensorFixtureDef);
+    }
+}
+
+void Player::CheckGrapple() {
+    if (m_JumpHeld || !InputManager::GetKeyDown(GLFW_KEY_C)) return;
+    
+    float minDist = FLT_MAX;
+    bool canGrapple = false;
+    glm::vec2 closestPoint;
+
+    for (const auto& point : m_GrapplePoints) {
+        float dist = glm::distance(point, m_Position);
+        if (dist < minDist) {
+            minDist = dist;
+            closestPoint = point;
+            canGrapple = true;
+        }
+    }
+
+    if (canGrapple) {
+        m_State = PlayerStates::GRAPPLE;
+        m_GrapplingTo = closestPoint;
+    }
 }
 
 // Update player
@@ -52,72 +126,224 @@ void Player::Update(float dt) {
         m_Respawn = false;
     }
 
-    b2Vec2 vel = m_RigidBody->GetLinearVelocity();
+    // Self righting
 
-    float horizontalSpeed = 1.2f;
-    if (InputManager::GetKeyDown(GLFW_KEY_Z)) {
-        horizontalSpeed = 0.5f;
-    }
-    float dampingFactor = 0.84f;
-    
-    // Horizontal Movement: Right and Left
-    if (InputManager::GetKeyDown(GLFW_KEY_RIGHT)) {
-        vel.x += horizontalSpeed;
-    }
-    if (InputManager::GetKeyDown(GLFW_KEY_LEFT)) {
-        vel.x -= horizontalSpeed;
-    }
+    if (!isGrounded || (!leftSensorGrounded || !rightSensorGrounded))
+    {
+        float angle = m_RigidBody->GetAngle();
 
-    // Apply damping to horizontal velocity to simulate friction
-    vel.x *= dampingFactor;
+        // Normalize the angle to a range of -PI to PI
+        angle = angle - 2 * b2_pi * floor((angle + b2_pi) / (2 * b2_pi));
 
-    // The Jump
-    // Update Coyote Time
-    if (isGrounded) {
-        m_CoyoteTime = m_MaxCoyotoTime; // Reset Coyote Time when on the ground
-    }
-    else {
-        m_CoyoteTime -= dt; // Decrease Coyote Time when in the air
-    }
-
-    // Handle Jump Input
-    if (InputManager::GetKeyDown(GLFW_KEY_C) && !m_JumpHeld) {
-        m_JumpRequested = true;
-        m_JumpBuffer = m_MaxJumpBuffer;
-        m_JumpHeld = true;
-    }
-
-    // Handle Jump Execution
-    if (m_JumpRequested && (isGrounded || m_CoyoteTime > 0)) {
-        float jumpForce = -14.f;
-        vel.y = jumpForce;
-        m_JumpRequested = false; // Reset jump request
-    }
-
-    // Update Jump Buffer
-    if (m_JumpBuffer > 0) {
-        m_JumpBuffer -= dt; // Decrease Jump Buffer time
-    }
-    else {
-        m_JumpRequested = false; // Clear jump request if jump buffer time expires
-    }
-
-    // Reset jump when the jump key is released
-    if (InputManager::GetKeyUp(GLFW_KEY_C)) {
-        if (m_JumpHeld && vel.y < 0) {
-            vel.y *= 0.5f;
+        // go the shortest way back to upright
+        if (angle > b2_pi) {
+            angle -= 2 * b2_pi;
         }
-         
-        m_JumpHeld = false;
+        else if (angle < -b2_pi) {
+            angle += 2 * b2_pi;
+        }
+
+        float correctionSpeed = 6.0f;
+        if (leftSensorGrounded && !rightSensorGrounded ||
+            rightSensorGrounded && !leftSensorGrounded) {
+
+            if (isGrounded) {
+                correctionSpeed *= 4.0f;
+            }
+        }
+
+        float desiredAngularVelocity = -angle * correctionSpeed;
+        desiredAngularVelocity = std::clamp(desiredAngularVelocity, -5.0f, 5.0f);
+
+        // Apply the angular velocity to the rigid body
+        m_RigidBody->SetAngularVelocity(desiredAngularVelocity);
     }
 
-    // Set the updated velocity to the rigid body
-    m_RigidBody->SetLinearVelocity(vel);
+    switch (m_State) {
+    case NORMAL: {
+        // check grapple to switch states
+        CheckGrapple();
+
+        b2Vec2 vel = m_RigidBody->GetLinearVelocity();
+
+        printf("%i, %i\n", leftSensorGrounded, rightSensorGrounded);
+
+        // Horizontal movement
+        float horizontalSpeed = 1.2f;
+        float dampingFactor = 0.84f;
+
+        if (InputManager::GetKeyDown(GLFW_KEY_Z)) {
+            horizontalSpeed = 0.5f;
+        }
+
+        if (InputManager::GetKeyDown(GLFW_KEY_RIGHT)) {
+            vel.x += horizontalSpeed;
+        }
+        if (InputManager::GetKeyDown(GLFW_KEY_LEFT)) {
+            vel.x -= horizontalSpeed;
+        }
+
+        // Apply damping to horizontal velocity to simulate friction
+        vel.x *= dampingFactor;
+
+        // The Jump:
+        // Update Coyote Time
+        if (isGrounded) {
+            m_CoyoteTime = m_MaxCoyotoTime; // Reset Coyote Time when on the ground
+        }
+        else {
+            m_CoyoteTime -= dt; // Decrease Coyote Time when in the air
+        }
+
+        // Handle Jump Input
+        if (InputManager::GetKeyDown(GLFW_KEY_C) && !m_JumpHeld) {
+            m_JumpRequested = true;
+            m_JumpBuffer = m_MaxJumpBuffer;
+            m_JumpHeld = true;
+        }
+
+        // Handle Jump Execution
+        bool jumpedUsingBuffer = false;
+        if (m_JumpRequested && (isGrounded || m_CoyoteTime > 0)) {
+            float jumpForce = -10.f;
+            vel.y = jumpForce;
+            m_JumpRequested = false; // Reset jump request
+            jumpedUsingBuffer = true;
+        }
+
+        // Update Jump Buffer
+        if (m_JumpBuffer > 0) {
+            m_JumpBuffer -= dt; // Decrease Jump Buffer time
+        }
+        else {
+            m_JumpRequested = false; // Clear jump request if jump buffer time expires
+        }
+
+        // Reset jump when the jump key is released
+        if (InputManager::GetKeyUp(GLFW_KEY_C)) {
+            if ((m_JumpHeld || jumpedUsingBuffer) && vel.y < 0) {
+                vel.y *= 0.5f;
+            }
+
+            m_JumpHeld = false;
+        }
+
+        // Set the updated velocity to the rigid body
+        m_RigidBody->SetLinearVelocity(vel);
+
+        break;
+    }
+    case GRAPPLE: {
+
+        GrapplingStatus grapStatus = m_Grapple.TryStartGrapple(m_RigidBody, m_Position + m_Size * 0.5f, m_GrapplingTo);
+        m_JumpRequested = false;
+
+        float slowMoTime = 0.35f;
+        if (grapStatus == GrapplingStatus::STARTED) {
+            m_Grappling = true;
+            m_GrappleTime = 0.0f;
+            m_Game->SetSlowMoTime(slowMoTime);
+            m_Game->SetTimeFactor(0.2f);
+        }
+
+        m_GrappleTime += dt;
+
+        m_Grapple.UpdateGrapple(dt);
+
+        b2Vec2 vel = m_RigidBody->GetLinearVelocity();
+
+        // Horizontal movement
+        float horizontalSpeed = 0.15f;
+        float dampingFactor = 0.99f;
+
+        if (InputManager::GetKeyDown(GLFW_KEY_Z)) {
+            horizontalSpeed = 0.5f;
+        }
+
+        if (InputManager::GetKeyDown(GLFW_KEY_RIGHT)) {
+            vel.x += horizontalSpeed;
+        }
+        if (InputManager::GetKeyDown(GLFW_KEY_LEFT)) {
+            vel.x -= horizontalSpeed;
+        }
+
+        vel.x *= dampingFactor;
+
+        m_RigidBody->SetLinearVelocity(vel);
+
+        if (m_Game->GameIsSlowMo()) {
+            //m_Game->Effects->shakeTime = 0.1f;
+        }
+
+        if (InputManager::GetKeyUp(GLFW_KEY_C) && m_Game->GameIsSlowMo()) {
+            glm::vec2 v = m_GrapplingTo - (m_Position + m_Size / 2.0f);
+            v = glm::normalize(v);
+            v *= 15.0f;
+
+            vel = b2Vec2(v.x, v.y);
+
+            m_RigidBody->SetLinearVelocity({ 0.f, 0.f });
+            m_RigidBody->ApplyLinearImpulseToCenter(vel, true);
+
+            m_Grapple.ReleaseGrapple();
+            m_Game->SetSlowMoTime(0.0f);
+
+            m_State = GRAPPLE_LAUNCH;
+            m_Grappling = false;
+
+            m_Game->Effects->shakeTime = 0.05f;
+
+            break;
+        }
+
+        if (m_Grapple.GetLength() < 0.08f || InputManager::GetKeyUp(GLFW_KEY_C))
+        {
+            m_State = PlayerStates::NORMAL;
+            m_Grapple.ReleaseGrapple();
+            m_Grappling = false;
+        }
+
+        break;
+    }
+    case GRAPPLE_LAUNCH: {
+
+        m_RigidBody->SetGravityScale(0.0f);
+        
+        m_LaunchTime += dt;
+
+        if (m_LaunchTime > 0.2f || hitSolidObject)
+        {
+            m_State = PlayerStates::NORMAL;
+            m_RigidBody->SetGravityScale(1.0f);
+
+            m_LaunchTime = 0.0f;
+        }
+
+        break;
+    }
+    }
+
+    hitSolidObject = false;
 }
 
 // Reset player
 void Player::Respawn() {
     m_Respawn = true;
+}
+
+void Player::AddGrapplePoint(const glm::vec2& point)
+{
+    m_GrapplePoints.push_back(point);
+}
+
+void Player::RemoveGrapplePoint(const glm::vec2& point)
+{
+    auto it = std::find(m_GrapplePoints.begin(), m_GrapplePoints.end(), point);
+
+    if (it != m_GrapplePoints.end())
+    {
+        m_GrapplePoints.erase(it);
+    }
 }
 
 void Player::RespawnSelf()
@@ -142,5 +368,17 @@ void Player::SetUpdatedPosition()
 
 void Player::Draw(SpriteRenderer& renderer) {
     renderer.SetShader(ResourceManager::GetShader("sprite"));
-    renderer.DrawSprite(m_Sprite, m_RenderPosition - 1.0f, m_RenderSize, m_Rotation, m_Color);
+
+    glm::vec2 truerenderpos = m_RenderPosition - 1.0f;
+
+    renderer.DrawSprite(m_Sprite, truerenderpos, m_RenderSize, m_Rotation, m_Color);
+
+    if (m_Grappling) {
+        // Calculating line info
+        glm::vec2 playerCenter = m_RenderPosition + m_Size / 2.0f;
+        glm::vec2 anchorCenter = m_GrapplingTo;
+
+        renderer.SetShader(ResourceManager::GetShader("spritesaber"));
+        renderer.DrawLine(playerCenter, anchorCenter, 6.0f, m_Sprite);
+    }
 }

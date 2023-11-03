@@ -8,6 +8,13 @@ uniform bool  confuse;
 uniform bool  shake;
 uniform float time;
 
+// Get a pseudo random number
+float randNum(vec2 p) {
+    p = fract(p * vec2(142.215, 501.253));
+    p += dot(p, p + 23.45);
+    return fract(p.x * p.y);
+}
+
 void main()
 {
     gl_Position = vec4(vertex.xy, 0.0f, 1.0f); 
@@ -28,8 +35,8 @@ void main()
     }
     if (shake)
     {
-        float strength = 0.01;
-        gl_Position.x += cos(time * 10) * strength;        
-        gl_Position.y += cos(time * 15) * strength;        
+        float strength = 0.003f;
+        gl_Position.x += cos(time * 20) * strength;        
+        gl_Position.y += cos(time * 30) * strength;        
     }
 }  

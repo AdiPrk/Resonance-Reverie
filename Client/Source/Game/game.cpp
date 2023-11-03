@@ -17,11 +17,7 @@
 // Game-related State data
 SpriteRenderer*  Renderer;
 TextRenderer*    textRenderer;
-PostProcessor*   Effects;
 ParticleEmitter* playerEmitter;
-ParticleEmitter* brickEmitter;
-
-std::vector<ParticleInstanceData> instancedParticleData;
 
 Game::Game(unsigned int width, unsigned int height)
     : m_State(GAME_ACTIVE)
@@ -32,6 +28,8 @@ Game::Game(unsigned int width, unsigned int height)
     , m_Width(width)
     , m_Height(height)
     , m_Window(nullptr)
+    , Effects(nullptr)
+    , backgroundEmitter(nullptr)
 #if DO_NETWORKING
     , otherPlayers()
 #endif
@@ -46,12 +44,12 @@ Game::~Game()
     delete Effects;
     delete textRenderer;
     delete playerEmitter;
-    delete brickEmitter;
+    delete backgroundEmitter;
 }
 
 constexpr int numParticles = 500;
-constexpr int brickEmitterParticles = 0;
-constexpr int totalParticles = numParticles + brickEmitterParticles;
+constexpr int backgroundParticles = 10000;
+constexpr int totalParticles = numParticles + backgroundParticles;
 
 PhysicsContactListener physicsContactListener;
 
@@ -70,6 +68,7 @@ void Game::Init(Window* window)
     ResourceManager::LoadShader("Assets/Shaders/sprite.vert", "Assets/Shaders/spriteflagtiles.frag", nullptr, "spriteflagtiles");
     ResourceManager::LoadShader("Assets/Shaders/sprite.vert", "Assets/Shaders/spriteillbeback.frag", nullptr, "spriteillbeback");
     ResourceManager::LoadShader("Assets/Shaders/sprite.vert", "Assets/Shaders/spritelava.frag", nullptr, "spritelava");
+    ResourceManager::LoadShader("Assets/Shaders/sprite.vert", "Assets/Shaders/spritesaber.frag", nullptr, "spritesaber");
     ResourceManager::LoadShader("Assets/Shaders/particle.vert", "Assets/Shaders/particle.frag", nullptr, "particle");
     ResourceManager::LoadShader("Assets/Shaders/postprocess.vert", "Assets/Shaders/postprocess.frag", nullptr, "postprocessing");
     ResourceManager::LoadShader("Assets/Shaders/text.vert", "Assets/Shaders/text.frag", nullptr, "text");
@@ -80,6 +79,7 @@ void Game::Init(Window* window)
     ResourceManager::GetShader("sprite").Use().SetInteger("image", 0);
     ResourceManager::GetShader("sprite").SetMatrix4("projection", projection);
     ResourceManager::GetShader("sprite").SetFloat("iTime", 0);
+    ResourceManager::GetShader("sprite").SetVector2f("repetition", 0, 0);
 
     ResourceManager::GetShader("spritetiles").Use().SetInteger("image", 0);
     ResourceManager::GetShader("spritetiles").SetMatrix4("projection", projection);
@@ -97,8 +97,12 @@ void Game::Init(Window* window)
     ResourceManager::GetShader("spritelava").SetMatrix4("projection", projection);
     ResourceManager::GetShader("spritelava").SetFloat("iTime", 0);
 
+    ResourceManager::GetShader("spritesaber").Use().SetInteger("image", 0);
+    ResourceManager::GetShader("spritesaber").SetMatrix4("projection", projection);
+    ResourceManager::GetShader("spritesaber").SetFloat("iTime", 0);
+
     ResourceManager::GetShader("particle").Use().SetInteger("sprite", 0);
-    ResourceManager::GetShader("particle").SetMatrix4("projection", projection);
+    ResourceManager::GetShader("particle").SetMatrix4("projectionView", projection);
 
     ResourceManager::GetShader("text").Use().SetInteger("text", 0);
     ResourceManager::GetShader("text").SetMatrix4("projection", projection);
@@ -111,6 +115,10 @@ void Game::Init(Window* window)
     ResourceManager::LoadTexture("Assets/Images/particle2.png", "particle2");
     ResourceManager::LoadTexture("Assets/Images/square.png", "square");
     ResourceManager::LoadTexture("Assets/Images/circle.png", "circle");
+    ResourceManager::LoadTexture("Assets/Images/player.png", "player");
+    ResourceManager::LoadTexture("Assets/Images/circleOutline.png", "circleOutline");
+
+    //ResourceManager::GetTexture("block_solid")
 
     // set render-specific controls
     Renderer = new SpriteRenderer(ResourceManager::GetShader("sprite"));
@@ -120,21 +128,23 @@ void Game::Init(Window* window)
     
     // particles
     playerEmitter = new ParticleEmitter(ResourceManager::GetShader("particle"), ResourceManager::GetTexture("particle"), numParticles);
-    //brickEmitter = new ParticleEmitter(ResourceManager::GetShader("particle"), ResourceManager::GetTexture("particle"), brickEmitterParticles);
-    instancedParticleData.reserve(totalParticles);
+    backgroundEmitter = new ParticleEmitter(ResourceManager::GetShader("particle"), ResourceManager::GetTexture("circle"), backgroundParticles);
     InitParticles(totalParticles);
 
     playerEmitter->particleProps.color = { 0.f, 2.f, 7.f, 1.0f };
     playerEmitter->particleProps.velocityVariation = { 20.f, 20.f };
     playerEmitter->particleProps.sizeVariation = 1.0f;
     playerEmitter->particleProps.lifeTime = 1.0f;
+    playerEmitter->particleProps.fadeStyle = PARTICLE_FADE_STYLE::FADE_OUT;
 
-    //brickEmitter->particleProps.lifeTime = 0.5f;
-    //brickEmitter->particleProps.velocityVariation = { 100.f, 100.f };
-    //brickEmitter->particleProps.color = { 1.f, 0.f, 0.f, 1.f };
+    backgroundEmitter->particleProps.lifeTime = 25.0f;
+    backgroundEmitter->particleProps.velocity = { 150.0f, 0.0f };
+    backgroundEmitter->particleProps.velocityVariation = { 100.f, 30.f };
+    backgroundEmitter->particleProps.color = { 1.f, 1.f, 1.f, 1.f };
+    backgroundEmitter->particleProps.fadeStyle = PARTICLE_FADE_STYLE::FADE_IN_OUT;
     
     // configure game objects
-    m_Player = new Player(ResourceManager::GetTexture("square"));
+    m_Player = new Player(ResourceManager::GetTexture("player"), this);
 
     // load levels
     GameLevel one; one.LoadStarting("Assets/Maps/map.json", this);
@@ -147,6 +157,14 @@ void Game::Init(Window* window)
     m_Camera->CalculateBoundingRect();
     m_Camera->MoveTo(m_Player->GetPosition(), m_RoomBounds);
     m_Camera->UpdateUniforms();
+
+    for (int i = 0; i < 100; i++) {
+        float bex = m_RoomBounds.left + m_RoomBounds.width * RandomFloat() - 500.0f;
+        float bey = m_RoomBounds.top + m_RoomBounds.height * RandomFloat();
+        backgroundEmitter->SetPosition({ bex, bey });
+
+        backgroundEmitter->Emit(2);
+    }
 }
     
 void Game::SetPreviousPositions() {
@@ -175,6 +193,10 @@ void Game::CalculateLerpedPositions(float t) {
     }
 }
 
+float Game::CalculateSlowedDT(float dt) {
+    return dt * std::powf(m_SlowdownFactor, 1.5f);
+}
+
 void Game::UpdateCamera(float dt)
 {
     // Update Camera
@@ -186,9 +208,14 @@ void Game::Update(float dt, float accumulator)
 {
     this->ProcessInput(dt);
 
-    m_Player->Update(dt);
+    if (m_SlowMoTime > 0) {
+        m_SlowMoTime -= dt;
+    }
+    else {
+        m_SlowdownFactor = std::lerp(m_SlowdownFactor, 1.0f, 0.15f);
+    }
 
-    // printf("rooms size: %i\n", (int)Rooms.size());
+    dt = CalculateSlowedDT(dt);
 
     if (m_State == GAME_ACTIVE)
     {
@@ -196,11 +223,15 @@ void Game::Update(float dt, float accumulator)
 
         for (auto& room : m_Rooms) {
             for (auto& ent : room.Entities) {
-                ent->Update(dt);
+                if (ent->active) {
+                    ent->Update(dt);
+                    ent->UpdateOutOfBounds(room.Bounds());
+                }
             }
         }
 
         m_Player->isGrounded = false;
+
         physicsWorld.Step(dt, 8, 3);
 
         m_Player->SetUpdatedPosition();
@@ -210,9 +241,6 @@ void Game::Update(float dt, float accumulator)
                 ent->SetUpdatedPosition();
             }
         }
-
-        //glm::vec2 velPixelsPerSec = PhysicsUtils::MetersToPixels(m_Player->rigidBody->GetLinearVelocity());
-        //printf("m_Player vel: %f, %f\n", velPixelsPerSec.x, velPixelsPerSec.y);
     }
 
     if (!m_Player->Bounds().overlaps(m_RoomBounds)) {
@@ -230,12 +258,26 @@ void Game::Update(float dt, float accumulator)
         }      
     }
 
+    Effects->Update(dt);
+
     // camera->position = player->Position;
     playerEmitter->SetPosition(m_Player->GetRenderPosition() + m_Player->GetSize() / 2.f);
-    
-    for (int i = 0; i < 2; i++) {
+
+    playerEmitter->particleProps.sizeBegin = 10.0f;
+    playerEmitter->particleProps.sizeEnd = 2.0f;
+    playerEmitter->particleProps.sizeVariation = 2.0f;
+
+    if (rand() % 2 == 0) {
         playerEmitter->Emit();
+
+        float bex = m_RoomBounds.left - 500.0f;// + m_RoomBounds.width * RandomFloat();
+        float bey = m_RoomBounds.top + m_RoomBounds.height * RandomFloat();
+        backgroundEmitter->SetPosition({ bex, bey });
+
+        backgroundEmitter->Emit(2);
     }
+
+   
 
 #if DO_NETWORKING
     for (auto& other : otherPlayers) {
@@ -248,7 +290,7 @@ void Game::Update(float dt, float accumulator)
 #endif
 
     playerEmitter->Update(dt);
-    //brickEmitter->Update(dt);
+    backgroundEmitter->Update(dt);
 
     // Wait for threadpool to be done
     ThreadPool::threadPool.wait_for_tasks();
@@ -257,12 +299,13 @@ void Game::Update(float dt, float accumulator)
 // delta time, current time, interpolation factor
 void Game::Render(float dt, float currentTime, float t)
 {
-    Shader::iTime = currentTime;
+    Shader::iTime += CalculateSlowedDT(dt);
     ResourceManager::GetShader("sprite").SetFloat("iTime", Shader::iTime, true);
     ResourceManager::GetShader("spritetiles").SetFloat("iTime", Shader::iTime, true);
     ResourceManager::GetShader("spriteflagtiles").SetFloat("iTime", Shader::iTime, true);
     ResourceManager::GetShader("spritelava").SetFloat("iTime", Shader::iTime, true);
     ResourceManager::GetShader("spriteillbeback").SetFloat("iTime", Shader::iTime, true);
+    ResourceManager::GetShader("spritesaber").SetFloat("iTime", Shader::iTime, true);
 
     playerEmitter->particleProps.color = { RandomFloat(), RandomFloat(), RandomFloat(), 1.f};
 
@@ -292,10 +335,10 @@ void Game::Render(float dt, float currentTime, float t)
             }
 
             // Particles
-            instancedParticleData.clear();
-            playerEmitter->GrabParticles(instancedParticleData);
-            //brickEmitter->GrabParticles(instancedParticleData);
-            RenderParticlesInstanced(instancedParticleData);
+            playerEmitter->GrabParticles();
+            backgroundEmitter->GrabParticles();
+            playerEmitter->RenderParticlesInstanced();
+            backgroundEmitter->RenderParticlesInstanced();
             
             // draw player
             m_Player->Draw(*Renderer);
@@ -328,7 +371,8 @@ void Game::Render(float dt, float currentTime, float t)
             m_Window->ToggleFullscreen();
         }
 
-        textRenderer->RenderText(std::to_string(instancedParticleData.size()) + " particles", (float)m_Width / 2.f, (float)m_Height / 2.0f, 0.5f, true, glm::vec3(1), true);
+        int numParticles = playerEmitter->GetParticleCount() + backgroundEmitter->GetParticleCount();
+        textRenderer->RenderText(std::to_string(numParticles) + " particles", (float)m_Width / 2.f, (float)m_Height / 2.0f, 0.5f, true, glm::vec3(1), true);
     }
     if (m_State == GAME_MENU)
     {
@@ -393,10 +437,21 @@ void Game::RenderColliders()
                 else if (bits == F_BLOCK) {
                     Renderer->DrawSprite(ResourceManager::GetTexture("particle"), position, size, angle, COLOR_F_BLOCK);
                 }
+                else if (bits == F_LAVA) {
+                    Renderer->DrawSprite(ResourceManager::GetTexture("particle"), position, size, angle, COLOR_F_LAVA);
+                }
                 else {
                     // default
-                    Renderer->DrawSprite(ResourceManager::GetTexture("particle"), position, size, angle, { 1.0, 1.0, 1.0, 1.0f });
+                    Renderer->DrawSprite(ResourceManager::GetTexture("square"), position, size, angle, { 1.0, 1.0, 1.0, 1.0f });
                 }
+            }
+            else if (shapeType == b2Shape::e_circle) {
+                b2CircleShape* circleShape = (b2CircleShape*)fixture->GetShape();
+                glm::vec2 position = PhysicsUtils::MetersToPixels(body->GetWorldPoint(circleShape->m_p));
+                float radius = PhysicsUtils::MetersToPixels(circleShape->m_radius);
+                position -= radius;
+                radius *= 2;
+                Renderer->DrawSprite(ResourceManager::GetTexture("circleOutline"), position, { radius, radius }, angle, { 1.0, 1.0, 1.0, 1.0f });
             }
             // else, handle other types in the future eg shapeType == b2Shape::e_circle
         }

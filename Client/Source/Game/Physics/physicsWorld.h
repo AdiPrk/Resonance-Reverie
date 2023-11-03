@@ -7,12 +7,14 @@
 extern b2World physicsWorld;
 
 // Fixtures
-const uint16 F_PLAYER =             1 << 0;
-const uint16 F_ENEMY =              1 << 1;
-const uint16 F_BLOCK =              1 << 2; 
-const uint16 F_LAVA =               1 << 3;
-const uint16 F_SAFEZONE =           1 << 4;
-const uint16 F_PLAYER_FOOT_SENSOR = 1 << 5;
+const uint16 F_PLAYER =                  1 << 0;
+const uint16 F_ENEMY =                   1 << 1;
+const uint16 F_BLOCK =                   1 << 2; 
+const uint16 F_LAVA =                    1 << 3;
+const uint16 F_SAFEZONE =                1 << 4;
+const uint16 F_PLAYER_LEFTFOOT_SENSOR =  1 << 5;
+const uint16 F_PLAYER_RIGHTFOOT_SENSOR = 1 << 6;
+const uint16 F_GRAPPLE_POINT =           1 << 7;
 
 const glm::vec4 COLOR_F_PLAYER(1.0f, 1.0f, 1.0f, 1.0f);
 const glm::vec4 COLOR_F_ENEMY(0.5f, 0.5f, 0.5f, 1.0f);

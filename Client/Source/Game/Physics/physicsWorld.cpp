@@ -1,8 +1,9 @@
 #include <PCH/pch.h>
 #include "physicsWorld.h"
 #include <Source/Game/Entities/Player/player.h>
+#include <Source/Game/Entities/Interactables/grapplePoint.h>
 
-b2World physicsWorld(b2Vec2(0.0f, 40.0f)); // no gravity!
+b2World physicsWorld(b2Vec2(0.0f, 20.0f));
 
 bool CheckFixtureBits(b2Fixture* f1, b2Fixture* f2, uint16 b1, uint16 b2) {
     return (f1->GetFilterData().categoryBits == b1 && f2->GetFilterData().categoryBits == b2) ||
@@ -32,14 +33,115 @@ void PhysicsContactListener::BeginContact(b2Contact* contact) {
         }
     }
 
-    // Check if player's foot sensor and ground
-    
+    if (CheckFixtureBits(fixtureA, fixtureB, F_PLAYER, F_GRAPPLE_POINT))
+    {
+        Player* player = nullptr;
+        GrapplePoint* point = nullptr;
+
+        if (fixtureA->GetFilterData().categoryBits == F_PLAYER) {
+            player = reinterpret_cast<Player*>(fixtureA->GetUserData().pointer);
+            point = reinterpret_cast<GrapplePoint*>(fixtureB->GetUserData().pointer);
+        }
+        else if (fixtureB->GetFilterData().categoryBits == F_PLAYER) {
+            player = reinterpret_cast<Player*>(fixtureB->GetUserData().pointer);
+            point = reinterpret_cast<GrapplePoint*>(fixtureA->GetUserData().pointer);
+        }
+
+        if (player && point) {
+            player->AddGrapplePoint(point->GetPosition() + point->GetSize() / 2.0f);
+        }
+    }
+
+    // Check if one fixture is the player's foot sensor and the other is the ground
+    if ((fixtureA->IsSensor() && fixtureB->GetFilterData().categoryBits == F_BLOCK) ||
+        (fixtureB->IsSensor() && fixtureA->GetFilterData().categoryBits == F_BLOCK)) {
+
+        // Determine which fixture is the player
+        Player* player = nullptr;
+        bool foot = false; // true if left
+        if (fixtureA->GetFilterData().categoryBits == F_PLAYER_LEFTFOOT_SENSOR) {
+            player = reinterpret_cast<Player*>(fixtureA->GetUserData().pointer);
+            foot = true;
+        }
+        else if (fixtureB->GetFilterData().categoryBits == F_PLAYER_LEFTFOOT_SENSOR) {
+            player = reinterpret_cast<Player*>(fixtureB->GetUserData().pointer);
+            foot = true;
+        }
+        else if (fixtureA->GetFilterData().categoryBits == F_PLAYER_RIGHTFOOT_SENSOR) {
+            player = reinterpret_cast<Player*>(fixtureA->GetUserData().pointer);
+        }
+        else if (fixtureB->GetFilterData().categoryBits == F_PLAYER_RIGHTFOOT_SENSOR) {
+            player = reinterpret_cast<Player*>(fixtureB->GetUserData().pointer);
+        }
+
+        // Set player as grounded
+        if (player) {
+            if (foot) {
+                player->leftSensorGrounded = true;
+            }
+            else {
+                player->rightSensorGrounded = true;
+            }
+        }
+    }
 }
 
 void PhysicsContactListener::EndContact(b2Contact* contact) {
     // handle beginning of the collision
-    // b2Fixture* fixtureA = contact->GetFixtureA();
-    // b2Fixture* fixtureB = contact->GetFixtureB();
+    b2Fixture* fixtureA = contact->GetFixtureA();
+    b2Fixture* fixtureB = contact->GetFixtureB();
+
+    // Check if one fixture is the player's foot sensor and the other is the ground
+    if ((fixtureA->IsSensor() && fixtureB->GetFilterData().categoryBits == F_BLOCK) ||
+        (fixtureB->IsSensor() && fixtureA->GetFilterData().categoryBits == F_BLOCK)) {
+
+        // Determine which fixture is the player
+        Player* player = nullptr;
+        bool foot = false; // true if left
+        if (fixtureA->GetFilterData().categoryBits == F_PLAYER_LEFTFOOT_SENSOR) {
+            player = reinterpret_cast<Player*>(fixtureA->GetUserData().pointer);
+            foot = true;
+        }
+        else if (fixtureB->GetFilterData().categoryBits == F_PLAYER_LEFTFOOT_SENSOR) {
+            player = reinterpret_cast<Player*>(fixtureB->GetUserData().pointer);
+            foot = true;
+        }
+        else if (fixtureA->GetFilterData().categoryBits == F_PLAYER_RIGHTFOOT_SENSOR) {
+            player = reinterpret_cast<Player*>(fixtureA->GetUserData().pointer);
+        }
+        else if (fixtureB->GetFilterData().categoryBits == F_PLAYER_RIGHTFOOT_SENSOR) {
+            player = reinterpret_cast<Player*>(fixtureB->GetUserData().pointer);
+        }
+
+        // Set player as grounded
+        if (player) {
+            if (foot) {
+                player->leftSensorGrounded = false;
+            }
+            else {
+                player->rightSensorGrounded = false;
+            }
+        }
+    }
+
+    if (CheckFixtureBits(fixtureA, fixtureB, F_PLAYER, F_GRAPPLE_POINT))
+    {
+        Player* player = nullptr;
+        GrapplePoint* point = nullptr;
+
+        if (fixtureA->GetFilterData().categoryBits == F_PLAYER) {
+            player = reinterpret_cast<Player*>(fixtureA->GetUserData().pointer);
+            point = reinterpret_cast<GrapplePoint*>(fixtureB->GetUserData().pointer);
+        }
+        else if (fixtureB->GetFilterData().categoryBits == F_PLAYER) {
+            player = reinterpret_cast<Player*>(fixtureB->GetUserData().pointer);
+            point = reinterpret_cast<GrapplePoint*>(fixtureA->GetUserData().pointer);
+        }
+
+        if (player && point) {
+            player->RemoveGrapplePoint(point->GetPosition() + point->GetSize() / 2.0f);
+        }
+    }
 }
 
 void PhysicsContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold) {
@@ -50,6 +152,23 @@ void PhysicsContactListener::PostSolve(b2Contact* contact, const b2ContactImpuls
     // handle after collision solver
     b2Fixture* fixtureA = contact->GetFixtureA();
     b2Fixture* fixtureB = contact->GetFixtureB();
+
+    if (fixtureA->GetFilterData().categoryBits == F_PLAYER && !fixtureB->IsSensor()
+     || fixtureB->GetFilterData().categoryBits == F_PLAYER && !fixtureA->IsSensor()) {
+
+        Player* player = nullptr;
+        if (fixtureA->GetFilterData().categoryBits == F_PLAYER) {
+            player = reinterpret_cast<Player*>(fixtureA->GetUserData().pointer);
+        }
+        else if (fixtureB->GetFilterData().categoryBits == F_PLAYER) {
+            player = reinterpret_cast<Player*>(fixtureB->GetUserData().pointer);
+        }
+        
+        if (player) 
+        {
+            player->hitSolidObject = true;
+        }
+    }
 
     if ((fixtureA->GetFilterData().categoryBits == F_PLAYER && fixtureB->GetFilterData().categoryBits == F_BLOCK) ||
         (fixtureB->GetFilterData().categoryBits == F_PLAYER && fixtureA->GetFilterData().categoryBits == F_BLOCK)) {

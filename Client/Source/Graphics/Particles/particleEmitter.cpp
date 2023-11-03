@@ -69,6 +69,9 @@ void ParticleEmitter::InitArrays(int poolSize)
 	sizeEnd = new float[poolSize]();
 	lifeTime = new float[poolSize]();
 	lifeRemaining = new float[poolSize]();
+	fadeStyle = new PARTICLE_FADE_STYLE[poolSize](FADE_OUT);
+
+	instancedParticleData.reserve(poolSize);
 }
 
 ParticleEmitter::ParticleEmitter(Shader shader, Texture2D texture)
@@ -146,10 +149,9 @@ void ParticleEmitter::OldUpdate(float dt)
 	}
 }
 
-void ParticleEmitter::GrabParticles(std::vector<ParticleInstanceData>& instanceData)
+void ParticleEmitter::GrabParticles()
 {
-	shader.Use();
-	texture.Bind();
+	instancedParticleData.clear();
 
 	// Fill the instanceData vector with data from active particles
 	for (int i = 0; i < poolSize; i++) {
@@ -158,41 +160,57 @@ void ParticleEmitter::GrabParticles(std::vector<ParticleInstanceData>& instanceD
 
 		Particle& particle = particlePool[i];
 
-
 		float life = lifeRemaining[i] / lifeTime[i];
-		color[i].a = life;
+		
+		switch (fadeStyle[i]) {
+		case FADE_OUT: 
+		{
+			color[i].a = life;
+			break;
+		}
+		case FADE_IN_OUT:
+		{
+			float t = 1 - life;
+			color[i].a = t * t * (2 - 2 * t);
+			break;
+		}
+		}
 
 		float size = lerp(sizeEnd[i], sizeBegin[i], life);
 
-		instanceData.emplace_back(position[i] - size * 0.5f, color[i], size);
+		instancedParticleData.emplace_back(position[i] - size * 0.5f, color[i], size);
 	}
 }
 
-void ParticleEmitter::Emit()
+void ParticleEmitter::Emit(float emitCount)
 {
-	Particle& particle = particlePool[poolIndex];
-	activeParticles[poolIndex] = true;
-	position[poolIndex] = emitterPosition;
-	rotation[poolIndex] = RandomFloat() * 6.28318531f;
+	for (int i = 0; i < emitCount; i++) {
+		Particle& particle = particlePool[poolIndex];
+		activeParticles[poolIndex] = true;
+		position[poolIndex] = emitterPosition;
+		rotation[poolIndex] = RandomFloat() * 6.28318531f;
 
-	// Velocity
-	velocity[poolIndex] = particleProps.velocity;
-	velocity[poolIndex].x += particleProps.velocityVariation.x * (RandomFloat() - 0.5f);
-	velocity[poolIndex].y += particleProps.velocityVariation.y * (RandomFloat() - 0.5f);
+		fadeStyle[poolIndex] = particleProps.fadeStyle;
 
-	// Color
-	color[poolIndex] = particleProps.color;
-	//particle.color.r = RandomFloat();
-	//particle.color.g = RandomFloat();
-	//particle.color.b = RandomFloat();
+		// Velocity
+		velocity[poolIndex] = particleProps.velocity;
+		velocity[poolIndex].x += particleProps.velocityVariation.x * (RandomFloat() - 0.5f);
+		velocity[poolIndex].y += particleProps.velocityVariation.y * (RandomFloat() - 0.5f);
 
-	lifeTime[poolIndex] = particleProps.lifeTime;
-	lifeRemaining[poolIndex] = particleProps.lifeTime;
-	sizeBegin[poolIndex] = particleProps.sizeBegin + particleProps.sizeVariation * (RandomFloat() - 0.5f);
-	sizeEnd[poolIndex] = particleProps.sizeEnd;
+		// Color
+		color[poolIndex] = particleProps.color;
+		//particle.color.r = RandomFloat();
+		//particle.color.g = RandomFloat();
+		//particle.color.b = RandomFloat();
 
-	// Update pool index for next emit
-	poolIndex = ++poolIndex % poolSize;
+		lifeTime[poolIndex] = particleProps.lifeTime;
+		lifeRemaining[poolIndex] = particleProps.lifeTime;
+		sizeBegin[poolIndex] = particleProps.sizeBegin + particleProps.sizeVariation * (RandomFloat() - 0.5f);
+		sizeEnd[poolIndex] = particleProps.sizeEnd;
+
+		// Update pool index for next emit
+		poolIndex = ++poolIndex % poolSize;
+	}
 }
 
 void ParticleEmitter::SetPosition(const glm::vec2& _position)
@@ -200,7 +218,11 @@ void ParticleEmitter::SetPosition(const glm::vec2& _position)
 	emitterPosition = _position;
 }
 
-void RenderParticlesInstanced(std::vector<ParticleInstanceData>& instancedData) {
+void ParticleEmitter::RenderParticlesInstanced()
+{
+	shader.Use();
+	texture.Bind();
+
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
 	// Bind the VAO and instance VBO
@@ -208,10 +230,10 @@ void RenderParticlesInstanced(std::vector<ParticleInstanceData>& instancedData) 
 	glBindBuffer(GL_ARRAY_BUFFER, ParticlesInstancedVBO);
 
 	// Update the instance VBO data
-	glBufferData(GL_ARRAY_BUFFER, sizeof(ParticleInstanceData) * instancedData.size(), instancedData.data(), GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(ParticleInstanceData) * instancedParticleData.size(), instancedParticleData.data(), GL_STREAM_DRAW);
 
 	// Draw all particles
-	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, (GLsizei)instancedData.size());
+	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, (GLsizei)instancedParticleData.size());
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }

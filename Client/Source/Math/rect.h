@@ -11,6 +11,11 @@ struct Rect
 	Rect(float l, float t, float w, float h)
 		: left(l), right(l + w), top(t), bottom(t + h), width(w), height(h) {}
 
+	bool contains(const glm::vec2& p) const
+	{
+		return p.x >= left && p.x <= right && p.y >= top && p.y <= bottom;
+	}
+	
 	bool contains(const Rect& r) const
 	{
 		return r.left >= left && r.right <= right && r.top >= top && r.bottom <= bottom;

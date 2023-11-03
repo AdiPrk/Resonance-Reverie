@@ -19,6 +19,7 @@
 #include <thread>
 #include <execution>
 #include <chrono>
+#include <stdexcept>
 
 #define _USE_MATH_DEFINES
 #include <math.h>

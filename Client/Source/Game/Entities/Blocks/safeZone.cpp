@@ -16,10 +16,7 @@ void SafeZone::SetupRigidBody() {
     glm::vec2 bodyCenter = m_Position + m_Size / 2.f;
 
     b2BodyDef bodyDef;
-    bodyDef.type = b2_staticBody; // or b2_staticBody, b2_kinematicBody, depending on your needs
-    // if you try to make it dynamic and it doesn't look right then it's cuz you didn't
-    // write set updated position function 
-
+    bodyDef.type = b2_staticBody;
     bodyDef.position = PhysicsUtils::PixelsToMeters(bodyCenter);
     m_RigidBody = physicsWorld.CreateBody(&bodyDef);
 

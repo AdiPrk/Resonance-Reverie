@@ -2,8 +2,13 @@
 
 #include <PCH/pch.h>
 #include <Source/Graphics/ResourceManager/resourceManager.h>
+#include <Source/Math/utils.h>
 
-float lerp(float a, float b, float t);
+enum PARTICLE_FADE_STYLE {
+    NONE = 0,
+    FADE_OUT = 1,
+    FADE_IN_OUT = 2
+};
 
 // particle props, filled out with default props
 struct ParticleProps {
@@ -14,6 +19,7 @@ struct ParticleProps {
     float sizeEnd;
     float sizeVariation;
     float lifeTime;
+    PARTICLE_FADE_STYLE fadeStyle;
 
     ParticleProps()
         : velocity(0.f, 0.f)
@@ -53,13 +59,17 @@ public:
 
     void OldUpdate(float dt);
     void Update(float dt);
-    void GrabParticles(std::vector<ParticleInstanceData>& instanceData);
+    void GrabParticles();
 
-    void Emit();
+    void Emit(float emitCount = 1);
 
     void SetPosition(const glm::vec2& _position);
+    const glm::vec2 GetPosition() const { return emitterPosition; }
+    void RenderParticlesInstanced();
 
     ParticleProps particleProps;
+
+    int GetParticleCount() { return static_cast<int>(instancedParticleData.size()); }
 
 private:
 
@@ -82,11 +92,14 @@ private:
     float* lifeTime;
     float* lifeRemaining;
 
+    PARTICLE_FADE_STYLE* fadeStyle;
+
     int poolIndex = 0;
 
     Shader shader;
     Texture2D texture;
+
+    std::vector<ParticleInstanceData> instancedParticleData;
 };
 
 void InitParticles(const int maxParticles);
-void RenderParticlesInstanced(std::vector<ParticleInstanceData>& instancedData);

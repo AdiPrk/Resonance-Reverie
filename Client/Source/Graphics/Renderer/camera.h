@@ -2,8 +2,8 @@
 
 #include <PCH/pch.h>
 #include <Source/Math/rect.h>
+#include <Source/Math/utils.h>
 #include <Source/Graphics/Window/window.h>
-#include <Source/Graphics/Particles/particleEmitter.h>
 
 class Camera {
 public:
@@ -26,13 +26,18 @@ public:
 
     void UpdateUniforms() {
         glm::mat4 view = GetViewMatrix();
+        glm::mat4 proj = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f, -1.0f, 1.0f);
+        glm::mat4 projView = proj * view;
+
         ResourceManager::GetShader("sprite").Use().SetMatrix4("view", view);
         ResourceManager::GetShader("spritetiles").Use().SetMatrix4("view", view);
         ResourceManager::GetShader("spriteflagtiles").Use().SetMatrix4("view", view);
         ResourceManager::GetShader("spriteillbeback").Use().SetMatrix4("view", view);
         ResourceManager::GetShader("spritelava").Use().SetMatrix4("view", view);
-        ResourceManager::GetShader("particle").Use().SetMatrix4("view", view);
+        ResourceManager::GetShader("spritesaber").Use().SetMatrix4("view", view);
         ResourceManager::GetShader("text").Use().SetMatrix4("view", view);
+
+        ResourceManager::GetShader("particle").Use().SetMatrix4("projectionView", projView);
     }
 
     void CalculateBoundingRect() {
@@ -58,8 +63,10 @@ public:
 
     void GlideTo(glm::vec2 glideTo, Rect bounds, float dt) {
         float targetDiff = fabsf(m_TargetZoom - m_Zoom);
-        m_Zoom = lerp(m_Zoom, m_TargetZoom, (2.5f + targetDiff) * dt);
+        m_Zoom = Lerp(m_Zoom, m_TargetZoom, (2.5f + targetDiff) * dt);
         if (fabsf(m_Zoom - m_TargetZoom) < 0.0005f) m_Zoom = m_TargetZoom;
+
+        // m_Zoom = m_TargetZoom;
 
         CalculateBoundingRect();
 
@@ -67,6 +74,10 @@ public:
         {
             glideTo.x = std::clamp(glideTo.x, bounds.left + m_BoundingRect.width / 2.f, bounds.right - m_BoundingRect.width / 2.f);
             glideTo.y = std::clamp(glideTo.y, bounds.top + m_BoundingRect.height / 2.f, bounds.bottom - m_BoundingRect.height / 2.f);
+        }
+        else {
+            glideTo.x = std::clamp(glideTo.x, bounds.right - m_BoundingRect.width / 2.f, bounds.left + m_BoundingRect.width / 2.f);
+            glideTo.y = std::clamp(glideTo.y, bounds.bottom - m_BoundingRect.height / 2.f, bounds.top + m_BoundingRect.height / 2.f);
         }
 
         if (glm::distance(glideTo, m_Position) > 0.1f) {

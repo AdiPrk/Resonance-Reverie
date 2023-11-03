@@ -3,19 +3,21 @@
 
 #include <Source/Game/Entities/gameObject.h>
 #include <Source/Game/Entities/Player/player.h>
-
 #include <Source/Game/Entities/Blocks/block.h>
 #include <Source/Game/Entities/Blocks/dynamicBlock.h>
+#include <Source/Game/Entities/Blocks/swingingBlock.h>
 #include <Source/Game/Entities/Blocks/lava.h>
 #include <Source/Game/Entities/Blocks/safeZone.h>
-
 #include <Source/Game/Entities/Enemies/greyEnemy.h>
+#include <Source/Game/Entities/Interactables/grapplePoint.h>
 
 #include <Source/Graphics/Renderer/spriteRenderer.h>
 #include <Source/Graphics/Renderer/camera.h>
 
 #include <Source/Game/game.h>
 #include "gameLevel.h"
+
+const float gridSize = 25.0f;
 
 GameLevel::~GameLevel()
 {
@@ -74,6 +76,7 @@ void GameLevel::SetupRoom(Game* game, auto element, bool starting, bool isCurren
             else{
                 DynamicBlock* obj = new DynamicBlock(pos, size, rotation, ResourceManager::GetTexture("block_solid"));
                 obj->SetRestitution(entity["restitution"]);
+                obj->SetDensity(entity["density"]);
                 obj->SetupRigidBody();
                 this->Entities.push_back(obj);
             }
@@ -94,6 +97,21 @@ void GameLevel::SetupRoom(Game* game, auto element, bool starting, bool isCurren
             float numGreys = entity["numGreys"];
             Rect elementBounds = { pos.x, pos.y, size.x, size.y };
             SpawnEnemies(0, (int)numGreys, elementBounds);
+        }
+        else if (entity["type"] == "15") // safe zone
+        {
+            float rotation = entity["rotation"];
+
+            SwingingBlock* obj = new SwingingBlock(pos, size, rotation, ResourceManager::GetTexture("block"));
+            obj->anchorPos = glm::vec2(entity["anchorX"], entity["anchorY"]);
+            obj->SetDensity(entity["density"]);
+            obj->SetupRigidBody();
+            this->Entities.push_back(obj);
+        }
+        else if (entity["type"] == "16") { // Enemy spawner
+            GrapplePoint* obj = new GrapplePoint(pos, size, entity["radius"] * gridSize, ResourceManager::GetTexture("circle"));
+            obj->SetupRigidBody();
+            this->Entities.push_back(obj);
         }
     }
 
@@ -224,7 +242,7 @@ void GameLevel::SpawnEnemies(int enemyID, int numEnemies, Rect spawnBounds)
 {
     for (int i = 0; i < numEnemies; i++)
     {
-        glm::vec2 size = { 25, 25 };
+        glm::vec2 size = { gridSize, gridSize };
 
         glm::vec2 pos = {
             spawnBounds.left + size.x + RandomFloat() * (spawnBounds.width - size.x * 2),

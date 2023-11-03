@@ -15,7 +15,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 0,
@@ -27,7 +28,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 0,
@@ -39,7 +41,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 1075,
@@ -51,7 +54,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 1400,
@@ -63,7 +67,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 0,
@@ -75,7 +80,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 125,
@@ -87,7 +93,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 450,
@@ -99,7 +106,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 850,
@@ -111,7 +119,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 1350,
@@ -123,7 +132,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 350,
@@ -159,7 +169,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 850,
@@ -171,7 +182,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 900,
@@ -183,7 +195,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 425,
@@ -195,7 +208,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 1200,
@@ -207,7 +221,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 1225,
@@ -219,7 +234,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 1225,
@@ -231,7 +247,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 1250,
@@ -243,7 +260,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 1275,
@@ -255,7 +273,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 1300,
@@ -267,7 +286,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 1325,
@@ -279,7 +299,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 900,
@@ -291,7 +312,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 975,
@@ -303,7 +325,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 300,
@@ -333,7 +356,8 @@
         "texture": -1,
         "rotation": 3,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 1113.75,
@@ -345,27 +369,8 @@
         "texture": -1,
         "rotation": 3,
         "dynamic": false,
-        "restitution": 0
-      },
-      {
-        "x": 925,
-        "y": 512.5,
-        "w": 50,
-        "h": 37.5,
-        "id": 51,
-        "type": "4"
-      },
-      {
-        "x": 675,
-        "y": 400,
-        "w": 75,
-        "h": 75,
-        "id": 53,
-        "type": "3",
-        "texture": -1,
-        "rotation": 0,
-        "dynamic": true,
-        "restitution": 0.3
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 150,
@@ -395,15 +400,45 @@
         "texture": -1,
         "rotation": 0.423,
         "dynamic": true,
-        "restitution": 0.3
+        "restitution": 0.3,
+        "density": 1
+      },
+      {
+        "x": 925,
+        "y": 512.5,
+        "w": 50,
+        "h": 37.5,
+        "id": 61,
+        "type": "4"
+      },
+      {
+        "x": 650,
+        "y": 375,
+        "w": 100,
+        "h": 100,
+        "id": 63,
+        "type": "15",
+        "anchorX": 700,
+        "anchorY": 225,
+        "rotation": 0,
+        "density": 8
+      },
+      {
+        "x": 937.5,
+        "y": 262.5,
+        "w": 25,
+        "h": 25,
+        "id": 65,
+        "type": "16",
+        "radius": 5
       }
     ],
     "backgroundColor": "#000000",
     "camOffsetX": 0,
     "camOffsetY": 0,
-    "camScale": 1,
+    "camScale": 1.25,
     "camScaleSpeed": 1,
-    "id": 1,
+    "id": 3,
     "starting": true
   },
   {
@@ -422,7 +457,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 1900,
@@ -434,7 +470,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 2075,
@@ -446,7 +483,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       },
       {
         "x": 1675,
@@ -484,7 +522,8 @@
         "texture": -1,
         "rotation": 0,
         "dynamic": false,
-        "restitution": 0
+        "restitution": 0,
+        "density": 1
       }
     ],
     "backgroundColor": "#000000",
@@ -492,6 +531,6 @@
     "camOffsetY": 0,
     "camScale": 0.9,
     "camScaleSpeed": 1,
-    "id": 2
+    "id": 4
   }
 ]

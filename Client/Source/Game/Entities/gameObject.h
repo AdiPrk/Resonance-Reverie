@@ -5,6 +5,8 @@
 #include <Source/Graphics/Texture/texture.h>
 #include <Source/Graphics/Renderer/spriteRenderer.h>
 
+struct Rect;
+
 // Container object for holding all state relevant for a single
 // game object entity. Each object in the game likely needs the
 // minimal of state as described within GameObject.
@@ -22,6 +24,7 @@ public:
     virtual void Draw(SpriteRenderer& renderer);
     virtual void SetUpdatedPosition() {};
     virtual void SetupRigidBody() {};
+    virtual void UpdateOutOfBounds(const Rect& gamebounds) {}
     
     void setPreviousPosition();
     void setLerpedPosition(float t);
@@ -33,7 +36,8 @@ public:
     glm::vec2& GetSize() { return m_Size; }
     float& GetRenderDepth() { return m_RenderDepth; }
     Texture2D& GetSprite() { return m_Sprite; }
-
+    b2Body* GetBody() { return m_RigidBody; }
+    bool active = true;
 
 protected:
 

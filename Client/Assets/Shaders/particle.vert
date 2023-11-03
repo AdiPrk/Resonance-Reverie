@@ -9,13 +9,12 @@ out vec2 TexCoords;
 out vec4 ParticleColor;
 out vec4 fragPosition;
 
-uniform mat4 projection;
-uniform mat4 view;
+uniform mat4 projectionView;
 
 void main()
 {
     TexCoords = vertex;
     ParticleColor = color;
-    fragPosition = projection * view * vec4((vertex.xy * scale) + offset, 0.0, 1.0);
+    fragPosition = projectionView * vec4(vertex * scale + offset, 0.0, 1.0);
     gl_Position = fragPosition;
 }

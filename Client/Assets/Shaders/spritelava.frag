@@ -1,7 +1,7 @@
 #version 330 core
 
 in vec2 TexCoords;
-out vec4 color;
+out vec4 fragColor;
 
 uniform sampler2D image;
 uniform vec4 spriteColor;
@@ -28,5 +28,5 @@ void main()
         uv += sin(v1+col+t*10.0)/factor;
         col += vec2(sin(uv.x-uv.y+v1.x-col.y),sin(uv.y-uv.x+v1.y-col.x));
     }
-    color = vec4(vec3(col.x+4.0,col.x-col.y/2.0,col.x/5.0)/2.0,1.0);
+    fragColor = vec4(vec3(col.x+4.0,col.x-col.y/2.0,col.x/5.0)/2.0,1.0);
 }

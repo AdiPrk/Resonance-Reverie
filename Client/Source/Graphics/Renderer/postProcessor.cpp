@@ -65,6 +65,7 @@ void PostProcessor::Update(float dt)
     // reduce shake time
     if (shakeTime > 0.0f)
     {
+        Shake = true;
         shakeTime -= dt;
 
         if (shakeTime <= 0.0f) {

@@ -3,20 +3,18 @@
 #include <PCH/pch.h>
 
 #include "../gameObject.h"
-#include <Source/Math/rect.h>
 
 class Texture2D;
 
-class DynamicBlock : public GameObject
+class SwingingBlock : public GameObject
 {
 public:
     // constructor
-    DynamicBlock(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D sprite);
+    SwingingBlock(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D sprite);
     void SetupRigidBody() override;
 
     void Draw(SpriteRenderer& renderer) override;
     void SetUpdatedPosition() override;
-    void UpdateOutOfBounds(const Rect& gamebounds) override;
 
     void SetRestitution(float restitution) {
         m_Restitution = restitution;
@@ -25,8 +23,9 @@ public:
         m_Density = density;
     }
 
+    glm::vec2 anchorPos;
+
 private:
     float m_Restitution = 0.0f;
     float m_Density = 0.0f;
-    Rect m_BoundingRect;
 };

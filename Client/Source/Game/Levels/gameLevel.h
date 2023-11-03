@@ -42,6 +42,7 @@ public:
     float& DeleteTimer() { return m_OutOfFrameFor; }
 
     void SpawnEnemies(int enemyID, int numEnemies, Rect spawnBounds);
+
 private:
 
     void SetupRoom(Game* game, auto element, bool starting, bool isCurrent);
