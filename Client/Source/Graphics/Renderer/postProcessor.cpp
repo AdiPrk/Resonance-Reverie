@@ -99,11 +99,10 @@ void PostProcessor::EndRender()
     glViewport(m_ViewportInfo.x, m_ViewportInfo.y, m_ViewportInfo.width, m_ViewportInfo.height);
 }
 
-void PostProcessor::Render(float time)
+void PostProcessor::Render()
 {
     // set uniforms/options
     this->PostProcessingShader.Use();
-    this->PostProcessingShader.SetFloat("time", time);
     this->PostProcessingShader.SetInteger("confuse", this->Confuse);
     this->PostProcessingShader.SetInteger("chaos", this->Chaos);
     this->PostProcessingShader.SetInteger("shake", this->Shake);

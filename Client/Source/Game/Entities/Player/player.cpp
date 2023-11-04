@@ -41,14 +41,14 @@ void Player::SetupRigidBody() {
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &boxShape;
     fixtureDef.density = 2.0f;
-    fixtureDef.friction = 0.2f;
+    fixtureDef.friction = 0.1f;
     fixtureDef.restitution = 0.0f;
 
     fixtureDef.filter.categoryBits = F_PLAYER;
     fixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(this);
     m_RigidBody->CreateFixture(&fixtureDef);
 
-    m_RigidBody->SetAngularDamping(2.0f);
+    m_RigidBody->SetAngularDamping(5.0f);
 
     // For foot sensors:
     float sensorHalfWidth = m_Size.x / 12.0f;
@@ -61,8 +61,8 @@ void Player::SetupRigidBody() {
             PhysicsUtils::PixelsToMeters(sensorHalfWidth),
             PhysicsUtils::PixelsToMeters(sensorHalfHeight),
             b2Vec2(
-                PhysicsUtils::PixelsToMeters(m_Size.x * (-0.5f) + sensorHalfWidth),
-                PhysicsUtils::PixelsToMeters(m_Size.y * 0.5f + sensorHalfHeight)
+                PhysicsUtils::PixelsToMeters(-m_Size.x * 0.5f + sensorHalfWidth),
+                PhysicsUtils::PixelsToMeters( m_Size.y * 0.5f + sensorHalfHeight)
             ),
             0.0f
         );
@@ -98,7 +98,7 @@ void Player::SetupRigidBody() {
 }
 
 void Player::CheckGrapple() {
-    if (m_JumpHeld || !InputManager::GetKeyDown(GLFW_KEY_C)) return;
+    if (!InputManager::GetKeyTriggered(Key::C)) return;
     
     float minDist = FLT_MAX;
     bool canGrapple = false;
@@ -144,8 +144,7 @@ void Player::Update(float dt) {
         }
 
         float correctionSpeed = 6.0f;
-        if (leftSensorGrounded && !rightSensorGrounded ||
-            rightSensorGrounded && !leftSensorGrounded) {
+        if (leftSensorGrounded ^ rightSensorGrounded) {
 
             if (isGrounded) {
                 correctionSpeed *= 4.0f;
@@ -169,17 +168,13 @@ void Player::Update(float dt) {
         //printf("%i, %i\n", leftSensorGrounded, rightSensorGrounded);
 
         // Horizontal movement
-        float horizontalSpeed = 1.2f;
-        float dampingFactor = 0.84f;
+        float horizontalSpeed = 1.6f;
+        float dampingFactor = 0.76f;
 
-        if (InputManager::GetKeyDown(GLFW_KEY_Z)) {
-            horizontalSpeed = 0.5f;
-        }
-
-        if (InputManager::GetKeyDown(GLFW_KEY_RIGHT)) {
+        if (InputManager::GetKeyDown(Key::RIGHT)) {
             vel.x += horizontalSpeed;
         }
-        if (InputManager::GetKeyDown(GLFW_KEY_LEFT)) {
+        if (InputManager::GetKeyDown(Key::LEFT)) {
             vel.x -= horizontalSpeed;
         }
 
@@ -196,7 +191,7 @@ void Player::Update(float dt) {
         }
 
         // Handle Jump Input
-        if (InputManager::GetKeyDown(GLFW_KEY_C) && !m_JumpHeld) {
+        if (InputManager::GetKeyDown(Key::C) && !m_JumpHeld) {
             m_JumpRequested = true;
             m_JumpBuffer = m_MaxJumpBuffer;
             m_JumpHeld = true;
@@ -220,7 +215,7 @@ void Player::Update(float dt) {
         }
 
         // Reset jump when the jump key is released
-        if (InputManager::GetKeyUp(GLFW_KEY_C)) {
+        if (InputManager::GetKeyUp(Key::C)) {
             if ((m_JumpHeld || jumpedUsingBuffer) && vel.y < 0) {
                 vel.y *= 0.5f;
             }
@@ -256,14 +251,10 @@ void Player::Update(float dt) {
         float horizontalSpeed = 0.15f;
         float dampingFactor = 0.99f;
 
-        if (InputManager::GetKeyDown(GLFW_KEY_Z)) {
-            horizontalSpeed = 0.5f;
-        }
-
-        if (InputManager::GetKeyDown(GLFW_KEY_RIGHT)) {
+        if (InputManager::GetKeyDown(Key::RIGHT)) {
             vel.x += horizontalSpeed;
         }
-        if (InputManager::GetKeyDown(GLFW_KEY_LEFT)) {
+        if (InputManager::GetKeyDown(Key::LEFT)) {
             vel.x -= horizontalSpeed;
         }
 
@@ -275,7 +266,7 @@ void Player::Update(float dt) {
             //m_Game->Effects->shakeTime = 0.1f;
         }
 
-        if (InputManager::GetKeyUp(GLFW_KEY_C) && m_Game->GameIsSlowMo()) {
+        if (InputManager::GetKeyUp(Key::C) && m_Game->GameIsSlowMo()) {
             glm::vec2 v = m_GrapplingTo - (m_Position + m_Size / 2.0f);
             v = glm::normalize(v);
             v *= 15.0f;
@@ -296,7 +287,7 @@ void Player::Update(float dt) {
             break;
         }
 
-        if (m_Grapple.GetLength() < 0.08f || InputManager::GetKeyUp(GLFW_KEY_C))
+        if (m_Grapple.GetLength() < 0.08f || InputManager::GetKeyUp(Key::C))
         {
             m_State = PlayerStates::NORMAL;
             m_Grapple.ReleaseGrapple();
@@ -378,7 +369,7 @@ void Player::Draw(SpriteRenderer& renderer) {
         glm::vec2 playerCenter = m_RenderPosition + m_Size / 2.0f;
         glm::vec2 anchorCenter = m_GrapplingTo;
 
-        renderer.SetShader(ResourceManager::GetShader("spritesaber"));
+        renderer.SetShader(ResourceManager::GetShader("saber"));
         renderer.DrawLine(playerCenter, anchorCenter, 6.0f, m_Sprite);
     }
 }

@@ -68,6 +68,8 @@ public:
 
     PostProcessor* Effects;
 
+    
+
 private:
     friend GameLevel;
     
@@ -83,4 +85,6 @@ private:
     float m_SlowMoTime = 0;
     float m_SlowdownFactor = 1.0f;
     ParticleEmitter* backgroundEmitter;
+
+    bool m_DrawColliders;
 };

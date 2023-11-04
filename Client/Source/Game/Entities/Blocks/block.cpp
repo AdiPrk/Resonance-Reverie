@@ -29,7 +29,7 @@ void Block::SetupRigidBody() {
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &boxShape;
     fixtureDef.density = 0.0f;
-    fixtureDef.friction = 0.2f;
+    fixtureDef.friction = 0.4f;
     fixtureDef.restitution = 0.0f;
     fixtureDef.filter.categoryBits = F_BLOCK;
 

@@ -6,7 +6,7 @@ out vec2 TexCoords;
 uniform bool  chaos;
 uniform bool  confuse;
 uniform bool  shake;
-uniform float time;
+uniform float iTime;
 
 // Get a pseudo random number
 float randNum(vec2 p) {
@@ -22,7 +22,7 @@ void main()
     if (chaos)
     {
         float strength = 0.3;
-        vec2 pos = vec2(texture.x + sin(time) * strength, texture.y + cos(time) * strength);        
+        vec2 pos = vec2(texture.x + sin(iTime) * strength, texture.y + cos(iTime) * strength);        
         TexCoords = pos;
     }
     else if (confuse)
@@ -36,7 +36,7 @@ void main()
     if (shake)
     {
         float strength = 0.003f;
-        gl_Position.x += cos(time * 20) * strength;        
-        gl_Position.y += cos(time * 30) * strength;        
+        gl_Position.x += cos(iTime * 20) * strength;        
+        gl_Position.y += cos(iTime * 30) * strength;        
     }
 }  

@@ -251,6 +251,7 @@
     <ClInclude Include="Source\Game\Entities\Blocks\safeZone.h" />
     <ClInclude Include="Source\Game\game.h" />
     <ClInclude Include="Source\Game\Entities\gameObject.h" />
+    <ClInclude Include="Source\Game\Inputs\glfwInputStates.h" />
     <ClInclude Include="Source\Game\Inputs\inputManager.h" />
     <ClInclude Include="Source\Game\Levels\gameLevel.h" />
     <ClInclude Include="Source\Game\Physics\physicsWorld.h" />

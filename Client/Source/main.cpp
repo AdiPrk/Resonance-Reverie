@@ -26,7 +26,8 @@ int main() {
 
     // Create window and set callbacks
     Window window(SCREEN_WIDTH, SCREEN_HEIGHT);
-    window.SetKeyCallback(InputManager::KeyCallback);
+    InputManager::Init(window.GetWindow());
+    //window.SetKeyCallback(InputManager::KeyCallback);
     window.SetFramebufferSizeCallback(framebuffer_size_callback);
     
     // Game init
@@ -53,9 +54,11 @@ int main() {
         lastFrame = currentFrame;
 
         // Update game
+        bool didFTS = false;
         while (accumulator >= fixedTimeStep)
         {
             glfwPollEvents();
+            InputManager::Update();
 
             ResonanceReverie.SetPreviousPositions();
             ResonanceReverie.Update(fixedTimeStep, accumulator);
@@ -66,6 +69,7 @@ int main() {
 #endif
 
             accumulator -= fixedTimeStep;
+            didFTS = true;
         }
 
         // Update camera
@@ -78,6 +82,11 @@ int main() {
         // Render!
         ResonanceReverie.Render(deltaTime, currentFrame, accumulator / fixedTimeStep);
         window.SwapBuffers();
+
+        // Get ready for next frame
+        if (didFTS) {
+            InputManager::ResetKeyStates();
+        }
     }
 
     // delete all resources from the resource manager

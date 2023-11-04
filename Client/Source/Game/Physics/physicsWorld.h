@@ -2,8 +2,6 @@
 
 #include <PCH/pch.h>
 
-#define DEBUG_DRAW_COLLIDERS 0
-
 extern b2World physicsWorld;
 
 // Fixtures

@@ -108,7 +108,7 @@ ParticleEmitter::~ParticleEmitter()
 }
 
 // threaded
-void ParticleEmitter::Update(float dt)
+void ParticleEmitter::OldUpdate(float dt)
 {
 	const float rotVel = 0.01f * dt;
 
@@ -129,7 +129,7 @@ void ParticleEmitter::Update(float dt)
 }
 
 // unthreaded
-void ParticleEmitter::OldUpdate(float dt)
+void ParticleEmitter::Update(float dt)
 {
 	const float rotVel = 0.01f * dt;
 

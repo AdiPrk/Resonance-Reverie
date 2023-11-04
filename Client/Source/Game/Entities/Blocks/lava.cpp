@@ -38,6 +38,6 @@ void Lava::SetupRigidBody() {
 
 void Lava::Draw(SpriteRenderer& renderer)
 {
-    renderer.SetShader(ResourceManager::GetShader("spritelava"));
+    renderer.SetShader(ResourceManager::GetShader("lava"));
     renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
 }

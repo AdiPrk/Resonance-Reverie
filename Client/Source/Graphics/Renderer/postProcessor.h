@@ -34,7 +34,7 @@ public:
     // should be called after rendering the game, so it stores all the rendered data into a texture object
     void EndRender();
     // renders the PostProcessor texture quad (as a screen-encompassing large sprite)
-    void Render(float time);
+    void Render();
 private:
     // render state
     unsigned int MSFBO, FBO; // MSFBO = Multisampled FBO. FBO is regular, used for blitting MS color-buffer to texture

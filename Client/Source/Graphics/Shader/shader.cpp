@@ -64,7 +64,7 @@ void Shader::SetUniformsFromCode()
 
 void Shader::SetFloat(const std::string& name, float value)
 {
-        this->Use();
+    this->Use();
     glUniform1f(Uniforms[name], value);
 }
 void Shader::SetInteger(const std::string& name, int value)
@@ -108,14 +108,13 @@ void Shader::SetMatrix4(const std::string& name, const glm::mat4& matrix)
     glUniformMatrix4fv(Uniforms[name], 1, false, glm::value_ptr(matrix));
 }
 
+void Shader::SetUniformHandle(const std::string& name, GLuint64 handle) {
+    glUniformHandleui64ARB(Uniforms[name], handle);
+}
+
 bool Shader::HasUniform(const std::string& name)
 {
     return Uniforms.find(name) != Uniforms.end();
-}
-
-
-void Shader::SetUniformHandle(const std::string& name, GLuint64 handle) {
-    glUniformHandleui64ARB(Uniforms[name], handle);
 }
 
 void Shader::checkCompileErrors(unsigned int object, std::string type)

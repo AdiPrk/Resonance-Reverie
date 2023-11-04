@@ -30,6 +30,7 @@ Game::Game(unsigned int width, unsigned int height)
     , m_Window(nullptr)
     , Effects(nullptr)
     , backgroundEmitter(nullptr)
+    , m_DrawColliders(false)
 #if DO_NETWORKING
     , otherPlayers()
 #endif
@@ -160,6 +161,7 @@ void Game::Update(float dt, float accumulator)
     else {
         m_SlowdownFactor = std::lerp(m_SlowdownFactor, 1.0f, 0.15f);
     }
+    //m_SlowdownFactor = 0.4f;
 
     dt = CalculateSlowedDT(dt);
 
@@ -248,8 +250,6 @@ void Game::Render(float dt, float currentTime, float t)
     Shader::iTime += CalculateSlowedDT(dt);
     ResourceManager::UpdateAllShaderTimes(Shader::iTime);
 
-    playerEmitter->particleProps.color = { RandomFloat(), RandomFloat(), RandomFloat(), 1.f};
-
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -258,57 +258,58 @@ void Game::Render(float dt, float currentTime, float t)
         // begin rendering to postprocessing framebuffer
         Effects->BeginRender();
 
-            // draw background
+        // draw background
 
-            // draw level
-            for (auto& room : m_Rooms) {
-
-                Renderer->SetShader(ResourceManager::GetShader("sprite"));
-                Renderer->DrawSprite(
-                    ResourceManager::GetTexture("square"),
-                    glm::vec3(room.Bounds().left, room.Bounds().top, 0.0f),
-                    glm::vec2(room.Bounds().width, room.Bounds().height),
-                    0.0f,
-                    { 0.0f, 0.0f, 0.0f, 1.0f }
-                );
-
-                room.Draw(*Renderer);
-            }
-
-            // Particles
-            playerEmitter->GrabParticles();
-            backgroundEmitter->GrabParticles();
-            playerEmitter->RenderParticlesInstanced();
-            backgroundEmitter->RenderParticlesInstanced();
-            
-            // draw player
-            m_Player->Draw(*Renderer);
-
-            // draw other players
+        // draw level
+        for (auto& room : m_Rooms)
+        {
             Renderer->SetShader(ResourceManager::GetShader("sprite"));
+            Renderer->DrawSprite(
+                ResourceManager::GetTexture("square"),
+                glm::vec3(room.Bounds().left, room.Bounds().top, 0.0f),
+                glm::vec2(room.Bounds().width, room.Bounds().height),
+                0.0f,
+                { 0.0f, 0.0f, 0.0f, 1.0f }
+            );
+
+            room.Draw(*Renderer);
+        }
+
+        // Particles
+        playerEmitter->particleProps.color = { RandomFloat(), RandomFloat(), RandomFloat(), 1.f };
+        playerEmitter->GrabParticles();
+        backgroundEmitter->GrabParticles();
+        playerEmitter->RenderParticlesInstanced();
+        backgroundEmitter->RenderParticlesInstanced();
+
+        // draw player
+        m_Player->Draw(*Renderer);
+
+        // draw other players
+        Renderer->SetShader(ResourceManager::GetShader("sprite"));
 
 #if DO_NETWORKING
-            for (auto& other : otherPlayers) {
+        for (auto& other : otherPlayers) {
 
-                other.second.renderPos.x = std::lerp(other.second.oldPos.x, other.second.currPos.x, t);
-                other.second.renderPos.y = std::lerp(other.second.oldPos.y, other.second.currPos.y, t);
+            other.second.renderPos.x = std::lerp(other.second.oldPos.x, other.second.currPos.x, t);
+            other.second.renderPos.y = std::lerp(other.second.oldPos.y, other.second.currPos.y, t);
 
-                Renderer->DrawSprite(m_Player->GetSprite(), other.second.renderPos, m_Player->GetSize(), m_Player->GetRotation(), m_Player->GetColor());
-            }
+            Renderer->DrawSprite(m_Player->GetSprite(), other.second.renderPos, m_Player->GetSize(), m_Player->GetRotation(), m_Player->GetColor());
+        }
 #endif
 
         // end rendering to postprocessing framebuffer and render postprocessing quad
         Effects->EndRender();
-        Effects->Render((float)glfwGetTime());
+        Effects->Render();
 
         // render text
         std::string fpsString = std::string("fps: ") + std::to_string((1.f / dt));
         textRenderer->RenderText(fpsString, 50.f, 90.0f, 0.5f, false, glm::vec3(0));
         textRenderer->RenderText(fpsString, 50.f, 50.f, 0.5f, false);
-        
+
         textRenderer->RenderText("press F to toggle fullscreen", 50.f, (float)m_Height - 70, 0.5f, false);
-        
-        if (InputManager::GetKeyDownOnce(GLFW_KEY_F)) {
+
+        if (InputManager::GetKeyTriggered(Key::F)) {
             m_Window->ToggleFullscreen();
         }
 
@@ -323,10 +324,14 @@ void Game::Render(float dt, float currentTime, float t)
     {
         //textRenderer->RenderText("You!!! You!!!!!", this->Width / 2.f, this->Height / 2.0f - 30.0f, 1.0f, true, glm::vec3(0.0f, 1.0f, 0.0f));
     }
+    
+    if (InputManager::GetKeyTriggered(Key::K)) {
+        m_DrawColliders = !m_DrawColliders;
+    }
 
-#if DEBUG_DRAW_COLLIDERS
-    RenderColliders(*Renderer);
-#endif
+    if (m_DrawColliders) {
+        RenderColliders(*Renderer);
+    }
 }
 
 void Game::ResetLevel()
