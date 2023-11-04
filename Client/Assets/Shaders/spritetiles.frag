@@ -1,11 +1,10 @@
 #version 330 core
+#extension GL_ARB_bindless_texture : require
 
 in vec2 TexCoords;
 out vec4 fragColor;
 
-uniform sampler2D image;
 uniform vec4 spriteColor;
-
 uniform float iTime;
 
 void main()
@@ -31,6 +30,4 @@ void main()
     value += square_dist*.1;
     value *= 0.8 - 0.2;
     fragColor = vec4(pow(value, 2.), pow(value, 1.5), pow(value, 1.2), 1.);
-
-    //fragColor = vec4(spriteColor, 1.0f) * texture(image, TexCoords);
 }

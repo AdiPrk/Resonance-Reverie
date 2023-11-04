@@ -166,7 +166,7 @@ void Player::Update(float dt) {
 
         b2Vec2 vel = m_RigidBody->GetLinearVelocity();
 
-        printf("%i, %i\n", leftSensorGrounded, rightSensorGrounded);
+        //printf("%i, %i\n", leftSensorGrounded, rightSensorGrounded);
 
         // Horizontal movement
         float horizontalSpeed = 1.2f;

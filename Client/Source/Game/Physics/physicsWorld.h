@@ -2,7 +2,7 @@
 
 #include <PCH/pch.h>
 
-#define DEBUG_DRAW_COLLIDERS 1
+#define DEBUG_DRAW_COLLIDERS 0
 
 extern b2World physicsWorld;
 
@@ -22,6 +22,9 @@ const glm::vec4 COLOR_F_BLOCK(0.8f, 0.8f, 0.7f, 1.f);
 const glm::vec4 COLOR_F_LAVA(0.8f, 0.3f, 0.3f, 1.0f);
 const glm::vec4 COLOR_F_SAFEZONE(0.2f, 0.6f, 0.2f, 0.3f);
 const glm::vec3 COLOR_F_PLAYER_FOOT_SENSOR(0.0f, 1.0f, 0.0f);
+
+class SpriteRenderer;
+void RenderColliders(SpriteRenderer& renderer);
 
 class PhysicsContactListener : public b2ContactListener {
     void BeginContact(b2Contact* contact) override;
@@ -55,4 +58,3 @@ namespace PhysicsUtils {
     }
 
 }
-

@@ -13,9 +13,11 @@ GLuint ResourceManager::CurrentShaderProgram = 0;
 GLuint ResourceManager::CurrentTextureID = 0;
 GLuint ResourceManager::CurrentVAO = 0;
 
-Shader& ResourceManager::LoadShader(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile, std::string name)
+Shader& ResourceManager::LoadShader(const std::string& vShaderFile, const std::string& fShaderFile, std::string name)
 {
-    Shaders[name] = loadShaderFromFile(vShaderFile, fShaderFile, gShaderFile);
+    Shaders[name] = loadShaderFromFile(vShaderFile, fShaderFile);
+    Shaders[name].SetUniformsFromCode();
+
     return Shaders[name];
 }
 
@@ -24,7 +26,56 @@ Shader& ResourceManager::GetShader(std::string name)
     return Shaders[name];
 }
 
-Texture2D& ResourceManager::LoadTexture(const char* file, std::string name)
+void ResourceManager::LoadTexturesFromDirectory(const char* directory)
+{
+    for (const auto& entry : std::filesystem::directory_iterator(directory)) {
+        if (entry.is_regular_file()) {
+            std::filesystem::path filePath = entry.path();
+            std::string filename = filePath.filename().string();
+            // Assuming the key for the texture is the filename without the extension
+            std::string key = filePath.stem().string();
+            LoadTexture(filePath.string(), key);
+        }
+    }
+}
+
+void ResourceManager::LoadShadersFromDirectory(const char* directory)
+{
+    std::map<std::string, std::string> vertexShaders;
+    std::map<std::string, std::string> fragmentShaders;
+
+    // First, iterate over the shader files and sort them into vertex and fragment shaders
+    for (const auto& entry : std::filesystem::directory_iterator(directory)) {
+        if (entry.is_regular_file()) {
+            std::filesystem::path filePath = entry.path();
+            std::string filename = filePath.filename().string();
+
+            if (filePath.extension() == ".vert") {
+                std::string key = filePath.stem().string();
+                vertexShaders[key] = filePath.string();
+            }
+            else if (filePath.extension() == ".frag") {
+                std::string key = filePath.stem().string();
+                fragmentShaders[key] = filePath.string();
+            }
+        }
+    }
+
+    // Now, for each vertex shader, find its corresponding fragment shader and load them
+    for (const auto& [key, vertPath] : vertexShaders) {
+        auto fragIter = fragmentShaders.find(key);
+        if (fragIter != fragmentShaders.end()) {
+            // Found a matching fragment shader
+            LoadShader(vertPath, fragIter->second, key);
+        }
+        else {
+            // Handle the case where a matching fragment shader is not found
+            std::cerr << "Fragment shader for " << key << " not found." << std::endl;
+        }
+    }
+}
+
+Texture2D& ResourceManager::LoadTexture(const std::string& file, std::string name)
 {
     Textures[name] = loadTextureFromFile(file);
     return Textures[name];
@@ -54,12 +105,48 @@ void ResourceManager::BindVAO(GLuint quadVAO)
     }
 }
 
-Shader ResourceManager::loadShaderFromFile(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile)
+void ResourceManager::UpdateAllShaderTimes(float time)
+{
+    for (auto& [name, shader] : Shaders)
+    {
+        if (shader.HasUniform("iTime"))
+        {
+            shader.SetFloat("iTime", time);
+        }
+    }
+}
+
+void ResourceManager::UpdateAllShaderViewMatrices(glm::mat4& view, glm::mat4& projView)
+{
+    for (auto& [name, shader] : Shaders)
+    {
+        if (shader.HasUniform("view"))
+        {
+            shader.SetMatrix4("view", view);
+        }
+        if (shader.HasUniform("projectionView"))
+        {
+            shader.SetMatrix4("projectionView", projView);
+        }
+    }
+}
+
+void ResourceManager::UpdateAllShaderProjectionMatrices(glm::mat4& proj)
+{
+    for (auto& [name, shader] : Shaders)
+    {
+        if (shader.HasUniform("projection"))
+        {
+            shader.SetMatrix4("projection", proj);
+        }
+    }
+}
+
+Shader ResourceManager::loadShaderFromFile(const std::string& vShaderFile, const std::string& fShaderFile)
 {
     // 1. retrieve the vertex/fragment source code from filePath
     std::string vertexCode;
     std::string fragmentCode;
-    std::string geometryCode;
     try
     {
         // open files
@@ -75,15 +162,6 @@ Shader ResourceManager::loadShaderFromFile(const char* vShaderFile, const char* 
         // convert stream into string
         vertexCode = vShaderStream.str();
         fragmentCode = fShaderStream.str();
-        // if geometry shader path is present, also load a geometry shader
-        if (gShaderFile != nullptr)
-        {
-            std::ifstream geometryShaderFile(gShaderFile);
-            std::stringstream gShaderStream;
-            gShaderStream << geometryShaderFile.rdbuf();
-            geometryShaderFile.close();
-            geometryCode = gShaderStream.str();
-        }
     }
     catch (std::exception e)
     {
@@ -91,14 +169,13 @@ Shader ResourceManager::loadShaderFromFile(const char* vShaderFile, const char* 
     }
     const char* vShaderCode = vertexCode.c_str();
     const char* fShaderCode = fragmentCode.c_str();
-    const char* gShaderCode = geometryCode.c_str();
     // 2. now create shader object from source code
     Shader shader;
-    shader.Compile(vShaderCode, fShaderCode, gShaderFile != nullptr ? gShaderCode : nullptr);
+    shader.Compile(vShaderCode, fShaderCode);
     return shader;
 }
 
-Texture2D ResourceManager::loadTextureFromFile(const char* file)
+Texture2D ResourceManager::loadTextureFromFile(const std::string& file)
 {
     // create texture object
     Texture2D texture;
@@ -114,7 +191,7 @@ Texture2D ResourceManager::loadTextureFromFile(const char* file)
 
     // load image
     int width, height, nrChannels;
-    unsigned char* data = stbi_load(file, &width, &height, &nrChannels, 0);
+    unsigned char* data = stbi_load(file.c_str(), &width, &height, &nrChannels, 0);
 
     // check if data is loaded successfully
     if (!data)

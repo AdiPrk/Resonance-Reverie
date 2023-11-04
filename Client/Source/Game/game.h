@@ -39,14 +39,12 @@ public:
     void Init(Window* window);
     
     // game loop
-    void ProcessInput(float dt);
     void SetPreviousPositions();
     void Update(float dt, float accumulator);
     void CalculateLerpedPositions(float t);
     float CalculateSlowedDT(float dt);
     void UpdateCamera(float dt);
     void Render(float dt, float currentTime, float t);
-    void RenderColliders();
 
     // reset
     void ResetLevel();

@@ -1,8 +1,10 @@
 #version 330 core
+#extension GL_ARB_bindless_texture : require
+
 in  vec2  TexCoords;
 out vec4  fragColor;
   
-uniform sampler2D scene;
+uniform sampler2D  scene;
 uniform vec2      offsets[9];
 uniform int       edge_kernel[9];
 uniform float     blur_kernel[9];

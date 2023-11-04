@@ -29,15 +29,7 @@ public:
         glm::mat4 proj = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f, -1.0f, 1.0f);
         glm::mat4 projView = proj * view;
 
-        ResourceManager::GetShader("sprite").Use().SetMatrix4("view", view);
-        ResourceManager::GetShader("spritetiles").Use().SetMatrix4("view", view);
-        ResourceManager::GetShader("spriteflagtiles").Use().SetMatrix4("view", view);
-        ResourceManager::GetShader("spriteillbeback").Use().SetMatrix4("view", view);
-        ResourceManager::GetShader("spritelava").Use().SetMatrix4("view", view);
-        ResourceManager::GetShader("spritesaber").Use().SetMatrix4("view", view);
-        ResourceManager::GetShader("text").Use().SetMatrix4("view", view);
-
-        ResourceManager::GetShader("particle").Use().SetMatrix4("projectionView", projView);
+        ResourceManager::UpdateAllShaderViewMatrices(view, projView);
     }
 
     void CalculateBoundingRect() {
@@ -52,6 +44,8 @@ public:
     }
 
     void MoveTo(glm::vec2 moveTo, Rect bounds) {
+        CalculateBoundingRect();
+
         if (bounds.width >= m_BoundingRect.width) // to avoid crashing with clamp
         {
             moveTo.x = std::clamp(moveTo.x, bounds.left + m_BoundingRect.width / 2.f, bounds.right - m_BoundingRect.width / 2.f);

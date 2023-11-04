@@ -20,6 +20,8 @@ struct ParticleProps {
     float sizeVariation;
     float lifeTime;
     PARTICLE_FADE_STYLE fadeStyle;
+    float angle;
+    float angularVelocity;
 
     ParticleProps()
         : velocity(0.f, 0.f)
@@ -27,8 +29,11 @@ struct ParticleProps {
         , color(1.f)
         , sizeBegin(15.f)
         , sizeEnd(5.f)
-        , sizeVariation(8.f)
-        , lifeTime(0.75f)
+        , sizeVariation(2.f)
+        , lifeTime(1.0f)
+        , fadeStyle(PARTICLE_FADE_STYLE::FADE_OUT)
+        , angle(0.0f)
+        , angularVelocity(0.0f)
     {
     };
 

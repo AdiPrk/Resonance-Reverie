@@ -1,14 +1,14 @@
 #version 330 core
+#extension GL_ARB_bindless_texture : require
 
 in vec2 TexCoords;
 in vec4 ParticleColor;
-in vec4 fragPosition;
 
 out vec4 fragColor;
 
-uniform sampler2D sprite;
+uniform sampler2D  textureHandle;
 
 void main()
 {
-    fragColor = (texture(sprite, TexCoords) * ParticleColor);
+    fragColor = (texture(textureHandle, TexCoords) * ParticleColor);
 }

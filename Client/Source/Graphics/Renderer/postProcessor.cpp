@@ -32,7 +32,7 @@ PostProcessor::PostProcessor(Shader shader, unsigned int width, unsigned int hei
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     // initialize render data and uniforms
     this->initRenderData();
-    this->PostProcessingShader.SetInteger("scene", 0, true);
+    this->PostProcessingShader.SetInteger("scene", 0);
     float offset = 1.0f / 300.0f;
     float offsets[9][2] = {
         { -offset,  offset  },  // top-left
@@ -108,8 +108,11 @@ void PostProcessor::Render(float time)
     this->PostProcessingShader.SetInteger("chaos", this->Chaos);
     this->PostProcessingShader.SetInteger("shake", this->Shake);
     // render textured quad
-    glActiveTexture(GL_TEXTURE0);
-    this->Texture.Bind();
+    // glActiveTexture(GL_TEXTURE0);
+    // this->Texture.Bind();
+
+    // Set the texture handle as a uniform
+    this->PostProcessingShader.SetUniformHandle("scene", this->Texture.textureHandle);
 
     ResourceManager::BindVAO(this->VAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -138,6 +141,4 @@ void PostProcessor::initRenderData()
     ResourceManager::BindVAO(this->VAO);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    ResourceManager::BindVAO(0);
 }

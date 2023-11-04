@@ -50,9 +50,6 @@ void InitParticles(const int maxParticles) {
 	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(ParticleInstanceData), (void*)offsetof(ParticleInstanceData, scale));
 	glVertexAttribDivisor(3, 1);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	ResourceManager::BindVAO(0);
 }
 
 void ParticleEmitter::InitArrays(int poolSize)
@@ -221,7 +218,7 @@ void ParticleEmitter::SetPosition(const glm::vec2& _position)
 void ParticleEmitter::RenderParticlesInstanced()
 {
 	shader.Use();
-	texture.Bind();
+	shader.SetUniformHandle("textureHandle", texture.textureHandle);
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 

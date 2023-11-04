@@ -1,4 +1,6 @@
 #version 330 core
+#extension GL_ARB_bindless_texture : require
+
 in vec2 TexCoords;
 out vec4 fragColor;
 

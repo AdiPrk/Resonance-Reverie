@@ -49,8 +49,8 @@ void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec
         this->shader.SetVector2f("repetition", 1.0f, 1.0f);
     }
 
-    glActiveTexture(GL_TEXTURE0);
-    texture.Bind();
+    // Set the texture handle as a uniform
+    this->shader.SetUniformHandle("textureHandle", texture.textureHandle);
 
     ResourceManager::BindVAO(this->quadVAO);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -81,14 +81,6 @@ void SpriteRenderer::initRenderData()
         1.0f, 0.0f, 1.0f, 0.0f  // Bottom-right vertex
     };
 
-    //float vertices[] = {
-    //    // pos
-    //    -0.5f,  0.5f, 0.0f, 1.0f, // Top-left vertex
-    //    -0.5f, -0.5f, 0.0f, 0.0f, // Bottom-left vertex
-    //     0.5f,  0.5f, 1.0f, 1.0f, // Top-right vertex
-    //     0.5f, -0.5f, 1.0f, 0.0f  // Bottom-right vertex
-    //};
-
     glGenVertexArrays(1, &this->quadVAO);
     glGenBuffers(1, &VBO);
 
@@ -98,6 +90,4 @@ void SpriteRenderer::initRenderData()
     ResourceManager::BindVAO(this->quadVAO);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    ResourceManager::BindVAO(0);
 }

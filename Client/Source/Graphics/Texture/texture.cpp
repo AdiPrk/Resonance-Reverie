@@ -12,6 +12,7 @@ Texture2D::Texture2D()
     , Wrap_T(GL_REPEAT)
     , Filter_Min(GL_LINEAR)
     , Filter_Max(GL_LINEAR)
+    , textureHandle()
 {
     glGenTextures(1, &this->ID);
 }
@@ -28,12 +29,12 @@ void Texture2D::Generate(unsigned int width, unsigned int height, unsigned char*
     // set Texture wrap and filter modes
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this->Wrap_S);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, this->Wrap_T);
-
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this->Filter_Min);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, this->Filter_Max);
 
-    // unbind texture
-    glBindTexture(GL_TEXTURE_2D, 0);
+    // Generate a handle for the texture and make it resident
+    textureHandle = glGetTextureHandleARB(this->ID);
+    glMakeTextureHandleResidentARB(textureHandle);
 }
 
 void Texture2D::Bind() const

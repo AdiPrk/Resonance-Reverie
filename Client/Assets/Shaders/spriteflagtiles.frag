@@ -1,9 +1,10 @@
 #version 330 core
+#extension GL_ARB_bindless_texture : require
 
 in vec2 TexCoords;
 out vec4 color;
 
-uniform sampler2D image;
+uniform sampler2D textureHandle;
 uniform vec4 spriteColor;
 
 uniform float iTime;
@@ -161,7 +162,7 @@ void main()
     float sh = smoothstep(.05, .12, max(smin(sp.x, sp.y, SMOOTHNESS), 0.));
     
     // Texture
-    vec3 tex = pow(texture(image, puv).rgb, vec3(2.2));
+    vec3 tex = pow(texture(textureHandle, puv).rgb, vec3(2.2));
     
     // Random Color
     vec3 col = palette(hash12(id));
