@@ -199,7 +199,7 @@ void PhysicsContactListener::PostSolve(b2Contact* contact, const b2ContactImpuls
             }
 
             // Check if the collision is mainly vertical and from above the player
-            if (/*fabsf(normal.x) * 0.5f < fabsf(normal.y) &&*/ normal.y > 0) {
+            if (fabsf(normal.x) * 0.02f < fabsf(normal.y) && normal.y > 0) {
                 player->isGrounded = true;
             }
         }

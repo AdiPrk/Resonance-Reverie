@@ -18,7 +18,7 @@ void Shader::Compile(const char* vertexSource, const char* fragmentSource)
 {
     unsigned int sVertex, sFragment;
 
-    // vertex Shader
+    // vertex Shader 
     sVertex = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(sVertex, 1, &vertexSource, NULL);
     glCompileShader(sVertex);

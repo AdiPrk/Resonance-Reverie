@@ -186,19 +186,6 @@
         "density": 1
       },
       {
-        "x": 900,
-        "y": 550,
-        "w": 100,
-        "h": 50,
-        "id": 30,
-        "type": "3",
-        "texture": -1,
-        "rotation": 0,
-        "dynamic": false,
-        "restitution": 0,
-        "density": 1
-      },
-      {
         "x": 425,
         "y": 750,
         "w": 400,
@@ -295,32 +282,6 @@
         "w": 25,
         "h": 150,
         "id": 38,
-        "type": "3",
-        "texture": -1,
-        "rotation": 0,
-        "dynamic": false,
-        "restitution": 0,
-        "density": 1
-      },
-      {
-        "x": 900,
-        "y": 500,
-        "w": 25,
-        "h": 50,
-        "id": 40,
-        "type": "3",
-        "texture": -1,
-        "rotation": 0,
-        "dynamic": false,
-        "restitution": 0,
-        "density": 1
-      },
-      {
-        "x": 975,
-        "y": 500,
-        "w": 25,
-        "h": 50,
-        "id": 41,
         "type": "3",
         "texture": -1,
         "rotation": 0,
@@ -431,6 +392,45 @@
         "id": 65,
         "type": "16",
         "radius": 5
+      },
+      {
+        "x": 975,
+        "y": 500,
+        "w": 25,
+        "h": 100,
+        "id": 66,
+        "type": "3",
+        "texture": -1,
+        "rotation": 0,
+        "dynamic": false,
+        "restitution": 0,
+        "density": 1
+      },
+      {
+        "x": 900,
+        "y": 500,
+        "w": 25,
+        "h": 100,
+        "id": 67,
+        "type": "3",
+        "texture": -1,
+        "rotation": 0,
+        "dynamic": false,
+        "restitution": 0,
+        "density": 1
+      },
+      {
+        "x": 925,
+        "y": 550,
+        "w": 50,
+        "h": 50,
+        "id": 68,
+        "type": "3",
+        "texture": -1,
+        "rotation": 0,
+        "dynamic": false,
+        "restitution": 0,
+        "density": 1
       }
     ],
     "backgroundColor": "#000000",
@@ -438,7 +438,7 @@
     "camOffsetY": 0,
     "camScale": 1.25,
     "camScaleSpeed": 1,
-    "id": 3,
+    "id": 7,
     "starting": true
   },
   {
@@ -531,6 +531,60 @@
     "camOffsetY": 0,
     "camScale": 0.9,
     "camScaleSpeed": 1,
-    "id": 4
+    "id": 8
+  },
+  {
+    "x": 0,
+    "y": 900,
+    "w": 1600,
+    "h": 900,
+    "entities": [
+      {
+        "x": 0,
+        "y": 900,
+        "w": 1600,
+        "h": 200,
+        "id": 69,
+        "type": "3",
+        "texture": -1,
+        "rotation": 0,
+        "dynamic": false,
+        "restitution": 0,
+        "density": 1
+      }
+    ],
+    "backgroundColor": "#000000",
+    "camOffsetX": 0,
+    "camOffsetY": 0,
+    "camScale": 1,
+    "camScaleSpeed": 1,
+    "id": 9
+  },
+  {
+    "x": 0,
+    "y": -900,
+    "w": 1600,
+    "h": 900,
+    "entities": [
+      {
+        "x": 0,
+        "y": -225,
+        "w": 1600,
+        "h": 225,
+        "id": 70,
+        "type": "3",
+        "texture": -1,
+        "rotation": 0,
+        "dynamic": false,
+        "restitution": 0,
+        "density": 1
+      }
+    ],
+    "backgroundColor": "#000000",
+    "camOffsetX": 0,
+    "camOffsetY": 0,
+    "camScale": 1,
+    "camScaleSpeed": 1,
+    "id": 10
   }
 ]

@@ -68,6 +68,7 @@ Window::Window(unsigned int screenWidth, unsigned int screenHeight)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_SAMPLES, 4);
+    glEnable(GL_MULTISAMPLE);
 
     if (!glfwInit()) {
         std::cout << "Oh Noes, no glfw init!";
@@ -112,6 +113,7 @@ Window::Window(unsigned int screenWidth, unsigned int screenHeight)
 
     std::cout << glGetString(GL_VERSION) << std::endl;
 
+    //glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
