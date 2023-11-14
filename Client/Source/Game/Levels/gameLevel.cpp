@@ -10,6 +10,7 @@
 #include <Source/Game/Entities/Blocks/safeZone.h>
 #include <Source/Game/Entities/Enemies/greyEnemy.h>
 #include <Source/Game/Entities/Interactables/grapplePoint.h>
+#include <Source/Game/Entities/Environment/light.h>
 
 #include <Source/Graphics/Renderer/spriteRenderer.h>
 #include <Source/Graphics/Renderer/camera.h>
@@ -93,6 +94,11 @@ void GameLevel::SetupRoom(Game* game, auto element, bool starting, bool isCurren
             obj->SetupRigidBody();
             this->Entities.push_back(obj);
         }
+        else if (entity["type"] == "11") // light
+        {
+            Light* obj = new Light(pos, entity["radius"] * gridSize, entity["intensity"]);
+            this->Entities.push_back(obj);
+        }
         else if (entity["type"] == "14") { // Enemy spawner
             float numGreys = entity["numGreys"];
             Rect elementBounds = { pos.x, pos.y, size.x, size.y };
@@ -104,6 +110,7 @@ void GameLevel::SetupRoom(Game* game, auto element, bool starting, bool isCurren
 
             SwingingBlock* obj = new SwingingBlock(pos, size, rotation, ResourceManager::GetTexture("block"));
             obj->anchorPos = glm::vec2(entity["anchorX"], entity["anchorY"]);
+            obj->lineWidth = entity["lineWidth"];
             obj->SetDensity(entity["density"]);
             obj->SetupRigidBody();
             this->Entities.push_back(obj);
@@ -234,8 +241,13 @@ RoomCode GameLevel::LoadNext(const char* filename, Game* game, int depth)
 
 void GameLevel::Draw(SpriteRenderer& renderer)
 {
-    for (GameObject*& entity : this->Entities)
+    Light::lightIndex = 0;
+
+    for (GameObject*& entity : this->Entities) {
         entity->Draw(renderer);
+
+        entity->SetLightInfo();
+    }
 }
 
 void GameLevel::SpawnEnemies(int enemyID, int numEnemies, Rect spawnBounds)

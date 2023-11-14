@@ -21,7 +21,6 @@ void DynamicBlock::SetupRigidBody() {
     bodyDef.type = b2_dynamicBody;
     bodyDef.position = PhysicsUtils::PixelsToMeters(bodyCenter);
     m_RigidBody = physicsWorld.CreateBody(&bodyDef);
-    //m_RigidBody->SetFixedRotation(true);
     m_RigidBody->SetGravityScale(0.4f);
 
     b2PolygonShape boxShape;
@@ -34,21 +33,18 @@ void DynamicBlock::SetupRigidBody() {
     fixtureDef.friction = 0.2f;
     fixtureDef.restitution = m_Restitution;
     fixtureDef.filter.categoryBits = F_BLOCK;
+    fixtureDef.filter.maskBits = 0xFFFF ^ F_LAVA; // Collides with everything except lava
     m_RigidBody->CreateFixture(&fixtureDef);
 }
 
 void DynamicBlock::Draw(SpriteRenderer& renderer)
 {
-    if (!this->active) return;
-
     renderer.SetShader(ResourceManager::GetShader("sprite"));
     renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
 }
 
 void DynamicBlock::SetUpdatedPosition()
 {
-    if (!this->active) return;
-
     m_Position = PhysicsUtils::MetersToPixels(m_RigidBody->GetPosition()) - m_Size / 2.f;
     m_Rotation = m_RigidBody->GetAngle();
 
@@ -57,13 +53,7 @@ void DynamicBlock::SetUpdatedPosition()
     m_BoundingRect.SetScale(m_Size);
 }
 
-void DynamicBlock::UpdateOutOfBounds(const Rect& gamebounds)
+bool DynamicBlock::GetOutOfBounds(const Rect& gamebounds)
 {
-    if (!m_BoundingRect.bordersOverlap(gamebounds))
-    {
-        physicsWorld.DestroyBody(m_RigidBody);
-        m_RigidBody = nullptr;
-
-        this->active = false;
-    }
+    return !m_BoundingRect.bordersOverlap(gamebounds);
 }

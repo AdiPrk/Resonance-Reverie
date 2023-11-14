@@ -334,24 +334,6 @@
         "density": 1
       },
       {
-        "x": 150,
-        "y": 550,
-        "w": 50,
-        "h": 50,
-        "id": 54,
-        "type": "11",
-        "intensity": 1
-      },
-      {
-        "x": 150,
-        "y": 150,
-        "w": 125,
-        "h": 125,
-        "id": 55,
-        "type": "11",
-        "intensity": 1
-      },
-      {
         "x": 1325,
         "y": 300,
         "w": 75,
@@ -382,7 +364,8 @@
         "anchorX": 700,
         "anchorY": 225,
         "rotation": 0,
-        "density": 8
+        "density": 8,
+        "lineWidth": 6
       },
       {
         "x": 937.5,
@@ -431,6 +414,58 @@
         "dynamic": false,
         "restitution": 0,
         "density": 1
+      },
+      {
+        "x": 387.5,
+        "y": 162.5,
+        "w": 6.25,
+        "h": 6.25,
+        "id": 72,
+        "type": "15",
+        "anchorX": 360.625,
+        "anchorY": 370,
+        "rotation": 0,
+        "density": 1,
+        "lineWidth": 2
+      },
+      {
+        "x": 725,
+        "y": 0,
+        "w": 125,
+        "h": 25,
+        "id": 73,
+        "type": "3",
+        "texture": -1,
+        "rotation": 0,
+        "dynamic": false,
+        "restitution": 0,
+        "density": 1
+      },
+      {
+        "x": 350,
+        "y": 0,
+        "w": 100,
+        "h": 25,
+        "id": 76,
+        "type": "3",
+        "texture": -1,
+        "rotation": 0,
+        "dynamic": false,
+        "restitution": 0,
+        "density": 1
+      },
+      {
+        "x": 1200,
+        "y": 0,
+        "w": 150,
+        "h": 25,
+        "id": 77,
+        "type": "3",
+        "texture": -1,
+        "rotation": 0,
+        "dynamic": false,
+        "restitution": 0,
+        "density": 1
       }
     ],
     "backgroundColor": "#000000",
@@ -438,7 +473,7 @@
     "camOffsetY": 0,
     "camScale": 1.25,
     "camScaleSpeed": 1,
-    "id": 7,
+    "id": 5,
     "starting": true
   },
   {
@@ -531,7 +566,7 @@
     "camOffsetY": 0,
     "camScale": 0.9,
     "camScaleSpeed": 1,
-    "id": 8
+    "id": 6
   },
   {
     "x": 0,
@@ -558,7 +593,7 @@
     "camOffsetY": 0,
     "camScale": 1,
     "camScaleSpeed": 1,
-    "id": 9
+    "id": 7
   },
   {
     "x": 0,
@@ -585,6 +620,6 @@
     "camOffsetY": 0,
     "camScale": 1,
     "camScaleSpeed": 1,
-    "id": 10
+    "id": 8
   }
 ]

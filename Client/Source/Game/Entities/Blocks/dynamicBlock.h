@@ -16,7 +16,7 @@ public:
 
     void Draw(SpriteRenderer& renderer) override;
     void SetUpdatedPosition() override;
-    void UpdateOutOfBounds(const Rect& gamebounds) override;
+    bool GetOutOfBounds(const Rect& gamebounds) override;
 
     void SetRestitution(float restitution) {
         m_Restitution = restitution;

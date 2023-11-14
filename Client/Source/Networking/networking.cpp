@@ -10,6 +10,13 @@ void sendPacket(ENetPeer* peer, PacketID packetID, const char* data) {
     enet_peer_send(peer, 0, packet);
 }
 
+void sendPacketFloat(ENetPeer* peer, PacketID packetID, float x) {
+    char packetData[256];
+    snprintf(packetData, sizeof(packetData), "%d %f", packetID, x);
+    ENetPacket* packet = enet_packet_create(packetData, strlen(packetData) + 1, ENET_PACKET_FLAG_RELIABLE);
+    enet_peer_send(peer, 0, packet);
+}
+
 void sendPacketVec2(ENetPeer* peer, PacketID packetID, float x, float y) {
     char packetData[256];
     snprintf(packetData, sizeof(packetData), "%d %f %f", packetID, x, y);
@@ -66,6 +73,17 @@ void handlePacket(ENetPeer* peer, ENetPacket* packet, Game* game) {
         //printf("Update player %i at position: (%f, %f)\n", (int)id, x, y);
 
         game->UpdatePlayer((int)id, glm::vec2(x, y));
+
+        break;
+    }
+    case ROTATION_PACKET: {
+        float id;
+        float rot;
+
+        sscanf_s((char*)packet->data, "%*d %f %f", &id, &rot);
+        //printf("Update player %i at position: (%f, %f)\n", (int)id, x, y);
+
+        game->UpdatePlayerRotation((int)id, rot);
 
         break;
     }

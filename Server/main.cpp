@@ -29,7 +29,8 @@ enum PacketID {
 	MESSAGE_PACKET = 1,
 	INIT_PLAYER_PACKET = 2,
 	REMOVE_PLAYER_PACKET = 3,
-	POSITION_PACKET = 4
+	POSITION_PACKET = 4,
+	ROTATION_PACKET = 5
 };
 
 void sendPacket(ENetPeer* peer, PacketID packetID, const char* data) {
@@ -135,6 +136,15 @@ void handlePacket(ENetPeer* peer, ENetPacket* packet) {
 
 		break;
 	}
+	case ROTATION_PACKET: {
+		float rot;
+
+		sscanf_s((char*)packet->data, "%*d %f", &rot);
+		//printf("Received position: (%f, %f)\n", x, y);
+		broadcastPacketVec2(peer->host, peer, ROTATION_PACKET, (float)Players[peer], rot);
+
+		break;
+	}
 	}
 }
 
@@ -174,7 +184,7 @@ int main(int argc, char** argv)
 
 	// Packets recieved from client
 	while (1) {
-		while (enet_host_service(server, &event, 10) > 0) {
+		while (enet_host_service(server, &event, 0) > 0) {
 			switch (event.type) {
 			case ENET_EVENT_TYPE_CONNECT: {
 				printf("Client %i connected.\n", idCounter);

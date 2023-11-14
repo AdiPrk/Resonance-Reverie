@@ -108,7 +108,7 @@ ParticleEmitter::~ParticleEmitter()
 }
 
 // threaded
-void ParticleEmitter::OldUpdate(float dt)
+void ParticleEmitter::Update(float dt)
 {
 	const float rotVel = 0.01f * dt;
 
@@ -129,7 +129,7 @@ void ParticleEmitter::OldUpdate(float dt)
 }
 
 // unthreaded
-void ParticleEmitter::Update(float dt)
+void ParticleEmitter::OldUpdate(float dt)
 {
 	const float rotVel = 0.01f * dt;
 
@@ -231,6 +231,6 @@ void ParticleEmitter::RenderParticlesInstanced()
 
 	// Draw all particles
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, (GLsizei)instancedParticleData.size());
-
+	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }

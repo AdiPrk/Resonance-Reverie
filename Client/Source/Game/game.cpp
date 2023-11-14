@@ -72,7 +72,11 @@ void Game::Init(Window* window)
     // configure shaders
     glm::mat4 projection = glm::ortho(0.f, (float)m_Width, (float)m_Height, 0.f, -1.0f, 1.0f);
     ResourceManager::UpdateAllShaderProjectionMatrices(projection);
-    
+
+    Shader& spriteShader = ResourceManager::GetShader("sprite");
+    spriteShader.SetInteger("numLights", 1);
+    spriteShader.SetFloat("ambientLightIntensity", 0.3f);
+
     // set render-specific controls
     Renderer = new SpriteRenderer(ResourceManager::GetShader("sprite"));
     Effects = new PostProcessor(ResourceManager::GetShader("postprocessing"), m_Width, m_Height);
@@ -170,10 +174,34 @@ void Game::Update(float dt, float accumulator)
         m_Player->Update(dt);
 
         for (auto& room : m_Rooms) {
+            const Rect& rb = room.Bounds();
+
+            bool moveEntToNewRoom = false;
+            std::vector<GameObject*> entsToMove;
             for (auto& ent : room.Entities) {
-                if (ent->active) {
-                    ent->Update(dt);
-                    ent->UpdateOutOfBounds(room.Bounds());
+                ent->Update(dt);
+
+                if (ent->GetOutOfBounds(rb)) {
+                    moveEntToNewRoom = true;
+                    entsToMove.push_back(ent);
+                }
+            }
+
+            if (moveEntToNewRoom) {
+                // Remove all entities in entsToMove from this room's list of entities
+                room.Entities.erase(std::remove_if(room.Entities.begin(), room.Entities.end(),
+                    [&](GameObject* ent) {
+                        return std::find(entsToMove.begin(), entsToMove.end(), ent) != entsToMove.end();
+                    }), room.Entities.end());
+
+                // Loop through rooms and if the entity is in that room's bounds then add it to that room
+                for (auto& entToMove : entsToMove) {
+                    for (auto& newRoom : m_Rooms) {
+                        if (&newRoom != &room && !entToMove->GetOutOfBounds(newRoom.Bounds())) {
+                            newRoom.Entities.push_back(entToMove);
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -222,7 +250,7 @@ void Game::Update(float dt, float accumulator)
         float bey = m_RoomBounds.top + m_RoomBounds.height * RandomFloat();
         backgroundEmitter->SetPosition({ bex, bey });
 
-        backgroundEmitter->Emit(2);
+        backgroundEmitter->Emit();
     }
 
    
@@ -244,6 +272,47 @@ void Game::Update(float dt, float accumulator)
     ThreadPool::threadPool.wait_for_tasks();
 }
 
+void Game::DrawScene(float t) {
+    // draw level backgrounds
+    for (auto& room : m_Rooms)
+    {
+        Renderer->SetShader(ResourceManager::GetShader("background"));
+        Renderer->DrawSprite(
+            ResourceManager::GetTexture("square"),
+            glm::vec3(room.Bounds().left, room.Bounds().top, 0.0f),
+            glm::vec2(room.Bounds().width, room.Bounds().height),
+            0.0f
+        );
+    }
+
+    // draw levels
+    for (auto& room : m_Rooms)
+    {
+        room.Draw(*Renderer);
+    }
+
+    // Particles
+    playerEmitter->particleProps.color = { RandomFloat(), RandomFloat(), RandomFloat(), 1.f };
+    playerEmitter->GrabParticles();
+    backgroundEmitter->GrabParticles();
+    playerEmitter->RenderParticlesInstanced();
+    backgroundEmitter->RenderParticlesInstanced();
+
+    // draw player
+    m_Player->Draw(*Renderer);
+
+#if DO_NETWORKING
+    // draw other players
+    for (auto& other : otherPlayers) {
+
+        other.second.renderPos.x = std::lerp(other.second.oldPos.x, other.second.currPos.x, t);
+        other.second.renderPos.y = std::lerp(other.second.oldPos.y, other.second.currPos.y, t);
+
+        Renderer->DrawSprite(m_Player->GetSprite(), other.second.renderPos, m_Player->GetSize(), other.second.rotation, m_Player->GetColor());
+    }
+#endif
+}
+
 // delta time, current time, interpolation factor
 void Game::Render(float dt, float currentTime, float t)
 {
@@ -252,70 +321,32 @@ void Game::Render(float dt, float currentTime, float t)
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+    
+    // begin rendering to postprocessing framebuffer
+    Effects->BeginRender();
 
-    if (m_State == GAME_ACTIVE || m_State == GAME_MENU || m_State == GAME_WIN)
-    {
-        // begin rendering to postprocessing framebuffer
-        Effects->BeginRender();
+    DrawScene(t);
 
-        // draw background
+    // end rendering to postprocessing framebuffer and render postprocessing quad
+    Effects->EndRender();
+    Effects->Render();
 
-        // draw level
-        for (auto& room : m_Rooms)
-        {
-            Renderer->SetShader(ResourceManager::GetShader("sprite"));
-            Renderer->DrawSprite(
-                ResourceManager::GetTexture("square"),
-                glm::vec3(room.Bounds().left, room.Bounds().top, 0.0f),
-                glm::vec2(room.Bounds().width, room.Bounds().height),
-                0.0f,
-                { 0.0f, 0.0f, 0.0f, 1.0f }
-            );
+    // draw fps
+    std::string fpsString = std::string("fps: ") + std::to_string((1.f / dt));
+    textRenderer->RenderText(fpsString, 50.f, 90.0f, 0.5f, false, glm::vec3(0));
+    textRenderer->RenderText(fpsString, 50.f, 50.f, 0.5f, false);
 
-            room.Draw(*Renderer);
-        }
-
-        // Particles
-        playerEmitter->particleProps.color = { RandomFloat(), RandomFloat(), RandomFloat(), 1.f };
-        playerEmitter->GrabParticles();
-        backgroundEmitter->GrabParticles();
-        playerEmitter->RenderParticlesInstanced();
-        backgroundEmitter->RenderParticlesInstanced();
-
-        // draw player
-        m_Player->Draw(*Renderer);
-
-        // draw other players
-        Renderer->SetShader(ResourceManager::GetShader("sprite"));
-
-#if DO_NETWORKING
-        for (auto& other : otherPlayers) {
-
-            other.second.renderPos.x = std::lerp(other.second.oldPos.x, other.second.currPos.x, t);
-            other.second.renderPos.y = std::lerp(other.second.oldPos.y, other.second.currPos.y, t);
-
-            Renderer->DrawSprite(m_Player->GetSprite(), other.second.renderPos, m_Player->GetSize(), m_Player->GetRotation(), m_Player->GetColor());
-        }
-#endif
-
-        // end rendering to postprocessing framebuffer and render postprocessing quad
-        Effects->EndRender();
-        Effects->Render();
-
-        // render text
-        std::string fpsString = std::string("fps: ") + std::to_string((1.f / dt));
-        textRenderer->RenderText(fpsString, 50.f, 90.0f, 0.5f, false, glm::vec3(0));
-        textRenderer->RenderText(fpsString, 50.f, 50.f, 0.5f, false);
-
-        textRenderer->RenderText("press F to toggle fullscreen", 50.f, (float)m_Height - 70, 0.5f, false);
-
-        if (InputManager::GetKeyTriggered(Key::F)) {
-            m_Window->ToggleFullscreen();
-        }
-
-        int numParticles = playerEmitter->GetParticleCount() + backgroundEmitter->GetParticleCount();
-        textRenderer->RenderText(std::to_string(numParticles) + " particles", (float)m_Width / 2.f, (float)m_Height / 2.0f, 0.5f, true, glm::vec3(1), true);
+    // fullscreen toggle
+    textRenderer->RenderText("press F to toggle fullscreen", 50.f, (float)m_Height - 70, 0.5f, false);
+    if (InputManager::GetKeyTriggered(Key::F)) {
+        m_Window->ToggleFullscreen();
     }
+
+    // show num particles
+    int numParticles = playerEmitter->GetParticleCount() + backgroundEmitter->GetParticleCount();
+    textRenderer->RenderText(std::to_string(numParticles) + " particles", (float)m_Width / 2.f, (float)m_Height / 2.0f, 0.5f, true, glm::vec3(1), true);
+    textRenderer->RenderText(std::to_string(numParticles) + " particles", (float)m_Width / 2.f, (float)m_Height / 2.0f + 50, 0.5f, true, glm::vec3(0), true);
+
     if (m_State == GAME_MENU)
     {
         //textRenderer->RenderText("Press ENTER to start", this->Width / 2.f, this->Height / 2.0f, 0.5f, true);
@@ -334,12 +365,6 @@ void Game::Render(float dt, float currentTime, float t)
     }
 }
 
-void Game::ResetLevel()
-{
-    //if (this->Level == 0)
-    //this->Rooms[0].Load("Assets/Maps/map.json", this);
-}
-
 void Game::FilterRooms(float dt)
 {
     if (!m_Camera->IsZoomEqualTarget()) return;
@@ -355,7 +380,7 @@ void Game::FilterRooms(float dt)
             {
                 room.DeleteTimer() += dt;
 
-                if (room.DeleteTimer() > 1) {
+                if (room.DeleteTimer() >= 0) {
                     for (GameObject* entity : room.Entities) {
                         delete entity;
                     }
@@ -405,9 +430,23 @@ void Game::UpdatePlayer(int id, glm::vec2 pos)
     }
 }
 
+void Game::UpdatePlayerRotation(int id, float rotation)
+{
+    auto it = otherPlayers.find(id);
+    if (it != otherPlayers.end()) {
+        it->second.rotation = rotation;
+
+        //printf("Update player %i at position: (%f, %f)\n", id, pos.x, pos.y);
+    }
+}
+
 glm::vec2 Game::GetPlayerPosition()
 {
     return m_Player->GetPosition();
+}
+float Game::GetPlayerRotation()
+{
+    return m_Player->GetRotation();
 }
 
 #endif

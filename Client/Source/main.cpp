@@ -65,7 +65,9 @@ int main() {
 
 #if DO_NETWORKING
             glm::vec2 playerPos = ResonanceReverie.GetPlayerPosition();
+            float playerRot = ResonanceReverie.GetPlayerRotation();
             sendPacketVec2(peer, POSITION_PACKET, playerPos.x, playerPos.y);
+            sendPacketFloat(peer, ROTATION_PACKET, playerRot);
 #endif
 
             accumulator -= fixedTimeStep;

@@ -35,7 +35,7 @@ void main()
     }
     else if (shake)
     {
-    // blur
+        // blur
         // for(int i = 0; i < 9; i++)
         //     color += vec4(sample[i] * blur_kernel[i], 0.0f);
         // color.a = 1.0f;
@@ -48,5 +48,5 @@ void main()
     //float average = 0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b;
     //fragColor = vec4(average, average, average, 1.0);
 
-    fragColor = color;
+    fragColor = color;//vec4(vec3(color.rgb * total_light), color.a);
 }

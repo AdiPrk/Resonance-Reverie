@@ -22,6 +22,7 @@ struct OtherPlayer {
     glm::vec2 oldPos;
     glm::vec2 currPos;
     glm::vec2 renderPos;
+    float rotation = 0;
 };
 #endif
 
@@ -45,9 +46,7 @@ public:
     float CalculateSlowedDT(float dt);
     void UpdateCamera(float dt);
     void Render(float dt, float currentTime, float t);
-
-    // reset
-    void ResetLevel();
+    void DrawScene(float t);
     
     // utils
     void FilterRooms(float dt);
@@ -62,9 +61,11 @@ public:
     void PushPlayer(int id);
     void PopPlayer(int id);
     void UpdatePlayer(int id, glm::vec2 pos);
+    void UpdatePlayerRotation(int id, float rotation);
 #endif
 
     glm::vec2 GetPlayerPosition();
+    float GetPlayerRotation();
 
     PostProcessor* Effects;
 

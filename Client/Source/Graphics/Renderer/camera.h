@@ -56,11 +56,8 @@ public:
     }
 
     void GlideTo(glm::vec2 glideTo, Rect bounds, float dt) {
-        float targetDiff = fabsf(m_TargetZoom - m_Zoom);
-        m_Zoom = Lerp(m_Zoom, m_TargetZoom, (2.5f + targetDiff) * dt);
+        m_Zoom = Lerp(m_Zoom, m_TargetZoom, 4.0f * dt);
         if (fabsf(m_Zoom - m_TargetZoom) < 0.0005f) m_Zoom = m_TargetZoom;
-
-        // m_Zoom = m_TargetZoom;
 
         CalculateBoundingRect();
 
@@ -75,7 +72,7 @@ public:
         }
 
         if (glm::distance(glideTo, m_Position) > 0.1f) {
-            float speed = 5.0f * dt;
+            float speed = 7.0f * dt;
             m_Position += (glideTo - m_Position) * speed;
         }
         else {

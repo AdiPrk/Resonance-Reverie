@@ -6,6 +6,7 @@
 #include <Source/Graphics/Texture/texture.h>
 #include <Source/Graphics/ResourceManager/resourceManager.h>
 #include <Source/Graphics/Renderer/postProcessor.h>
+#include <Source/Game/Entities/Environment/light.h>
 
 // constructor(s)
 Player::Player(Texture2D _sprite, Game* game)
@@ -18,9 +19,12 @@ Player::Player(Texture2D _sprite, Game* game)
     , m_State(PlayerStates::NORMAL)
     , m_GrapplingTo()
     , m_Game(game)
+    , m_Light(nullptr)
 {
     m_Size = { 21.f, 38.f };
     m_RenderSize = { 23.f, 40.f };
+
+    m_Light = new Light(m_Position, 200.0f, 0.1f);
 }
 
 void Player::SetupRigidBody() {
@@ -127,7 +131,6 @@ void Player::Update(float dt) {
     }
 
     // Self righting
-
     if (!isGrounded || (!leftSensorGrounded || !rightSensorGrounded))
     {
         float angle = m_RigidBody->GetAngle();
@@ -165,11 +168,11 @@ void Player::Update(float dt) {
 
         b2Vec2 vel = m_RigidBody->GetLinearVelocity();
 
-        //printf("%i, %i\n", leftSensorGrounded, rightSensorGrounded);
+        // printf("%i, %i\n", leftSensorGrounded, rightSensorGrounded);
 
         // Horizontal movement
         float horizontalSpeed = 1.6f;
-        float dampingFactor = 0.76f;
+        float dampingFactor = 0.74f;
 
         if (InputManager::GetKeyDown(Key::RIGHT)) {
             vel.x += horizontalSpeed;
@@ -269,13 +272,14 @@ void Player::Update(float dt) {
         if (InputManager::GetKeyUp(Key::C) && m_Game->GameIsSlowMo()) {
             glm::vec2 v = m_GrapplingTo - (m_Position + m_Size / 2.0f);
             v = glm::normalize(v);
-            v *= 15.0f;
+            v *= 50.0f;
 
             vel = b2Vec2(v.x, v.y);
 
             m_RigidBody->SetLinearVelocity({ 0.f, 0.f });
             m_RigidBody->ApplyLinearImpulseToCenter(vel, true);
-
+            //m_RigidBody->SetLinearVelocity(vel);
+            
             m_Grapple.ReleaseGrapple();
             m_Game->SetSlowMoTime(0.0f);
 
@@ -299,14 +303,14 @@ void Player::Update(float dt) {
     case GRAPPLE_LAUNCH: {
 
         m_RigidBody->SetGravityScale(0.0f);
-        
+        m_RigidBody->SetLinearDamping(12.0f);
         m_LaunchTime += dt;
 
         if (m_LaunchTime > 0.2f || hitSolidObject)
         {
             m_State = PlayerStates::NORMAL;
             m_RigidBody->SetGravityScale(1.0f);
-
+            m_RigidBody->SetLinearDamping(0.0f);
             m_LaunchTime = 0.0f;
         }
 
@@ -372,4 +376,12 @@ void Player::Draw(SpriteRenderer& renderer) {
         renderer.SetShader(ResourceManager::GetShader("saber"));
         renderer.DrawLine(playerCenter, anchorCenter, 6.0f, m_Sprite);
     }
+
+    m_Light->m_Position = m_RenderPosition + m_Size * 0.5f;
+    Shader& pfx = ResourceManager::GetShader("sprite");
+    std::string liStr = "lights[" + std::to_string(Light::lightIndex) + "]";
+    pfx.SetVector2f(liStr + ".position", m_Light->m_Position);
+    pfx.SetFloat(liStr + ".radius", m_Light->m_Radius);
+    pfx.SetFloat(liStr + ".intensity", m_Light->m_Intensity);
+    Light::lightIndex++;
 }

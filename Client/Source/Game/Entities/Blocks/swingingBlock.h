@@ -24,6 +24,7 @@ public:
     }
 
     glm::vec2 anchorPos;
+    float lineWidth;
 
 private:
     float m_Restitution = 0.0f;

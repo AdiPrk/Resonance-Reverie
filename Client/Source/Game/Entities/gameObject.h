@@ -24,8 +24,8 @@ public:
     virtual void Draw(SpriteRenderer& renderer);
     virtual void SetUpdatedPosition() {};
     virtual void SetupRigidBody() {};
-    virtual void UpdateOutOfBounds(const Rect& gamebounds) {}
-    
+    virtual bool GetOutOfBounds(const Rect& gamebounds) { return false; }
+    virtual void SetLightInfo() {};
     void setPreviousPosition();
     void setLerpedPosition(float t);
 
@@ -37,7 +37,6 @@ public:
     float& GetRenderDepth() { return m_RenderDepth; }
     Texture2D& GetSprite() { return m_Sprite; }
     b2Body* GetBody() { return m_RigidBody; }
-    bool active = true;
 
 protected:
 

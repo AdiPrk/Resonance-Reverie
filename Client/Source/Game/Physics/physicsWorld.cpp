@@ -199,7 +199,7 @@ void PhysicsContactListener::PostSolve(b2Contact* contact, const b2ContactImpuls
             }
 
             // Check if the collision is mainly vertical and from above the player
-            if (fabsf(normal.x) * 0.02f < fabsf(normal.y) && normal.y > 0) {
+            if (/*fabsf(normal.x) * 0.02f < fabsf(normal.y) && */normal.y >= -0.1) {
                 player->isGrounded = true;
             }
         }
@@ -230,6 +230,7 @@ void RenderColliders(SpriteRenderer& renderer)
                     glm::vec2 p1 = PhysicsUtils::MetersToPixels(vertex);
                     glm::vec2 p2 = PhysicsUtils::MetersToPixels(nextVertex);
 
+                    renderer.SetShader(ResourceManager::GetShader("sprite"));
                     renderer.DrawLine(p1, p2, 2.0f, ResourceManager::GetTexture("square"));
                 }
             }

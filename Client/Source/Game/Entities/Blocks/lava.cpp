@@ -9,7 +9,7 @@
 Lava::Lava(glm::vec2 pos, glm::vec2 size, Texture2D sprite)
     : GameObject(pos, size, sprite, COLOR_F_LAVA)
 {
-    m_RenderDepth = -1.0f;
+    //m_RenderDepth = -1.0f;
 }
 
 void Lava::SetupRigidBody() {

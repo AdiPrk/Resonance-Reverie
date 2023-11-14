@@ -78,7 +78,7 @@ void SwingingBlock::Draw(SpriteRenderer& renderer)
     glm::vec2 anchorCenter = anchorPos + anchorRenderSize / 2.0f;
 
     renderer.SetShader(ResourceManager::GetShader("sprite"));
-    renderer.DrawLine(blockCenter, anchorCenter, 6.0f, m_Sprite);
+    renderer.DrawLine(blockCenter, anchorCenter, lineWidth, m_Sprite);
 }
 
 void SwingingBlock::SetUpdatedPosition()

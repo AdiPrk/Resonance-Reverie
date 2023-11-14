@@ -53,7 +53,7 @@ void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec
     this->shader.SetUniformHandle("textureHandle", texture.textureHandle);
 
     ResourceManager::BindVAO(this->quadVAO);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
 void SpriteRenderer::DrawLine(glm::vec2 p1, glm::vec2 p2, float thickness, Texture2D& texture)
@@ -71,8 +71,8 @@ void SpriteRenderer::DrawLine(glm::vec2 p1, glm::vec2 p2, float thickness, Textu
 
 void SpriteRenderer::initRenderData()
 {
-    // configure VAO/VBO
-    unsigned int VBO;
+    // configure VAO/VBO/EBO
+    unsigned int VBO, EBO;
     float vertices[] = {
         // pos
         0.0f, 1.0f, 0.0f, 1.0f, // Top-left vertex
@@ -81,13 +81,23 @@ void SpriteRenderer::initRenderData()
         1.0f, 0.0f, 1.0f, 0.0f  // Bottom-right vertex
     };
 
+    unsigned int indices[] = {
+        0, 1, 2, // First Triangle
+        1, 3, 2  // Second Triangle
+    };
+
     glGenVertexArrays(1, &this->quadVAO);
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
+    ResourceManager::BindVAO(this->quadVAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    ResourceManager::BindVAO(this->quadVAO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-}
+}   

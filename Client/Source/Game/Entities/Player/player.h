@@ -9,6 +9,7 @@
 #include <Source/Game/game.h>
 
 class Texture2D;
+class Light;
 
 enum PlayerStates {
     NORMAL = 0,
@@ -83,4 +84,5 @@ private:
     float m_GrappleTime = 0.2f;
     float m_LaunchTime = 0.0f;
     Game* m_Game;
+    Light* m_Light;
 };

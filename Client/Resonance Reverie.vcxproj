@@ -214,6 +214,7 @@
     <ClCompile Include="Source\Game\Entities\Blocks\swingingBlock.cpp" />
     <ClCompile Include="Source\Game\Entities\Enemies\greyEnemy.cpp" />
     <ClCompile Include="Source\Game\Entities\Blocks\lava.cpp" />
+    <ClCompile Include="Source\Game\Entities\Environment\light.cpp" />
     <ClCompile Include="Source\Game\Entities\Interactables\grapplePoint.cpp" />
     <ClCompile Include="Source\Game\Entities\Player\grapple.cpp" />
     <ClCompile Include="Source\Game\Entities\Player\player.cpp" />
@@ -245,6 +246,7 @@
     <ClInclude Include="Source\Game\Entities\Blocks\swingingBlock.h" />
     <ClInclude Include="Source\Game\Entities\Enemies\greyEnemy.h" />
     <ClInclude Include="Source\Game\Entities\Blocks\lava.h" />
+    <ClInclude Include="Source\Game\Entities\Environment\light.h" />
     <ClInclude Include="Source\Game\Entities\Interactables\grapplePoint.h" />
     <ClInclude Include="Source\Game\Entities\Player\grapple.h" />
     <ClInclude Include="Source\Game\Entities\Player\player.h" />
