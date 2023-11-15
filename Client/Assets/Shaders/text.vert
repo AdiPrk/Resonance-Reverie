@@ -1,9 +1,14 @@
-#version 330 core
+#version 430 core
 layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
 out vec2 TexCoords;
 
-uniform mat4 projection;
-uniform mat4 view;
+layout (std140) uniform Matrices
+{
+    mat4 projection;
+    mat4 view;
+    mat4 projectionView;
+};
+
 uniform bool diagetic; // true if affected by camera
 
 void main()

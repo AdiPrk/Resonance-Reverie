@@ -1,4 +1,4 @@
-#version 330 core
+#version 430 core
 #extension GL_ARB_bindless_texture : require
 
 in  vec2  TexCoords;
@@ -16,17 +16,17 @@ uniform bool shake;
 void main()
 {
     vec4 color = vec4(0.0f);
-    vec3 sample[9];
+    vec3 samples[9];
     // sample from texture offsets if using convolution matrix
     if(chaos || shake)
         for(int i = 0; i < 9; i++)
-            sample[i] = vec3(texture(scene, TexCoords.st + offsets[i]));
+            samples[i] = vec3(texture(scene, TexCoords.st + offsets[i]));
 
     // process effects
     if (chaos)
     {           
         for(int i = 0; i < 9; i++)
-            color += vec4(sample[i] * edge_kernel[i], 0.0f);
+            color += vec4(samples[i] * edge_kernel[i], 0.0f);
         color.a = 1.0f;
     }
     else if (confuse)
@@ -37,7 +37,7 @@ void main()
     {
         // blur
         // for(int i = 0; i < 9; i++)
-        //     color += vec4(sample[i] * blur_kernel[i], 0.0f);
+        //     color += vec4(samples[i] * blur_kernel[i], 0.0f);
         // color.a = 1.0f;
         color =  texture(scene, TexCoords);
     }

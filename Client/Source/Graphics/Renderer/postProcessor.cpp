@@ -106,11 +106,8 @@ void PostProcessor::Render()
     this->PostProcessingShader.SetInteger("confuse", this->Confuse);
     this->PostProcessingShader.SetInteger("chaos", this->Chaos);
     this->PostProcessingShader.SetInteger("shake", this->Shake);
-    // render textured quad
-    // glActiveTexture(GL_TEXTURE0);
-    // this->Texture.Bind();
 
-    // Set the texture handle as a uniform
+    // Set the texture
     this->PostProcessingShader.SetUniformHandle("scene", this->Texture.textureHandle);
 
     ResourceManager::BindVAO(this->VAO);

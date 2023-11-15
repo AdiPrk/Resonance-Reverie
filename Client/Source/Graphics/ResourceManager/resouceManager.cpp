@@ -15,8 +15,13 @@ GLuint ResourceManager::CurrentVAO = 0;
 
 Shader& ResourceManager::LoadShader(const std::string& vShaderFile, const std::string& fShaderFile, std::string name)
 {
-    Shaders[name] = loadShaderFromFile(vShaderFile, fShaderFile);
-    Shaders[name].SetUniformsFromCode();
+    Shader& shader = Shaders[name];
+
+    shader = loadShaderFromFile(vShaderFile, fShaderFile);
+    shader.SetUniformsFromCode();    
+
+    Shader::BindUBO(shader, "Matricies", Shader::uboMatricesBindingPoint);
+    Shader::BindUBO(shader, "Time", Shader::uboTimeBindingPoint);
 
     return Shaders[name];
 }
@@ -112,32 +117,6 @@ void ResourceManager::UpdateAllShaderTimes(float time)
         if (shader.HasUniform("iTime"))
         {
             shader.SetFloat("iTime", time);
-        }
-    }
-}
-
-void ResourceManager::UpdateAllShaderViewMatrices(glm::mat4& view, glm::mat4& projView)
-{
-    for (auto& [name, shader] : Shaders)
-    {
-        if (shader.HasUniform("view"))
-        {
-            shader.SetMatrix4("view", view);
-        }
-        if (shader.HasUniform("projectionView"))
-        {
-            shader.SetMatrix4("projectionView", projView);
-        }
-    }
-}
-
-void ResourceManager::UpdateAllShaderProjectionMatrices(glm::mat4& proj)
-{
-    for (auto& [name, shader] : Shaders)
-    {
-        if (shader.HasUniform("projection"))
-        {
-            shader.SetMatrix4("projection", proj);
         }
     }
 }

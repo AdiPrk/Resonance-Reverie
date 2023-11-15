@@ -184,24 +184,21 @@ void ParticleEmitter::Emit(float emitCount)
 	for (int i = 0; i < emitCount; i++) {
 		Particle& particle = particlePool[poolIndex];
 		activeParticles[poolIndex] = true;
+
 		position[poolIndex] = emitterPosition;
 		rotation[poolIndex] = RandomFloat() * 6.28318531f;
 
 		fadeStyle[poolIndex] = particleProps.fadeStyle;
 
-		// Velocity
 		velocity[poolIndex] = particleProps.velocity;
 		velocity[poolIndex].x += particleProps.velocityVariation.x * (RandomFloat() - 0.5f);
 		velocity[poolIndex].y += particleProps.velocityVariation.y * (RandomFloat() - 0.5f);
 
-		// Color
 		color[poolIndex] = particleProps.color;
-		//particle.color.r = RandomFloat();
-		//particle.color.g = RandomFloat();
-		//particle.color.b = RandomFloat();
 
 		lifeTime[poolIndex] = particleProps.lifeTime;
 		lifeRemaining[poolIndex] = particleProps.lifeTime;
+
 		sizeBegin[poolIndex] = particleProps.sizeBegin + particleProps.sizeVariation * (RandomFloat() - 0.5f);
 		sizeEnd[poolIndex] = particleProps.sizeEnd;
 

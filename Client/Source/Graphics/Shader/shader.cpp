@@ -3,6 +3,10 @@
 #include <Source/Graphics/ResourceManager/resourceManager.h>
 
 float Shader::iTime = 0.0f;
+GLuint Shader::uboMatrices = 0;
+GLuint Shader::uboTime = 0;
+GLuint Shader::uboMatricesBindingPoint = 0;
+GLuint Shader::uboTimeBindingPoint = 1;
 
 Shader& Shader::Use()
 {
@@ -142,5 +146,48 @@ void Shader::checkCompileErrors(unsigned int object, std::string type)
                 << infoLog << "\n -- --------------------------------------------------- -- "
                 << std::endl;
         }
+    }
+}
+
+void Shader::SetupUBO()
+{
+    glGenBuffers(1, &uboMatrices);
+    glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+    glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
+    glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 3 * sizeof(glm::mat4));
+
+    glGenBuffers(1, &uboTime);
+    glBindBuffer(GL_UNIFORM_BUFFER, uboTime);
+    glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
+    glBindBufferRange(GL_UNIFORM_BUFFER, 1, uboTime, 0, sizeof(float));
+}
+
+void Shader::SetProjectionUBO(glm::mat4& projection)
+{
+    glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
+}
+
+void Shader::SetViewUBO(glm::mat4& view)
+{
+    glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
+}
+
+void Shader::SetProjectionViewUBO(glm::mat4& projectionView)
+{
+    glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+    glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(projectionView));
+}
+
+void Shader::SetTimeUBO(float time) {
+    glBindBuffer(GL_UNIFORM_BUFFER, uboTime);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(float), &time);
+}
+
+void Shader::BindUBO(Shader& shader, const std::string& blockName, unsigned int bindingPoint) {
+    unsigned int blockIndex = glGetUniformBlockIndex(shader.ID, blockName.c_str());
+    if (blockIndex != GL_INVALID_INDEX) {
+        glUniformBlockBinding(shader.ID, blockIndex, bindingPoint);
     }
 }

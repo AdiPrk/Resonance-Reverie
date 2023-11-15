@@ -63,6 +63,8 @@ void Game::Init(Window* window)
 
     physicsWorld.SetContactListener(&physicsContactListener);
 
+    Shader::SetupUBO();
+
     // load textures
     ResourceManager::LoadTexturesFromDirectory("Assets/Images/");
 
@@ -71,7 +73,7 @@ void Game::Init(Window* window)
 
     // configure shaders
     glm::mat4 projection = glm::ortho(0.f, (float)m_Width, (float)m_Height, 0.f, -1.0f, 1.0f);
-    ResourceManager::UpdateAllShaderProjectionMatrices(projection);
+    Shader::SetProjectionUBO(projection);
 
     Shader& spriteShader = ResourceManager::GetShader("sprite");
     spriteShader.SetInteger("numLights", 1);
@@ -317,21 +319,23 @@ void Game::DrawScene(float t) {
 void Game::Render(float dt, float currentTime, float t)
 {
     Shader::iTime += CalculateSlowedDT(dt);
-    ResourceManager::UpdateAllShaderTimes(Shader::iTime);
+    Shader::SetTimeUBO(Shader::iTime);
 
+    // Clear the screen
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     
-    // begin rendering to postprocessing framebuffer
+    // Begin rendering to postprocessing framebuffer
     Effects->BeginRender();
 
+    // Draw the scene!
     DrawScene(t);
 
-    // end rendering to postprocessing framebuffer and render postprocessing quad
+    // End rendering to postprocessing framebuffer and render the scene
     Effects->EndRender();
     Effects->Render();
 
-    // draw fps
+    // Draw fps
     std::string fpsString = std::string("fps: ") + std::to_string((1.f / dt));
     textRenderer->RenderText(fpsString, 50.f, 90.0f, 0.5f, false, glm::vec3(0));
     textRenderer->RenderText(fpsString, 50.f, 50.f, 0.5f, false);
@@ -342,19 +346,10 @@ void Game::Render(float dt, float currentTime, float t)
         m_Window->ToggleFullscreen();
     }
 
-    // show num particles
-    int numParticles = playerEmitter->GetParticleCount() + backgroundEmitter->GetParticleCount();
-    textRenderer->RenderText(std::to_string(numParticles) + " particles", (float)m_Width / 2.f, (float)m_Height / 2.0f, 0.5f, true, glm::vec3(1), true);
-    textRenderer->RenderText(std::to_string(numParticles) + " particles", (float)m_Width / 2.f, (float)m_Height / 2.0f + 50, 0.5f, true, glm::vec3(0), true);
-
-    if (m_State == GAME_MENU)
-    {
-        //textRenderer->RenderText("Press ENTER to start", this->Width / 2.f, this->Height / 2.0f, 0.5f, true);
-    }
-    if (m_State == GAME_WIN)
-    {
-        //textRenderer->RenderText("You!!! You!!!!!", this->Width / 2.f, this->Height / 2.0f - 30.0f, 1.0f, true, glm::vec3(0.0f, 1.0f, 0.0f));
-    }
+    // draw num particles w/ diagetic text
+    // int numParticles = playerEmitter->GetParticleCount() + backgroundEmitter->GetParticleCount();
+    // textRenderer->RenderText(, (float)m_Width / 2.f, (float)m_Height / 2.0f, 0.5f, true, glm::vec3(1), true);
+    // textRenderer->RenderText(std::to_string(numParticles) + " particles", (float)m_Width / 2.f, (float)m_Height / 2.0f + 50, 0.5f, true, glm::vec3(0), true);
     
     if (InputManager::GetKeyTriggered(Key::K)) {
         m_DrawColliders = !m_DrawColliders;

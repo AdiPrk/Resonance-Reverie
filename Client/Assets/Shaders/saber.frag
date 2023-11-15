@@ -1,11 +1,15 @@
-#version 330 core
+#version 430 core
 
 in vec2 TexCoords;
 out vec4 fragColor;
 
 uniform sampler2D image;
 uniform vec4 spriteColor;
-uniform float iTime;
+
+layout (std140) uniform Time
+{
+    float iTime;
+};
 
 void main()
 {

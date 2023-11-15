@@ -5,7 +5,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-// Standard lib
+// standard libs
 #include <iostream>
 #include <stdio.h>
 #include <string>
@@ -21,6 +21,7 @@
 #include <chrono>
 #include <stdexcept>
 #include <filesystem>
+#include <bitset>
 
 #define _USE_MATH_DEFINES
 #include <math.h>

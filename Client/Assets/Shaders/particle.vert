@@ -8,7 +8,12 @@ layout (location = 3) in float scale; // Instance data
 out vec2 TexCoords;
 out vec4 ParticleColor;
 
-uniform mat4 projectionView;
+layout (std140) uniform Matrices
+{
+    mat4 projection;
+    mat4 view;
+    mat4 projectionView;
+};
 
 void main()
 {

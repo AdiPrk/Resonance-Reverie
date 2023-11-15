@@ -1,4 +1,4 @@
-#version 330 core
+#version 430 core
 #extension GL_ARB_bindless_texture : require
 
 in vec2 TexCoords;
@@ -8,13 +8,18 @@ out vec4 fragColor;
 uniform sampler2D textureHandle;
 uniform vec4 spriteColor;
 uniform vec2 repetition;
-uniform float iTime;
+
+layout (std140) uniform Time
+{
+    float iTime;
+};
 
 struct Light {
     vec2 position;
     float radius;
     float intensity;
 };
+
 #define MAX_LIGHTS 5
 uniform Light lights[MAX_LIGHTS];
 uniform int numLights;

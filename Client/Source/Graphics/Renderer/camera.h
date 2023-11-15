@@ -29,7 +29,8 @@ public:
         glm::mat4 proj = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f, -1.0f, 1.0f);
         glm::mat4 projView = proj * view;
 
-        ResourceManager::UpdateAllShaderViewMatrices(view, projView);
+        Shader::SetViewUBO(view);
+        Shader::SetProjectionViewUBO(projView);
     }
 
     void CalculateBoundingRect() {

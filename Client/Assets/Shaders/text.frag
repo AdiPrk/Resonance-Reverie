@@ -1,4 +1,4 @@
-#version 330 core
+#version 430 core
 #extension GL_ARB_bindless_texture : require
 
 in vec2 TexCoords;
