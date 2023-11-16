@@ -49,7 +49,7 @@ int main() {
         // Control FPS
         window.LimitFPS();
         float currentFrame = (float)glfwGetTime();
-        deltaTime = currentFrame - lastFrame;// std::min(currentFrame - lastFrame, 0.001f); // 20fps min
+        deltaTime = std::min(currentFrame - lastFrame, 0.1f); // 10fps min
         accumulator += deltaTime;
         lastFrame = currentFrame;
 

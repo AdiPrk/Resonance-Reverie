@@ -31,7 +31,7 @@ void DynamicBlock::SetupRigidBody() {
     fixtureDef.shape = &boxShape;
     fixtureDef.density = m_Density;
     fixtureDef.friction = 0.2f;
-    fixtureDef.restitution = m_Restitution;
+    fixtureDef.restitution = 0;// m_Restitution;
     fixtureDef.filter.categoryBits = F_BLOCK;
     fixtureDef.filter.maskBits = 0xFFFF ^ F_LAVA; // Collides with everything except lava
     m_RigidBody->CreateFixture(&fixtureDef);

@@ -40,7 +40,9 @@ void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec
     this->shader.SetMatrix4("model", model);
 
     // render textured quad
-    this->shader.SetVector4f("spriteColor", color);
+    if (this->shader.HasUniform("spriteColor")) {
+        this->shader.SetVector4f("spriteColor", color);
+    }
 
     if (repetition.x != 0 && repetition.y != 0) {
         this->shader.SetVector2f("repetition", size.x / repetition.x, size.y / repetition.y);
@@ -50,7 +52,9 @@ void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec
     }
 
     // Set the texture handle as a uniform
-    this->shader.SetUniformHandle("textureHandle", texture.textureHandle);
+    if (this->shader.HasUniform("textureHandle")) {
+        this->shader.SetUniformHandle("textureHandle", texture.textureHandle);
+    }
 
     ResourceManager::BindVAO(this->quadVAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

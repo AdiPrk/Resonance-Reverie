@@ -9,9 +9,9 @@
 std::map<std::string, Texture2D>    ResourceManager::Textures;
 std::map<std::string, Shader>       ResourceManager::Shaders;
 
-GLuint ResourceManager::CurrentShaderProgram = 0;
-GLuint ResourceManager::CurrentTextureID = 0;
-GLuint ResourceManager::CurrentVAO = 0;
+GLuint ResourceManager::CurrentShaderProgram = -1;
+GLuint ResourceManager::CurrentTextureID = -1;
+GLuint ResourceManager::CurrentVAO = -1;
 
 Shader& ResourceManager::LoadShader(const std::string& vShaderFile, const std::string& fShaderFile, std::string name)
 {
@@ -20,8 +20,8 @@ Shader& ResourceManager::LoadShader(const std::string& vShaderFile, const std::s
     shader = loadShaderFromFile(vShaderFile, fShaderFile);
     shader.SetUniformsFromCode();    
 
-    Shader::BindUBO(shader, "Matricies", Shader::uboMatricesBindingPoint);
-    Shader::BindUBO(shader, "Time", Shader::uboTimeBindingPoint);
+    shader.BindUBO("Matricies", Shader::uboMatricesBindingPoint);
+    shader.BindUBO("Time", Shader::uboTimeBindingPoint);
 
     return Shaders[name];
 }

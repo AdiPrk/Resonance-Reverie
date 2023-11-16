@@ -281,9 +281,8 @@ void Game::DrawScene(float t) {
         Renderer->SetShader(ResourceManager::GetShader("background"));
         Renderer->DrawSprite(
             ResourceManager::GetTexture("square"),
-            glm::vec3(room.Bounds().left, room.Bounds().top, 0.0f),
-            glm::vec2(room.Bounds().width, room.Bounds().height),
-            0.0f
+            glm::vec2(room.Bounds().left, room.Bounds().top),
+            glm::vec2(room.Bounds().width, room.Bounds().height)
         );
     }
 

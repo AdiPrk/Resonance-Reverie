@@ -43,8 +43,9 @@ public:
     static void SetProjectionUBO(glm::mat4& projection);
     static void SetViewUBO(glm::mat4& view);
     static void SetProjectionViewUBO(glm::mat4& projectionView);
+    static void SetViewAndProjectionView(glm::mat4& view, glm::mat4& projectionView);
     static void SetTimeUBO(float time);
-    static void BindUBO(Shader& shader, const std::string& blockName, unsigned int bindingPoint);
+    void BindUBO(const std::string& blockName, unsigned int bindingPoint);
 
 private:
     // checks if compilation or linking failed and if so, print the error logs

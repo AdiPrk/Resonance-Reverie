@@ -17,6 +17,7 @@ uniform mat4 model;
 void main()
 {
     TexCoords = vertex.zw;
-    gl_Position = projection * view * model * vec4(vertex.xy, 0.0, 1.0);
-    worldPos = vec2(model * vec4(vertex.xy, 0.0, 1.0));
+    vec4 worldPosition = model * vec4(vertex.xy, 0.0, 1.0);
+    gl_Position = projectionView * worldPosition;
+    worldPos = worldPosition.xy;
 }

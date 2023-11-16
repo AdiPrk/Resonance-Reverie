@@ -69,51 +69,51 @@ void Shader::SetUniformsFromCode()
 void Shader::SetFloat(const std::string& name, float value)
 {
     this->Use();
-    glUniform1f(Uniforms[name], value);
+    glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
 }
 void Shader::SetInteger(const std::string& name, int value)
 {
     this->Use();
-    glUniform1i(Uniforms[name], value);
+    glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
 }
 void Shader::SetVector2f(const std::string& name, float x, float y)
 {
     this->Use();
-    glUniform2f(Uniforms[name], x, y);
+    glUniform2f(glGetUniformLocation(ID, name.c_str()), x, y);
 }
 void Shader::SetVector2f(const std::string& name, const glm::vec2& value)
 {
     this->Use();
-    glUniform2f(Uniforms[name], value.x, value.y);
+    glUniform2f(glGetUniformLocation(ID, name.c_str()), value.x, value.y);
 }
 void Shader::SetVector3f(const std::string& name, float x, float y, float z)
 {
     this->Use();
-    glUniform3f(Uniforms[name], x, y, z);
+    glUniform3f(glGetUniformLocation(ID, name.c_str()), x, y, z);
 }
 void Shader::SetVector3f(const std::string& name, const glm::vec3& value)
 {
     this->Use();
-    glUniform3f(Uniforms[name], value.x, value.y, value.z);
+    glUniform3f(glGetUniformLocation(ID, name.c_str()), value.x, value.y, value.z);
 }
 void Shader::SetVector4f(const std::string& name, float x, float y, float z, float w)
 {
     this->Use();
-    glUniform4f(Uniforms[name], x, y, z, w);
+    glUniform4f(glGetUniformLocation(ID, name.c_str()), x, y, z, w);
 }
 void Shader::SetVector4f(const std::string& name, const glm::vec4& value)
 {
     this->Use();
-    glUniform4f(Uniforms[name], value.x, value.y, value.z, value.w);
+    glUniform4f(glGetUniformLocation(ID, name.c_str()), value.x, value.y, value.z, value.w);
 }
 void Shader::SetMatrix4(const std::string& name, const glm::mat4& matrix)
 {
     this->Use();
-    glUniformMatrix4fv(Uniforms[name], 1, false, glm::value_ptr(matrix));
+    glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, false, glm::value_ptr(matrix));
 }
 
 void Shader::SetUniformHandle(const std::string& name, GLuint64 handle) {
-    glUniformHandleui64ARB(Uniforms[name], handle);
+    glUniformHandleui64ARB(glGetUniformLocation(ID, name.c_str()), handle);
 }
 
 bool Shader::HasUniform(const std::string& name)
@@ -180,14 +180,21 @@ void Shader::SetProjectionViewUBO(glm::mat4& projectionView)
     glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(projectionView));
 }
 
+void Shader::SetViewAndProjectionView(glm::mat4& view, glm::mat4& projectionView)
+{
+    glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
+    glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(projectionView));
+}
+
 void Shader::SetTimeUBO(float time) {
     glBindBuffer(GL_UNIFORM_BUFFER, uboTime);
     glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(float), &time);
 }
 
-void Shader::BindUBO(Shader& shader, const std::string& blockName, unsigned int bindingPoint) {
-    unsigned int blockIndex = glGetUniformBlockIndex(shader.ID, blockName.c_str());
+void Shader::BindUBO(const std::string& blockName, unsigned int bindingPoint) {
+    unsigned int blockIndex = glGetUniformBlockIndex(ID, blockName.c_str());
     if (blockIndex != GL_INVALID_INDEX) {
-        glUniformBlockBinding(shader.ID, blockIndex, bindingPoint);
+        glUniformBlockBinding(ID, blockIndex, bindingPoint);
     }
 }

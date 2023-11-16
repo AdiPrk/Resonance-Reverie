@@ -32,7 +32,7 @@ public:
 		glfwSetWindowTitle(m_Window, title.c_str());
 	}
 
-	constexpr static float targetFrameLength = 1.0f / 120.0f;
+	constexpr static double targetFrameLength = 1.0 / 120.0;
 
 private:
 	std::chrono::high_resolution_clock::time_point m_LastFrameTime;
