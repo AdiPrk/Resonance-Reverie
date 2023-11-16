@@ -3,9 +3,6 @@
 in vec2 TexCoords;
 out vec4 fragColor;
 
-uniform sampler2D image;
-uniform vec4 spriteColor;
-
 layout (std140) uniform Time
 {
     float iTime;
