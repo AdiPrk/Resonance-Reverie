@@ -78,9 +78,6 @@ int main() {
         ResonanceReverie.CalculateLerpedPositions(accumulator / fixedTimeStep);
         ResonanceReverie.UpdateCamera(deltaTime);
 
-        // Filter Rooms (depends on camera)
-        ResonanceReverie.FilterRooms(deltaTime);
-
         // Render!
         ResonanceReverie.Render(deltaTime, currentFrame, accumulator / fixedTimeStep);
         window.SwapBuffers();

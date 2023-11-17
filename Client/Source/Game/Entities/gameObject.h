@@ -4,8 +4,7 @@
 
 #include <Source/Graphics/Texture/texture.h>
 #include <Source/Graphics/Renderer/spriteRenderer.h>
-
-struct Rect;
+#include <Source/Math/rect.h>
 
 // Container object for holding all state relevant for a single
 // game object entity. Each object in the game likely needs the
@@ -24,8 +23,10 @@ public:
     virtual void Draw(SpriteRenderer& renderer);
     virtual void SetUpdatedPosition() {};
     virtual void SetupRigidBody() {};
+    virtual bool GetOverlappingBounds(const Rect& gamebounds) { return false; }
     virtual bool GetOutOfBounds(const Rect& gamebounds) { return false; }
     virtual void SetLightInfo() {};
+    virtual const Rect& Bounds() { return Rect(); };
     void setPreviousPosition();
     void setLerpedPosition(float t);
 

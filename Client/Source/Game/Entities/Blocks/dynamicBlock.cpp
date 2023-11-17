@@ -20,6 +20,7 @@ void DynamicBlock::SetupRigidBody() {
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.position = PhysicsUtils::PixelsToMeters(bodyCenter);
+    bodyDef.angle = m_Rotation;
     m_RigidBody = physicsWorld.CreateBody(&bodyDef);
     m_RigidBody->SetGravityScale(0.4f);
 
@@ -53,7 +54,12 @@ void DynamicBlock::SetUpdatedPosition()
     m_BoundingRect.SetScale(m_Size);
 }
 
+bool DynamicBlock::GetOverlappingBounds(const Rect& gamebounds)
+{
+    return gamebounds.overlaps(m_BoundingRect);
+}
+
 bool DynamicBlock::GetOutOfBounds(const Rect& gamebounds)
 {
-    return !m_BoundingRect.bordersOverlap(gamebounds);
+    return !gamebounds.contains(m_BoundingRect);
 }

@@ -50,8 +50,8 @@ public:
     
     // utils
     void FilterRooms(float dt);
-    const Rect Bounds() const { return m_RoomBounds; }
-    void SetBounds(Rect bounds) { m_RoomBounds = bounds; }
+    const Rect& Bounds() const { return m_RoomBounds; }
+    void SetBounds(const Rect& bounds) { m_RoomBounds = bounds; }
     void SetSlowMoTime(float t) { m_SlowMoTime = t; }
     void SetTimeFactor(float t) { m_SlowdownFactor = t; }
     bool GameIsSlowMo() const { return m_SlowMoTime > 0.0f; }
@@ -79,12 +79,12 @@ private:
     unsigned int m_Width;
     unsigned int m_Height;
     Rect m_RoomBounds;
-    unsigned int m_CurrentRoom;
     GameState m_State;
     std::vector<GameLevel> m_Rooms;
     Window* m_Window;
     float m_SlowMoTime = 0;
     float m_SlowdownFactor = 1.0f;
+    float m_FreezeTime = 0.0f;
     ParticleEmitter* backgroundEmitter;
 
     bool m_DrawColliders;

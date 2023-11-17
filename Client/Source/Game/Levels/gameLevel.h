@@ -32,7 +32,7 @@ public:
     void LoadStarting(const char* filename, Game* game);
 
     // Loads the level the player is in, true if next room found
-    RoomCode LoadNext(const char* filename, Game* game, int depth = 0);
+    RoomCode LoadNext(const char* filename, Game* game, const Rect& boundsToSearch, bool setAsCurrent = false);
 
     // render level
     void Draw(SpriteRenderer& renderer);
@@ -45,7 +45,7 @@ public:
 
 private:
 
-    void SetupRoom(Game* game, auto element, bool starting, bool isCurrent);
+    void SetupRoom(Game* game, auto element, bool starting, bool isCurrent, bool setAsCurrent);
     void SetCurrentRoomInfo(Game* game, Rect& roomBounds, float camScale, auto element);
 
     int m_ID;

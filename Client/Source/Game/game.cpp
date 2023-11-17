@@ -21,7 +21,6 @@ ParticleEmitter* playerEmitter;
 
 Game::Game(unsigned int width, unsigned int height)
     : m_State(GAME_ACTIVE)
-    , m_CurrentRoom(0)
     , m_RoomBounds(0, 0, 0, 0)
     , m_Player(nullptr)
     , m_Camera(nullptr)
@@ -109,7 +108,6 @@ void Game::Init(Window* window)
     GameLevel one; one.LoadStarting("Assets/Maps/map.json", this);
 
     m_Rooms.push_back(one);
-    m_CurrentRoom = 0;
 
     m_Camera->MoveTo(m_Player->GetPosition(), m_RoomBounds);
 
@@ -161,19 +159,31 @@ void Game::UpdateCamera(float dt)
 
 void Game::Update(float dt, float accumulator)
 {
+    if (m_FreezeTime > 0) {
+        m_FreezeTime -= dt;
+        m_SlowdownFactor = 0.0f;
+
+        if (m_FreezeTime <= 0) {
+            FilterRooms(dt);
+        }
+
+        return;
+    }
+
     if (m_SlowMoTime > 0) {
         m_SlowMoTime -= dt;
     }
     else {
         m_SlowdownFactor = std::lerp(m_SlowdownFactor, 1.0f, 0.15f);
     }
-    //m_SlowdownFactor = 0.4f;
 
     dt = CalculateSlowedDT(dt);
 
     if (m_State == GAME_ACTIVE)
     {
         m_Player->Update(dt);
+
+        std::cout << m_Rooms.size() << std::endl;
 
         for (auto& room : m_Rooms) {
             const Rect& rb = room.Bounds();
@@ -183,28 +193,51 @@ void Game::Update(float dt, float accumulator)
             for (auto& ent : room.Entities) {
                 ent->Update(dt);
 
-                if (ent->GetOutOfBounds(rb)) {
-                    moveEntToNewRoom = true;
-                    entsToMove.push_back(ent);
-                }
+                //bool shouldAddEnt = true;
+                //for (auto& roomToSearch : m_Rooms) {
+                //    if (ent->Bounds().overlaps(roomToSearch.Bounds()) && ent->GetOutOfBounds(rb))
+                //    {
+                //        shouldAddEnt = false;
+                //    }
+                //}
+                //
+                //if (shouldAddEnt) {
+                //    moveEntToNewRoom = true;
+                //    entsToMove.push_back(ent);
+                //}
             }
 
             if (moveEntToNewRoom) {
-                // Remove all entities in entsToMove from this room's list of entities
-                room.Entities.erase(std::remove_if(room.Entities.begin(), room.Entities.end(),
-                    [&](GameObject* ent) {
-                        return std::find(entsToMove.begin(), entsToMove.end(), ent) != entsToMove.end();
-                    }), room.Entities.end());
-
-                // Loop through rooms and if the entity is in that room's bounds then add it to that room
                 for (auto& entToMove : entsToMove) {
-                    for (auto& newRoom : m_Rooms) {
-                        if (&newRoom != &room && !entToMove->GetOutOfBounds(newRoom.Bounds())) {
-                            newRoom.Entities.push_back(entToMove);
-                            break;
-                        }
+                    GameLevel newLevel;
+                    RoomCode loadedNext = newLevel.LoadNext("Assets/Maps/map.json", this, entToMove->Bounds(), false);
+
+                    if (loadedNext == ROOM_NOT_FOUND) {
+                        // m_Player->Respawn();
+                    }
+                    else if (loadedNext == ROOM_EXISTS) {
+                        // nothing!
+                    }
+                    else if (loadedNext == ROOM_CREATED) {
+                        m_Rooms.push_back(newLevel);
                     }
                 }
+
+                //// Remove all entities in entsToMove from this room's list of entities
+                //room.Entities.erase(std::remove_if(room.Entities.begin(), room.Entities.end(),
+                //    [&](GameObject* ent) {
+                //        return std::find(entsToMove.begin(), entsToMove.end(), ent) != entsToMove.end();
+                //    }), room.Entities.end());
+
+                //// Loop through rooms and if the entity is in that room's bounds then add it to that room
+                //for (auto& entToMove : entsToMove) {
+                //    for (auto& newRoom : m_Rooms) {
+                //        if (&newRoom != &room && !entToMove->GetOutOfBounds(newRoom.Bounds())) {
+                //            newRoom.Entities.push_back(entToMove);
+                //            break;
+                //        }
+                //    }
+                //}
             }
         }
 
@@ -223,7 +256,7 @@ void Game::Update(float dt, float accumulator)
 
     if (!m_Player->Bounds().overlaps(m_RoomBounds)) {
         GameLevel newLevel;
-        RoomCode loadedNext = newLevel.LoadNext("Assets/Maps/map.json", this);
+        RoomCode loadedNext = newLevel.LoadNext("Assets/Maps/map.json", this, m_Player->Bounds(), true);
 
         if (loadedNext == ROOM_NOT_FOUND) {
             m_Player->Respawn();
@@ -233,7 +266,8 @@ void Game::Update(float dt, float accumulator)
         } 
         else if (loadedNext == ROOM_CREATED) {
             m_Rooms.push_back(newLevel);
-        }      
+            m_FreezeTime = 0.8f;
+        }
     }
 
     Effects->Update(dt);
@@ -276,9 +310,9 @@ void Game::Update(float dt, float accumulator)
 
 void Game::DrawScene(float t) {
     // draw level backgrounds
+    Renderer->SetShader(ResourceManager::GetShader("background"));
     for (auto& room : m_Rooms)
     {
-        Renderer->SetShader(ResourceManager::GetShader("background"));
         Renderer->DrawSprite(
             ResourceManager::GetTexture("square"),
             glm::vec2(room.Bounds().left, room.Bounds().top),
@@ -361,34 +395,26 @@ void Game::Render(float dt, float currentTime, float t)
 
 void Game::FilterRooms(float dt)
 {
-    if (!m_Camera->IsZoomEqualTarget()) return;
+    //if (!m_Camera->IsZoomEqualTarget()) return;
 
     std::vector<GameLevel>& rooms = m_Rooms;
-    Rect camRect = m_Camera->Bounds();
-
+    Rect camRect = this->m_RoomBounds;// m_Camera->Bounds();
+    
     // Filter out rooms if out of frame for over a second
     m_Rooms.erase(std::remove_if(m_Rooms.begin(), m_Rooms.end(),
-        [&camRect, &dt](GameLevel& room) 
+        [&](GameLevel& room) 
         {
-            if (!room.Bounds().overlaps(camRect))
-            {
-                room.DeleteTimer() += dt;
-
-                if (room.DeleteTimer() >= 0) {
-                    for (GameObject* entity : room.Entities) {
-                        delete entity;
-                    }
-
-                    room.Entities.clear();
-
-                    return true;
+            if (!room.Bounds().overlaps(this->Bounds()))
+            {    
+                for (GameObject* entity : room.Entities) {
+                    delete entity;
                 }
+    
+                room.Entities.clear();
+    
+                return true;
             }
-            else 
-            {
-                room.DeleteTimer() = 0;
-            }
-
+    
             return false;
         }
     ), m_Rooms.end());
@@ -433,6 +459,7 @@ void Game::UpdatePlayerRotation(int id, float rotation)
         //printf("Update player %i at position: (%f, %f)\n", id, pos.x, pos.y);
     }
 }
+#endif
 
 glm::vec2 Game::GetPlayerPosition()
 {
@@ -442,5 +469,3 @@ float Game::GetPlayerRotation()
 {
     return m_Player->GetRotation();
 }
-
-#endif

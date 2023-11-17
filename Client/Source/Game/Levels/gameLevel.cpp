@@ -24,14 +24,12 @@ GameLevel::~GameLevel()
 {
 }
 
-void GameLevel::SetupRoom(Game* game, auto element, bool starting, bool isCurrent) {
+void GameLevel::SetupRoom(Game* game, auto element, bool starting, bool isCurrent, bool setAsCurrent) {
     Rect roomBounds(element["x"], element["y"], element["w"], element["h"]);
 
     // std::cout << "Creating Room: " << element << std::endl;
 
-    if (isCurrent) {
-        game->SetBounds(roomBounds);
-
+    if (isCurrent && setAsCurrent) {
         float camScale = element["camScale"];
         SetCurrentRoomInfo(game, roomBounds, camScale, element);
     }
@@ -167,13 +165,13 @@ void GameLevel::LoadStarting(const char* filename, Game* game)
         if (!element.contains("starting")) continue;
         if (element["starting"] != true) continue;
 
-        SetupRoom(game, element, true, true);
+        SetupRoom(game, element, true, true, true);
 
         return;
     }
 }
 
-RoomCode GameLevel::LoadNext(const char* filename, Game* game, int depth)
+RoomCode GameLevel::LoadNext(const char* filename, Game* game, const Rect& boundsToSearch, bool setAsCurrent)
 {
     // Open the file
     std::ifstream file(filename);
@@ -191,14 +189,17 @@ RoomCode GameLevel::LoadNext(const char* filename, Game* game, int depth)
     for (const auto& element : data) {
         Rect roomBounds = { element["x"], element["y"], element["w"], element["h"] };
 
-        if (!roomBounds.contains(game->m_Player->Bounds())) continue;
+        if (!roomBounds.overlaps(boundsToSearch)) continue;
 
         for (const auto& room : game->m_Rooms)
         {
             if (room.m_ID != element["id"]) continue;
+            //if (room.Bounds().contains(game->GetPlayerPosition())) continue;
 
-            float camScale = element["camScale"];
-            SetCurrentRoomInfo(game, roomBounds, camScale, element);
+            if (setAsCurrent) {
+                float camScale = element["camScale"];
+                SetCurrentRoomInfo(game, roomBounds, camScale, element);
+            }
 
             return ROOM_EXISTS;
         }
@@ -206,7 +207,15 @@ RoomCode GameLevel::LoadNext(const char* filename, Game* game, int depth)
         roomCode = ROOM_CREATED;
 
         // Main new room:
-        SetupRoom(game, element, false, true);
+        if (setAsCurrent) {
+            SetupRoom(game, element, false, true, setAsCurrent);
+        }
+        else {
+            SetupRoom(game, element, false, false, setAsCurrent);
+        }
+        if (setAsCurrent == false) {
+            return roomCode;
+        }
 
         // Nearby rooms that are temporarily loaded to make it look nicer when 
         // camera is switching between rooms
@@ -230,7 +239,7 @@ RoomCode GameLevel::LoadNext(const char* filename, Game* game, int depth)
             if (roomBounds.bordersOverlap(otherRoomBounds)) {
                 // Setup the room! :)
                 GameLevel newLevel;
-                newLevel.SetupRoom(game, other, false, false);
+                newLevel.SetupRoom(game, other, false, false, false);
                 game->m_Rooms.push_back(newLevel);
             }
         }
