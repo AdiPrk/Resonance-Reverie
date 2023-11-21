@@ -51,7 +51,7 @@ void GreyEnemy::SetupRigidBody() {
 void GreyEnemy::Update(float dt) {
 }
 
-void GreyEnemy::SetUpdatedPosition()
+void GreyEnemy::SetUpdatedTransform()
 {
     if (!m_RigidBody) return;
 

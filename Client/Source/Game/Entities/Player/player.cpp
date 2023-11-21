@@ -346,12 +346,12 @@ void Player::RespawnSelf()
     m_Position = m_SpawnPosition;
 
     m_RigidBody->SetTransform(PhysicsUtils::PixelsToMeters(m_SpawnPosition), 0.f);
-    SetUpdatedPosition();
+    SetUpdatedTransform();
 }
 
 // When you need to get positions or sizes from Box2D
 
-void Player::SetUpdatedPosition()
+void Player::SetUpdatedTransform()
 {
     m_Position = PhysicsUtils::MetersToPixels(m_RigidBody->GetPosition()) - m_Size / 2.f;
     m_Rotation = m_RigidBody->GetAngle();

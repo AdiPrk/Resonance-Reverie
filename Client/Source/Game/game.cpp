@@ -179,78 +179,23 @@ void Game::Update(float dt, float accumulator)
 
     dt = CalculateSlowedDT(dt);
 
-    if (m_State == GAME_ACTIVE)
-    {
-        m_Player->Update(dt);
-
-        std::cout << m_Rooms.size() << std::endl;
-
-        for (auto& room : m_Rooms) {
-            const Rect& rb = room.Bounds();
-
-            bool moveEntToNewRoom = false;
-            std::vector<GameObject*> entsToMove;
-            for (auto& ent : room.Entities) {
-                ent->Update(dt);
-
-                //bool shouldAddEnt = true;
-                //for (auto& roomToSearch : m_Rooms) {
-                //    if (ent->Bounds().overlaps(roomToSearch.Bounds()) && ent->GetOutOfBounds(rb))
-                //    {
-                //        shouldAddEnt = false;
-                //    }
-                //}
-                //
-                //if (shouldAddEnt) {
-                //    moveEntToNewRoom = true;
-                //    entsToMove.push_back(ent);
-                //}
-            }
-
-            if (moveEntToNewRoom) {
-                for (auto& entToMove : entsToMove) {
-                    GameLevel newLevel;
-                    RoomCode loadedNext = newLevel.LoadNext("Assets/Maps/map.json", this, entToMove->Bounds(), false);
-
-                    if (loadedNext == ROOM_NOT_FOUND) {
-                        // m_Player->Respawn();
-                    }
-                    else if (loadedNext == ROOM_EXISTS) {
-                        // nothing!
-                    }
-                    else if (loadedNext == ROOM_CREATED) {
-                        m_Rooms.push_back(newLevel);
-                    }
-                }
-
-                //// Remove all entities in entsToMove from this room's list of entities
-                //room.Entities.erase(std::remove_if(room.Entities.begin(), room.Entities.end(),
-                //    [&](GameObject* ent) {
-                //        return std::find(entsToMove.begin(), entsToMove.end(), ent) != entsToMove.end();
-                //    }), room.Entities.end());
-
-                //// Loop through rooms and if the entity is in that room's bounds then add it to that room
-                //for (auto& entToMove : entsToMove) {
-                //    for (auto& newRoom : m_Rooms) {
-                //        if (&newRoom != &room && !entToMove->GetOutOfBounds(newRoom.Bounds())) {
-                //            newRoom.Entities.push_back(entToMove);
-                //            break;
-                //        }
-                //    }
-                //}
-            }
+    // Update entities
+    m_Player->Update(dt);
+    for (auto& room : m_Rooms) {
+        for (auto& ent : room.Entities) {
+            ent->Update(dt);
         }
+    }
 
-        m_Player->isGrounded = false;
+    // Step physics
+    m_Player->isGrounded = false;
+    physicsWorld.Step(dt, 8, 3);
 
-        physicsWorld.Step(dt, 8, 3);
-
-        m_Player->SetUpdatedPosition();
-
-        for (auto& room : m_Rooms) {
-            for (auto& ent : room.Entities) {
-                ent->SetUpdatedPosition();
-            }
+    // Set updated transforms from physics
+    m_Player->SetUpdatedTransform();
+    for (auto& room : m_Rooms) {
+        for (auto& ent : room.Entities) {
+            ent->SetUpdatedTransform();
         }
     }
 

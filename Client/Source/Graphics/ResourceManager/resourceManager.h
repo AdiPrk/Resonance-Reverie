@@ -23,7 +23,7 @@ public:
     static void       LoadTexturesFromDirectory(const char* directory);
     static void       LoadShadersFromDirectory(const char* directory);
     // loads (and generates) a texture from file
-    static Texture2D& LoadTexture(const std::string& file, std::string name);
+    static Texture2D& LoadTexture(const std::string& file, std::string name, unsigned columns, unsigned rows);
     // retrieves a stored texture
     static Texture2D& GetTexture(std::string name);
     // properly de-allocates all loaded resources
@@ -45,7 +45,7 @@ private:
     // loads and generates a shader from file
     static Shader    loadShaderFromFile(const std::string& vShaderFile, const std::string& fShaderFile);
     // loads a single texture from file
-    static Texture2D loadTextureFromFile(const std::string& file);
+    static Texture2D loadTextureFromFile(const std::string& file, unsigned columns, unsigned rows);
 };
 
 namespace ThreadPool {

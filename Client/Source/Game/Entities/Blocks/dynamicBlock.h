@@ -15,10 +15,9 @@ public:
     void SetupRigidBody() override;
 
     void Draw(SpriteRenderer& renderer) override;
-    void SetUpdatedPosition() override;
-    bool GetOverlappingBounds(const Rect& gamebounds) override;
-    bool GetOutOfBounds(const Rect& gamebounds) override;
-    const Rect& Bounds() override { return m_BoundingRect; }
+    void SetUpdatedTransform() override;
+    bool GetOverlappingBounds(const Rect& gamebounds) const override;
+    bool GetOutOfBounds(const Rect& gamebounds) const override;
 
     void SetRestitution(float restitution) {
         m_Restitution = restitution;

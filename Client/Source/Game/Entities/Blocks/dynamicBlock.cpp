@@ -44,7 +44,7 @@ void DynamicBlock::Draw(SpriteRenderer& renderer)
     renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
 }
 
-void DynamicBlock::SetUpdatedPosition()
+void DynamicBlock::SetUpdatedTransform()
 {
     m_Position = PhysicsUtils::MetersToPixels(m_RigidBody->GetPosition()) - m_Size / 2.f;
     m_Rotation = m_RigidBody->GetAngle();
@@ -54,12 +54,12 @@ void DynamicBlock::SetUpdatedPosition()
     m_BoundingRect.SetScale(m_Size);
 }
 
-bool DynamicBlock::GetOverlappingBounds(const Rect& gamebounds)
+bool DynamicBlock::GetOverlappingBounds(const Rect& gamebounds) const
 {
     return gamebounds.overlaps(m_BoundingRect);
 }
 
-bool DynamicBlock::GetOutOfBounds(const Rect& gamebounds)
+bool DynamicBlock::GetOutOfBounds(const Rect& gamebounds) const
 {
     return !gamebounds.contains(m_BoundingRect);
 }

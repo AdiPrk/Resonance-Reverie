@@ -14,7 +14,7 @@ public:
     void SetupRigidBody() override;
 
     void Update(float dt) override;
-    void SetUpdatedPosition() override;
+    void SetUpdatedTransform() override;
 
 private:
 

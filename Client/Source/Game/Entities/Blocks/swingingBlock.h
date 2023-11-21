@@ -14,7 +14,7 @@ public:
     void SetupRigidBody() override;
 
     void Draw(SpriteRenderer& renderer) override;
-    void SetUpdatedPosition() override;
+    void SetUpdatedTransform() override;
 
     void SetRestitution(float restitution) {
         m_Restitution = restitution;

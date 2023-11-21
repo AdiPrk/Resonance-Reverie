@@ -32,7 +32,7 @@ public:
     // Update player
     void Update(float dt) override;
     void Draw(SpriteRenderer& renderer) override;
-    void SetUpdatedPosition() override;
+    void SetUpdatedTransform() override;
     
     b2Body*& GetRigidbody() { return m_RigidBody; }
 

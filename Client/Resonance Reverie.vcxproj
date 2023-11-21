@@ -261,6 +261,7 @@
     <ClInclude Include="Source\Graphics\Renderer\camera.h" />
     <ClInclude Include="Source\Graphics\Renderer\postProcessor.h" />
     <ClInclude Include="Source\Graphics\Renderer\textRenderer.h" />
+    <ClInclude Include="Source\Graphics\Texture\sprite.h" />
     <ClInclude Include="Source\Graphics\Window\window.h" />
     <ClInclude Include="Source\Graphics\Renderer\spriteRenderer.h" />
     <ClInclude Include="Source\Graphics\ResourceManager\resourceManager.h" />

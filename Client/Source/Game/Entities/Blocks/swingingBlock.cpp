@@ -81,7 +81,7 @@ void SwingingBlock::Draw(SpriteRenderer& renderer)
     renderer.DrawLine(blockCenter, anchorCenter, lineWidth, m_Sprite);
 }
 
-void SwingingBlock::SetUpdatedPosition()
+void SwingingBlock::SetUpdatedTransform()
 {
     m_Position = PhysicsUtils::MetersToPixels(m_RigidBody->GetPosition()) - m_Size / 2.f;
     m_Rotation = m_RigidBody->GetAngle();

@@ -21,12 +21,11 @@ public:
 
     virtual void Update(float dt) {};
     virtual void Draw(SpriteRenderer& renderer);
-    virtual void SetUpdatedPosition() {};
+    virtual void SetUpdatedTransform() {};
     virtual void SetupRigidBody() {};
-    virtual bool GetOverlappingBounds(const Rect& gamebounds) { return false; }
-    virtual bool GetOutOfBounds(const Rect& gamebounds) { return false; }
+    virtual bool GetOverlappingBounds(const Rect& gamebounds) const { return true; }
+    virtual bool GetOutOfBounds(const Rect& gamebounds) const { return false; }
     virtual void SetLightInfo() {};
-    virtual const Rect& Bounds() { return Rect(); };
     void setPreviousPosition();
     void setLerpedPosition(float t);
 

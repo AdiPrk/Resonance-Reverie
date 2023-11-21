@@ -34,13 +34,19 @@ Shader& ResourceManager::GetShader(std::string name)
 void ResourceManager::LoadTexturesFromDirectory(const char* directory)
 {
     for (const auto& entry : std::filesystem::directory_iterator(directory)) {
-        if (entry.is_regular_file()) {
-            std::filesystem::path filePath = entry.path();
-            std::string filename = filePath.filename().string();
-            // Assuming the key for the texture is the filename without the extension
-            std::string key = filePath.stem().string();
-            LoadTexture(filePath.string(), key);
+        if (!entry.is_regular_file()) continue;
+
+        std::filesystem::path filePath = entry.path();
+        std::string filename = filePath.filename().string();
+
+        unsigned int columns = 1, rows = 1;
+        std::string key = filePath.stem().string();
+
+        if (filename.find("ss_") == 0) {
+            sscanf_s(filename.c_str(), "ss_%ux%u_%s", &columns, &rows, key.c_str());
         }
+        
+        LoadTexture(filePath.string(), key, columns, rows);
     }
 }
 
@@ -80,9 +86,9 @@ void ResourceManager::LoadShadersFromDirectory(const char* directory)
     }
 }
 
-Texture2D& ResourceManager::LoadTexture(const std::string& file, std::string name)
+Texture2D& ResourceManager::LoadTexture(const std::string& file, std::string name, unsigned columns, unsigned rows)
 {
-    Textures[name] = loadTextureFromFile(file);
+    Textures[name] = loadTextureFromFile(file, columns, rows);
     return Textures[name];
 }
 
@@ -154,7 +160,7 @@ Shader ResourceManager::loadShaderFromFile(const std::string& vShaderFile, const
     return shader;
 }
 
-Texture2D ResourceManager::loadTextureFromFile(const std::string& file)
+Texture2D ResourceManager::loadTextureFromFile(const std::string& file, unsigned columns, unsigned rows)
 {
     // create texture object
     Texture2D texture;
