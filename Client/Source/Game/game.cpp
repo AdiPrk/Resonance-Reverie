@@ -101,7 +101,7 @@ void Game::Init(Window* window)
     backgroundEmitter->particleProps.sizeVariation = 5.0f;
     
     // configure game objects
-    m_Player = new Player(ResourceManager::GetTexture("player"), this);
+    m_Player = new Player(ResourceManager::GetTexture("ss2x3player"), this);
     m_Player->SetupRigidBody();
 
     // load levels
@@ -253,7 +253,7 @@ void Game::Update(float dt, float accumulator)
     ThreadPool::threadPool.wait_for_tasks();
 }
 
-void Game::DrawScene(float t) {
+void Game::DrawScene(float dt, float t) {
     // draw level backgrounds
     Renderer->SetShader(ResourceManager::GetShader("background"));
     for (auto& room : m_Rooms)
@@ -279,6 +279,14 @@ void Game::DrawScene(float t) {
     backgroundEmitter->RenderParticlesInstanced();
 
     // draw player
+    Texture2D& tex = ResourceManager::GetTexture("ss2x3player");
+    static float tot = 0;
+    tot += dt;
+    if (tot > 0.3f) {
+        tex.Index++;
+        tot = 0;
+    }
+    if (tex.Index >= 6) tex.Index = 0;
     m_Player->Draw(*Renderer);
 
 #if DO_NETWORKING
@@ -307,7 +315,7 @@ void Game::Render(float dt, float currentTime, float t)
     Effects->BeginRender();
 
     // Draw the scene!
-    DrawScene(t);
+    DrawScene(dt, t);
 
     // End rendering to postprocessing framebuffer and render the scene
     Effects->EndRender();

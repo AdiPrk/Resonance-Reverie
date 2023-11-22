@@ -46,7 +46,7 @@ public:
     float CalculateSlowedDT(float dt);
     void UpdateCamera(float dt);
     void Render(float dt, float currentTime, float t);
-    void DrawScene(float t);
+    void DrawScene(float dt, float t);
     
     // utils
     void FilterRooms(float dt);

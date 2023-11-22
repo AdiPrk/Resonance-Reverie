@@ -30,11 +30,9 @@ void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec
     glm::mat4 model = glm::mat4(1.0f);
 
     model = glm::translate(model, glm::vec3(position, 0.0f));  // first translate (transformations are: scale happens first, then rotation, and then final translation happens; reversed order)
-
     model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f)); // move origin of rotation to center of quad
     model = glm::rotate(model, rotate, glm::vec3(0.0f, 0.0f, 1.0f)); // then rotate
     model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f)); // move origin back
-
     model = glm::scale(model, glm::vec3(size, 1.0f));
 
     this->shader.SetMatrix4("model", model);
@@ -44,7 +42,19 @@ void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec
         this->shader.SetVector4f("spriteColor", color);
     }
 
-    if (repetition.x != 0 && repetition.y != 0) {
+    if ((repetition.x != 0 && repetition.y != 0) || texture.IsSpriteSheet) {
+        if (texture.IsSpriteSheet) {
+            if (repetition.x == 0 || repetition.y == 0) {
+                repetition = size;
+            }
+            repetition.x *= texture.Rows;
+            repetition.y *= texture.Columns;
+            unsigned index = texture.Index;
+            float xOffset = (index / texture.Rows) * texture.SpriteWidth;
+            float yOffset = (index % texture.Columns) * texture.SpriteHeight;
+            //std::cout << index << " " << texture.Columns << " " << texture.Rows << std::endl;
+            this->shader.SetVector2f("offset", xOffset, yOffset);
+        }
         this->shader.SetVector2f("repetition", size.x / repetition.x, size.y / repetition.y);
     }
     else {
@@ -104,4 +114,4 @@ void SpriteRenderer::initRenderData()
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-}   
+}

@@ -366,7 +366,8 @@ void Player::Draw(SpriteRenderer& renderer) {
 
     glm::vec2 truerenderpos = m_RenderPosition - 1.0f;
 
-    renderer.DrawSprite(m_Sprite, truerenderpos, m_RenderSize, m_Rotation, m_Color);
+    Texture2D& playerTexture = ResourceManager::GetTexture("ss2x3player");
+    renderer.DrawSprite(playerTexture, truerenderpos, m_RenderSize, m_Rotation, m_Color);
 
     if (m_Grappling) {
         // Calculating line info
@@ -374,7 +375,7 @@ void Player::Draw(SpriteRenderer& renderer) {
         glm::vec2 anchorCenter = m_GrapplingTo;
 
         renderer.SetShader(ResourceManager::GetShader("saber"));
-        renderer.DrawLine(playerCenter, anchorCenter, 6.0f, m_Sprite);
+        renderer.DrawLine(playerCenter, anchorCenter, 6.0f, ResourceManager::GetTexture("square"));
     }
 
     m_Light->m_Position = m_RenderPosition + m_Size * 0.5f;

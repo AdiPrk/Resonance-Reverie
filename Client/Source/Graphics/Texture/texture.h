@@ -9,6 +9,10 @@ public:
     unsigned int ID;
     // texture image dimensions
     unsigned int Width, Height; // width and height of loaded image in pixels
+    unsigned int SpriteWidth, SpriteHeight; // For spritesheets
+    unsigned int Rows, Columns; // For spritesheets
+    unsigned int Index; // Index for spritesheet
+    bool IsSpriteSheet; // is it a spritesheet?
     // texture Format
     unsigned int Internal_Format; // format of texture object
     unsigned int Image_Format; // format of loaded image
