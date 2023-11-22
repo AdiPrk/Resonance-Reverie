@@ -35,7 +35,7 @@ public:
     RoomCode LoadNext(const char* filename, Game* game, const Rect& boundsToSearch, bool setAsCurrent = false);
 
     // render level
-    void Draw(SpriteRenderer& renderer);
+    void Draw(SpriteRenderer& renderer, float dt);
 
     const int ID() const { return m_ID; };
     const Rect Bounds() const { return m_BoundingRect; }

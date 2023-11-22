@@ -3,7 +3,7 @@
 #include "block.h"
 #include <Source/Graphics/Texture/texture.h>
 #include <Source/Game/Physics/physicsWorld.h>
-#include <Source/Graphics/ResourceManager/resourceManager.h>
+#include <Source/ResourceManager/resourceManager.h>
 
 // constructor
 Block::Block(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D sprite)
@@ -36,7 +36,7 @@ void Block::SetupRigidBody() {
     m_RigidBody->CreateFixture(&fixtureDef);
 }
 
-void Block::Draw(SpriteRenderer& renderer)
+void Block::Draw(SpriteRenderer& renderer, float dt)
 {
     renderer.SetShader(ResourceManager::GetShader("sprite"));
     renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color, { 25.0f, 25.0f });

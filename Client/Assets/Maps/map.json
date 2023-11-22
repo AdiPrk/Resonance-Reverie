@@ -473,7 +473,7 @@
     "camOffsetY": 0,
     "camScale": 1.25,
     "camScaleSpeed": 1,
-    "id": 5,
+    "id": 1,
     "starting": true
   },
   {
@@ -540,14 +540,6 @@
         "offsetY": 0
       },
       {
-        "x": 1900,
-        "y": 712.5,
-        "w": 175,
-        "h": 62.5,
-        "id": 58,
-        "type": "4"
-      },
-      {
         "x": 1600,
         "y": 900,
         "w": 2075,
@@ -559,6 +551,14 @@
         "dynamic": false,
         "restitution": 0,
         "density": 1
+      },
+      {
+        "x": 1900,
+        "y": 706.25,
+        "w": 175,
+        "h": 68.75,
+        "id": 78,
+        "type": "4"
       }
     ],
     "backgroundColor": "#000000",
@@ -566,7 +566,7 @@
     "camOffsetY": 0,
     "camScale": 0.9,
     "camScaleSpeed": 1,
-    "id": 6
+    "id": 2
   },
   {
     "x": 0,
@@ -593,7 +593,7 @@
     "camOffsetY": 0,
     "camScale": 1,
     "camScaleSpeed": 1,
-    "id": 7
+    "id": 3
   },
   {
     "x": 0,
@@ -620,6 +620,6 @@
     "camOffsetY": 0,
     "camScale": 1,
     "camScaleSpeed": 1,
-    "id": 8
+    "id": 4
   }
 ]

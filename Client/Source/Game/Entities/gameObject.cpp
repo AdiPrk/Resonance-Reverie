@@ -1,7 +1,7 @@
 #include <PCH/pch.h>
 #include "gameObject.h"
 #include <Source/Game/Physics/physicsWorld.h>
-#include <Source/Graphics/ResourceManager/resourceManager.h>
+#include <Source/ResourceManager/resourceManager.h>
 
 GameObject::GameObject()
     : m_Position(0.0f, 0.0f)
@@ -14,6 +14,7 @@ GameObject::GameObject()
     , m_RenderPosition(m_Position)
     , m_RenderDepth(0.0f)
     , m_RigidBody(nullptr)
+    , m_Animator()
 {
 }
 
@@ -28,6 +29,7 @@ GameObject::GameObject(Texture2D sprite, glm::vec4 color)
     , m_RenderPosition(m_Position)
     , m_RenderDepth(0.0f)
     , m_RigidBody(nullptr)
+    , m_Animator()
 {
 }
 
@@ -42,6 +44,7 @@ GameObject::GameObject(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D 
     , m_RenderPosition(m_Position)
     , m_RenderDepth(0.0f)
     , m_RigidBody(nullptr)
+    , m_Animator()
 {
 }
 
@@ -56,6 +59,7 @@ GameObject::GameObject(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec
     , m_RenderPosition(m_Position)
     , m_RenderDepth(0.0f)
     , m_RigidBody(nullptr)
+    , m_Animator()
 {
 }
 
@@ -67,7 +71,7 @@ GameObject::~GameObject()
     }
 }
 
-void GameObject::Draw(SpriteRenderer& renderer)
+void GameObject::Draw(SpriteRenderer& renderer, float dt)
 {
     renderer.SetShader(ResourceManager::GetShader("sprite"));
     renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);

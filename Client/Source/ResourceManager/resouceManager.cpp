@@ -43,7 +43,7 @@ void ResourceManager::LoadTexturesFromDirectory(const char* directory)
         std::string key = filePath.stem().string();
 
         if (filename.find("ss") == 0) {
-            sscanf_s(key.c_str(), "ss%ux%u", &rows, &columns);
+            sscanf_s(key.c_str(), "ss%ux%u", &columns, &rows);
         }
         
         LoadTexture(filePath.string(), key, columns, rows);
@@ -177,6 +177,7 @@ Texture2D ResourceManager::loadTextureFromFile(const std::string& file, unsigned
     // load image
     int width, height, nrChannels;
     unsigned char* data = stbi_load(file.c_str(), &width, &height, &nrChannels, 0);
+    std::cout << "Texture Loaded: " << file.c_str() << std::endl;
 
     // check if data is loaded successfully
     if (!data)
@@ -197,8 +198,6 @@ Texture2D ResourceManager::loadTextureFromFile(const std::string& file, unsigned
         texture.Image_Format = GL_RGB;
     }
 
-    texture.Generate(width, height, data);
-
     // Calculate the width and height of a single sprite
     texture.SpriteWidth = width / columns;
     texture.SpriteHeight = height / rows;
@@ -206,7 +205,9 @@ Texture2D ResourceManager::loadTextureFromFile(const std::string& file, unsigned
     texture.Columns = columns;
     texture.Index = 0;
     texture.IsSpriteSheet = columns != 1 || rows != 1;
-    //std::cout << texture.Columns << " " << texture.Rows << std::endl;
+    
+    texture.Generate(width, height, data, rows * columns);
+    std::cout << std::endl;
 
     // and finally free image data
     stbi_image_free(data);

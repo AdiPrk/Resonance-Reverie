@@ -1,7 +1,7 @@
 #include <PCH/pch.h>
 
 #include "Graphics/Window/window.h"
-#include "Graphics/ResourceManager/resourceManager.h"
+#include "ResourceManager/resourceManager.h"
 #include "Game/game.h"
 #include "Game/Inputs/inputManager.h"
 #include "Networking/networking.h"

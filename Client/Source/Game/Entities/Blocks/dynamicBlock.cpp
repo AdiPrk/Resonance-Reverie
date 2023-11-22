@@ -3,7 +3,7 @@
 #include "dynamicBlock.h"
 #include <Source/Graphics/Texture/texture.h>
 #include <Source/Game/Physics/physicsWorld.h>
-#include <Source/Graphics/ResourceManager/resourceManager.h>
+#include <Source/ResourceManager/resourceManager.h>
 
 // constructor
 DynamicBlock::DynamicBlock(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D sprite)
@@ -38,7 +38,7 @@ void DynamicBlock::SetupRigidBody() {
     m_RigidBody->CreateFixture(&fixtureDef);
 }
 
-void DynamicBlock::Draw(SpriteRenderer& renderer)
+void DynamicBlock::Draw(SpriteRenderer& renderer, float dt)
 {
     renderer.SetShader(ResourceManager::GetShader("sprite"));
     renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);

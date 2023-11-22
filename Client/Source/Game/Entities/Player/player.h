@@ -25,13 +25,13 @@ class Player : public GameObject
 {
 public:   
     // constructor(s)
-    Player(Texture2D _sprite, Game* game);
+    Player(Game* game);
 
     void SetupRigidBody() override;
 
     // Update player
     void Update(float dt) override;
-    void Draw(SpriteRenderer& renderer) override;
+    void Draw(SpriteRenderer& renderer, float dt) override;
     void SetUpdatedTransform() override;
     
     b2Body*& GetRigidbody() { return m_RigidBody; }
@@ -61,6 +61,7 @@ private:
     glm::vec2 m_SpawnPosition;
     Rect m_BoundingRect;
     bool m_Respawn;
+    bool m_Facing = false; // false is left
 
     // Movement
     bool m_CanJump = true;

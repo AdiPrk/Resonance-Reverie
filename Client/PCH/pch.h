@@ -26,6 +26,11 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+// fmod
+#include <fmod.hpp>
+#include <fmod_common.h>
+#include <fmod_errors.h>
+
 // modern json for cpp
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;

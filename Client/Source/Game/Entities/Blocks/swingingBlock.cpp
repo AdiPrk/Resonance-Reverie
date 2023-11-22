@@ -3,7 +3,7 @@
 #include "swingingBlock.h"
 #include <Source/Graphics/Texture/texture.h>
 #include <Source/Game/Physics/physicsWorld.h>
-#include <Source/Graphics/ResourceManager/resourceManager.h>
+#include <Source/ResourceManager/resourceManager.h>
 
 // constructor
 SwingingBlock::SwingingBlock(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D sprite)
@@ -63,7 +63,7 @@ void SwingingBlock::SetupRigidBody() {
     physicsWorld.CreateJoint(&jd);
 }
 
-void SwingingBlock::Draw(SpriteRenderer& renderer)
+void SwingingBlock::Draw(SpriteRenderer& renderer, float dt)
 {
     glm::vec2 anchorRenderSize = { 10.0f, 10.0f };
 

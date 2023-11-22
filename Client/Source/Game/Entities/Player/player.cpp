@@ -4,13 +4,13 @@
 #include <Source/Game/Physics/physicsWorld.h>
 #include <Source/Game/Inputs/inputManager.h>
 #include <Source/Graphics/Texture/texture.h>
-#include <Source/Graphics/ResourceManager/resourceManager.h>
-#include <Source/Graphics/Renderer/postProcessor.h>
+#include <Source/ResourceManager/resourceManager.h>
+#include <Source/Graphics/Renderer/Effects/postProcessor.h>
 #include <Source/Game/Entities/Environment/light.h>
 
 // constructor(s)
-Player::Player(Texture2D _sprite, Game* game)
-    : GameObject(_sprite, { 0.2f, 1.f, 0.4f, 1.f }) // sprite, color
+Player::Player(Game* game)
+    : GameObject(ResourceManager::GetTexture("ss4x5player")) // sprite, color
     , m_SpawnPosition(0)
     , m_BoundingRect(0, 0, 25.f, 25.f)
     , m_initPosition(true)
@@ -21,8 +21,8 @@ Player::Player(Texture2D _sprite, Game* game)
     , m_Game(game)
     , m_Light(nullptr)
 {
-    m_Size = { 21.f, 38.f };
-    m_RenderSize = { 23.f, 40.f };
+    m_Size = { 23.f, 38.f };
+    m_RenderSize = { 27.f, 42.f };
 
     m_Light = new Light(m_Position, 200.0f, 0.1f);
 }
@@ -349,8 +349,7 @@ void Player::RespawnSelf()
     SetUpdatedTransform();
 }
 
-// When you need to get positions or sizes from Box2D
-
+// Update transform from Box2D
 void Player::SetUpdatedTransform()
 {
     m_Position = PhysicsUtils::MetersToPixels(m_RigidBody->GetPosition()) - m_Size / 2.f;
@@ -361,13 +360,18 @@ void Player::SetUpdatedTransform()
     m_BoundingRect.SetScale(m_Size);
 }
 
-void Player::Draw(SpriteRenderer& renderer) {
+void Player::Draw(SpriteRenderer& renderer, float dt) {
     renderer.SetShader(ResourceManager::GetShader("sprite"));
 
     glm::vec2 truerenderpos = m_RenderPosition - 1.0f;
+    
+    m_Animator.SetFirstIndex(0);
+    m_Animator.SetLastIndex(1);
+    m_Animator.SetFrameDuration(0.2f);
 
-    Texture2D& playerTexture = ResourceManager::GetTexture("ss2x3player");
-    renderer.DrawSprite(playerTexture, truerenderpos, m_RenderSize, m_Rotation, m_Color);
+    m_Animator.Update(dt);
+
+    renderer.DrawSpriteFrame(m_Sprite, m_Animator.GetCurrentFrameIndex(), truerenderpos, m_RenderSize, m_Rotation);
 
     if (m_Grappling) {
         // Calculating line info

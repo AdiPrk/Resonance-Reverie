@@ -4,7 +4,7 @@
 
 #include "Source/Graphics/Shader/shader.h"
 #include "Source/Graphics/Texture/texture.h"
-#include <Source/Graphics/ResourceManager/resourceManager.h>
+#include <Source/ResourceManager/resourceManager.h>
 
 SpriteRenderer::SpriteRenderer(Shader& shader)
 {
@@ -23,7 +23,7 @@ void SpriteRenderer::SetShader(Shader& shader)
     shader.Use();
 }
 
-void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, float rotate, glm::vec4 color, glm::vec2 repetition)
+void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, glm::vec2 repetition)
 {
     // prepare transformations
     this->shader.Use();
@@ -31,7 +31,7 @@ void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec
 
     model = glm::translate(model, glm::vec3(position, 0.0f));  // first translate (transformations are: scale happens first, then rotation, and then final translation happens; reversed order)
     model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f)); // move origin of rotation to center of quad
-    model = glm::rotate(model, rotate, glm::vec3(0.0f, 0.0f, 1.0f)); // then rotate
+    model = glm::rotate(model, rotation, glm::vec3(0.0f, 0.0f, 1.0f)); // then rotate
     model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f)); // move origin back
     model = glm::scale(model, glm::vec3(size, 1.0f));
 
@@ -41,20 +41,16 @@ void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec
     if (this->shader.HasUniform("spriteColor")) {
         this->shader.SetVector4f("spriteColor", color);
     }
-
-    if ((repetition.x != 0 && repetition.y != 0) || texture.IsSpriteSheet) {
-        if (texture.IsSpriteSheet) {
-            if (repetition.x == 0 || repetition.y == 0) {
-                repetition = size;
-            }
-            repetition.x *= texture.Rows;
-            repetition.y *= texture.Columns;
-            unsigned index = texture.Index;
-            float xOffset = (index / texture.Rows) * texture.SpriteWidth;
-            float yOffset = (index % texture.Columns) * texture.SpriteHeight;
-            //std::cout << index << " " << texture.Columns << " " << texture.Rows << std::endl;
-            this->shader.SetVector2f("offset", xOffset, yOffset);
+    
+    if (texture.IsSpriteSheet) {
+        static unsigned index = texture.Index;
+        if (texture.Index != index) {
+            index = texture.Index;
+            this->shader.SetUnsigned("spriteIndex", index);
         }
+    }
+
+    if ((repetition.x != 0 && repetition.y != 0)) {
         this->shader.SetVector2f("repetition", size.x / repetition.x, size.y / repetition.y);
     }
     else {
@@ -68,6 +64,12 @@ void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec
 
     ResourceManager::BindVAO(this->quadVAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+}
+
+void SpriteRenderer::DrawSpriteFrame(Texture2D& texture, unsigned frame, glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, glm::vec2 repetition)
+{
+    texture.Index = frame;
+    DrawSprite(texture, position, size, rotation, color, repetition);
 }
 
 void SpriteRenderer::DrawLine(glm::vec2 p1, glm::vec2 p2, float thickness, Texture2D& texture)

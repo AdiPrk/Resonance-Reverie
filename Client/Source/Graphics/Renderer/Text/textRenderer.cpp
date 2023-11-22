@@ -3,7 +3,7 @@
 #include <freetype/freetype.h>
 
 #include "textRenderer.h"
-#include <Source/Graphics/ResourceManager/resourceManager.h>
+#include <Source/ResourceManager/resourceManager.h>
 
 
 TextRenderer::TextRenderer()

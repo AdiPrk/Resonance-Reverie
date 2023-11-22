@@ -36,9 +36,7 @@ public:
     static void BindVAO(GLuint quadVAO);
 
     static void UpdateAllShaderTimes(float time);
-    static void UpdateAllShaderViewMatrices(glm::mat4& view, glm::mat4& projView);
-    static void UpdateAllShaderProjectionMatrices(glm::mat4& proj);
-
+    
 private:
     // private constructor, that is we do not want any actual resource manager objects. Its members and functions should be publicly available (static).
     ResourceManager() { }

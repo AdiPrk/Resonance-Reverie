@@ -19,6 +19,7 @@ public:
     void SetUniformsFromCode();
     // utility functions
     void SetFloat(const std::string& name, float value);
+    void SetUnsigned(const std::string& name, unsigned int value);
     void SetInteger(const std::string& name, int value);
     void SetVector2f(const std::string& name, float x, float y);
     void SetVector2f(const std::string& name, const glm::vec2& value);

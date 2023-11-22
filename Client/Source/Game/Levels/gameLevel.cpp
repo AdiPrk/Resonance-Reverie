@@ -1,5 +1,5 @@
 #include <PCH/pch.h>
-#include <Source/Graphics/ResourceManager/resourceManager.h>
+#include <Source/ResourceManager/resourceManager.h>
 
 #include <Source/Game/Entities/gameObject.h>
 #include <Source/Game/Entities/Player/player.h>
@@ -12,7 +12,7 @@
 #include <Source/Game/Entities/Interactables/grapplePoint.h>
 #include <Source/Game/Entities/Environment/light.h>
 
-#include <Source/Graphics/Renderer/spriteRenderer.h>
+#include <Source/Graphics/Renderer/Sprites/spriteRenderer.h>
 #include <Source/Graphics/Renderer/camera.h>
 
 #include <Source/Game/game.h>
@@ -248,12 +248,12 @@ RoomCode GameLevel::LoadNext(const char* filename, Game* game, const Rect& bound
     return roomCode;
 }
 
-void GameLevel::Draw(SpriteRenderer& renderer)
+void GameLevel::Draw(SpriteRenderer& renderer, float dt)
 {
     Light::lightIndex = 0;
 
     for (GameObject*& entity : this->Entities) {
-        entity->Draw(renderer);
+        entity->Draw(renderer, dt);
 
         entity->SetLightInfo();
     }

@@ -13,7 +13,7 @@ public:
     // constructor
     Light(glm::vec2 pos, float radius, float intensity);
 
-    void Draw(SpriteRenderer& renderer) override;
+    void Draw(SpriteRenderer& renderer, float dt) override;
     void SetLightInfo() override;
 
     float m_Radius;

@@ -3,7 +3,7 @@
 #include "light.h"
 #include <Source/Graphics/Texture/texture.h>
 #include <Source/Game/Physics/physicsWorld.h>
-#include <Source/Graphics/ResourceManager/resourceManager.h>
+#include <Source/ResourceManager/resourceManager.h>
 
 int Light::lightIndex = 0;
 
@@ -15,7 +15,7 @@ Light::Light(glm::vec2 pos, float radius, float intensity)
     m_Position = pos;
 }
 
-void Light::Draw(SpriteRenderer& renderer)
+void Light::Draw(SpriteRenderer& renderer, float dt)
 {
     m_Size = glm::vec2(m_Radius, m_Radius);
     m_Rotation = 0.0f;

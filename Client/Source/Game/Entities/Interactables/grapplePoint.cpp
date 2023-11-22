@@ -3,7 +3,7 @@
 #include "grapplePoint.h"
 #include <Source/Graphics/Texture/texture.h>
 #include <Source/Game/Physics/physicsWorld.h>
-#include <Source/Graphics/ResourceManager/resourceManager.h>
+#include <Source/ResourceManager/resourceManager.h>
 
 // constructor
 GrapplePoint::GrapplePoint(glm::vec2 pos, glm::vec2 size, float radius, Texture2D sprite)
@@ -36,7 +36,7 @@ void GrapplePoint::SetupRigidBody() {
     m_RigidBody->CreateFixture(&fixtureDef);
 }
 
-void GrapplePoint::Draw(SpriteRenderer& renderer)
+void GrapplePoint::Draw(SpriteRenderer& renderer, float dt)
 {
     renderer.SetShader(ResourceManager::GetShader("sprite"));
     renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);

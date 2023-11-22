@@ -1,7 +1,7 @@
 #pragma once
 
 #include <PCH/pch.h>
-#include <Source/Graphics/ResourceManager/resourceManager.h>
+#include <Source/ResourceManager/resourceManager.h>
 #include <Source/Math/utils.h>
 
 enum PARTICLE_FADE_STYLE {

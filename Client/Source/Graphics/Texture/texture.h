@@ -9,6 +9,7 @@ public:
     unsigned int ID;
     // texture image dimensions
     unsigned int Width, Height; // width and height of loaded image in pixels
+    unsigned int NumSprites; // number of sprites in spritesheet
     unsigned int SpriteWidth, SpriteHeight; // For spritesheets
     unsigned int Rows, Columns; // For spritesheets
     unsigned int Index; // Index for spritesheet
@@ -26,7 +27,7 @@ public:
     // constructor (sets default texture modes)
     Texture2D();
     // generates texture from image data
-    void Generate(unsigned int width, unsigned int height, unsigned char* data);
+    void Generate(unsigned int width, unsigned int height, unsigned char* data, unsigned int numSprites = 1);
     // binds the texture as the current active GL_TEXTURE_2D texture object
     void Bind() const;
 

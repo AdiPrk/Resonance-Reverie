@@ -13,5 +13,5 @@ public:
     Lava(glm::vec2 pos, glm::vec2 size, Texture2D sprite);
     void SetupRigidBody() override;
 
-    void Draw(SpriteRenderer& renderer) override;
+    void Draw(SpriteRenderer& renderer, float dt) override;
 };

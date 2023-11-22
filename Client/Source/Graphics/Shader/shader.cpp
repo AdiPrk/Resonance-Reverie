@@ -1,6 +1,6 @@
 #include <PCH/pch.h>
 #include "shader.h"
-#include <Source/Graphics/ResourceManager/resourceManager.h>
+#include <Source/ResourceManager/resourceManager.h>
 
 float Shader::iTime = 0.0f;
 GLuint Shader::uboMatrices = 0;
@@ -70,6 +70,11 @@ void Shader::SetFloat(const std::string& name, float value)
 {
     this->Use();
     glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
+}
+void Shader::SetUnsigned(const std::string& name, unsigned int value)
+{
+    this->Use();
+    glUniform1ui(glGetUniformLocation(ID, name.c_str()), value);
 }
 void Shader::SetInteger(const std::string& name, int value)
 {

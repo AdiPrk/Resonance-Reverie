@@ -1,10 +1,10 @@
 #include <PCH/pch.h>
 #include "game.h"
 
-#include <Source/Graphics/Resourcemanager/resourceManager.h>
-#include <Source/Graphics/Renderer/spriteRenderer.h>
-#include <Source/Graphics/Renderer/textRenderer.h>
-#include <Source/Graphics/Renderer/postProcessor.h>
+#include <Source/ResourceManager/resourceManager.h>
+#include <Source/Graphics/Renderer/Sprites/spriteRenderer.h>
+#include <Source/Graphics/Renderer/Text/textRenderer.h>
+#include <Source/Graphics/Renderer/Effects/postProcessor.h>
 #include <Source/Graphics/Renderer/camera.h>
 #include <Source/Graphics/Particles/particleEmitter.h>
 
@@ -101,7 +101,7 @@ void Game::Init(Window* window)
     backgroundEmitter->particleProps.sizeVariation = 5.0f;
     
     // configure game objects
-    m_Player = new Player(ResourceManager::GetTexture("ss2x3player"), this);
+    m_Player = new Player(this);
     m_Player->SetupRigidBody();
 
     // load levels
@@ -268,7 +268,7 @@ void Game::DrawScene(float dt, float t) {
     // draw levels
     for (auto& room : m_Rooms)
     {
-        room.Draw(*Renderer);
+        room.Draw(*Renderer, dt);
     }
 
     // Particles
@@ -279,15 +279,7 @@ void Game::DrawScene(float dt, float t) {
     backgroundEmitter->RenderParticlesInstanced();
 
     // draw player
-    Texture2D& tex = ResourceManager::GetTexture("ss2x3player");
-    static float tot = 0;
-    tot += dt;
-    if (tot > 0.3f) {
-        tex.Index++;
-        tot = 0;
-    }
-    if (tex.Index >= 6) tex.Index = 0;
-    m_Player->Draw(*Renderer);
+    m_Player->Draw(*Renderer, dt);
 
 #if DO_NETWORKING
     // draw other players

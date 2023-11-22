@@ -5,10 +5,10 @@ in vec2 TexCoords;
 in vec2 worldPos;
 out vec4 fragColor;
 
-uniform sampler2D textureHandle;
+uniform sampler2DArray textureHandle;
+uniform unsigned int spriteIndex;
 uniform vec4 spriteColor;
 uniform vec2 repetition;
-uniform vec2 offset;
 
 layout (std140) uniform Time
 {
@@ -44,9 +44,9 @@ void main()
         total_light += lights[i].intensity * spotEffect;
     }
 
-    vec2 newTexCoords = (TexCoords + offset) * repetition;
+    vec2 newTexCoords = TexCoords * repetition;
 
-    fragColor = spriteColor * texture(textureHandle, newTexCoords);
+    fragColor = spriteColor * texture(textureHandle, vec3(newTexCoords, spriteIndex));
 
     // Apply light
     float dither = randdither(newTexCoords) * 0.05;

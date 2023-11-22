@@ -1,6 +1,7 @@
 #include <PCH/pch.h>
 #include "postProcessor.h"
-#include <Source/Graphics/ResourceManager/resourceManager.h>
+#include <Source/ResourceManager/resourceManager.h>
+#include "../Sprites/spriteRenderer.h"
 
 PostProcessor::PostProcessor(Shader shader, unsigned int width, unsigned int height)
     : PostProcessingShader(shader)
@@ -10,6 +11,9 @@ PostProcessor::PostProcessor(Shader shader, unsigned int width, unsigned int hei
     , Confuse(false)
     , Chaos(false)
     , Shake(false)
+    , Invert(false)
+    , Greyscale(false)
+    , Blur(false)
     , m_ViewportInfo()
 {
     // initialize renderbuffer/framebuffer object
@@ -60,16 +64,24 @@ PostProcessor::PostProcessor(Shader shader, unsigned int width, unsigned int hei
     glUniform1fv(glGetUniformLocation(this->PostProcessingShader.ID, "blur_kernel"), 9, blur_kernel);
 }
 
+
 void PostProcessor::Update(float dt)
 {
-    // reduce shake time
-    if (shakeTime > 0.0f)
-    {
-        Shake = true;
-        shakeTime -= dt;
+    UpdateEffect(shakeTime, Shake, dt);
+    UpdateEffect(blurTime, Blur, dt);
+    UpdateEffect(invertTime, Invert, dt);
+    UpdateEffect(greyscaleTime, Greyscale, dt);
+}
 
-        if (shakeTime <= 0.0f) {
-            Shake = false;
+void PostProcessor::UpdateEffect(float& effectTime, bool& effectFlag, float dt)
+{
+    if (effectTime > 0.0f)
+    {
+        effectFlag = true;
+        effectTime -= dt;
+
+        if (effectTime <= 0.0f) {
+            effectFlag = false;
         }
     }
 }

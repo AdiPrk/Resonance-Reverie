@@ -2,8 +2,8 @@
 #include "physicsWorld.h"
 #include <Source/Game/Entities/Player/player.h>
 #include <Source/Game/Entities/Interactables/grapplePoint.h>
-#include <Source/Graphics/Resourcemanager/resourceManager.h>
-#include <Source/Graphics/Renderer/spriteRenderer.h>
+#include <Source/ResourceManager/resourceManager.h>
+#include <Source/Graphics/Renderer/Sprites/spriteRenderer.h>
 
 b2World physicsWorld(b2Vec2(0.0f, 20.0f));
 
