@@ -11,13 +11,15 @@
 #include <Source/Game/Entities/Player/player.h>
 #include <Source/Game/Physics/physicsWorld.h>
 #include <Source/Game/Inputs/inputManager.h>
-
 #include <Source/Math/rect.h>
+
+#include <Source/Audio/audioManager.h>
 
 // Game-related State data
 SpriteRenderer*  Renderer;
 TextRenderer*    textRenderer;
 ParticleEmitter* playerEmitter;
+AudioManager* audioManager;
 
 Game::Game(unsigned int width, unsigned int height)
     : m_State(GAME_ACTIVE)
@@ -59,6 +61,7 @@ void Game::Init(Window* window)
 
     m_Window = window;
     m_Camera = new Camera();
+    audioManager = new AudioManager();
 
     physicsWorld.SetContactListener(&physicsContactListener);
 
@@ -118,6 +121,8 @@ void Game::Init(Window* window)
 
         backgroundEmitter->Emit(2);
     }
+
+    audioManager->SoundPlay("Assets/Audio/jump.ogg", true);
 }
     
 void Game::SetPreviousPositions() {
@@ -159,6 +164,8 @@ void Game::UpdateCamera(float dt)
 
 void Game::Update(float dt, float accumulator)
 {
+    audioManager->Update();
+
     if (m_FreezeTime > 0) {
         m_FreezeTime -= dt;
         m_SlowdownFactor = 0.0f;

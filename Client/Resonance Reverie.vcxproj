@@ -59,12 +59,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
+    <IntDir>$(Platform)\Intermediate\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
+    <IntDir>$(Platform)\Intermediate\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">
     <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
+    <IntDir>$(Platform)\Intermediate\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -102,8 +105,10 @@
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>robocopy "$(ProjectDir)Assets" "$(TargetDir)Assets" /MIR
+robocopy "$(ProjectDir)Dependencies\DLLs" "$(TargetDir)DLLs" /MIR
+move "$(TargetDir)DLLs\fmod.dll" "$(TargetDir)"
+rmdir "$(TargetDir)DLLs"</Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <RootFolder>
@@ -146,8 +151,10 @@
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>robocopy "$(ProjectDir)Assets" "$(TargetDir)Assets" /MIR
+robocopy "$(ProjectDir)Dependencies\DLLs" "$(TargetDir)DLLs" /MIR
+move "$(TargetDir)DLLs\fmod.dll" "$(TargetDir)"
+rmdir "$(TargetDir)DLLs"</Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <RootFolder>
@@ -192,8 +199,10 @@
       <ProgramDatabaseFile />
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>robocopy "$(ProjectDir)Assets" "$(TargetDir)Assets" /MIR
+robocopy "$(ProjectDir)Dependencies\DLLs" "$(TargetDir)DLLs" /MIR
+move "$(TargetDir)DLLs\fmod.dll" "$(TargetDir)"
+rmdir "$(TargetDir)DLLs"</Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <RootFolder>
