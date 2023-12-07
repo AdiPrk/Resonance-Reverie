@@ -1,4 +1,3 @@
-#define DO_NETWORKING 0
 #define NOMINMAX
 
 // GLEW and GLFW
@@ -44,11 +43,6 @@ using json = nlohmann::json;
 
 // threadpool
 #include <BS_thread_pool.hpp>
-
-// ENet
-#if DO_NETWORKING
-#include <enet/enet.h>
-#endif
 
 // mine
 #include <Engine/Math/random.h>

@@ -32,9 +32,6 @@ Game::Game(unsigned int width, unsigned int height)
     , Effects(nullptr)
     , backgroundEmitter(nullptr)
     , m_DrawColliders(false)
-#if DO_NETWORKING
-    , otherPlayers()
-#endif
 {
 }
 
@@ -130,12 +127,6 @@ void Game::SetPreviousPositions() {
             ent->setPreviousPosition();
         }
     }
-
-#if DO_NETWORKING
-    for (auto& other : otherPlayers) {
-        other.second.oldPos = other.second.currPos;
-    }
-#endif
 }
 
 void Game::CalculateLerpedPositions(float t) {
@@ -239,18 +230,6 @@ void Game::Update(float dt, float accumulator)
         backgroundEmitter->Emit();
     }
 
-   
-
-#if DO_NETWORKING
-    for (auto& other : otherPlayers) {
-        playerEmitter->SetPosition(other.second.renderPos + m_Player->GetSize() / 2.f);
-
-        for (int i = 0; i < 2; i++) {
-            playerEmitter->Emit();
-        }
-    }
-#endif
-
     playerEmitter->Update(dt);
     backgroundEmitter->Update(dt);
 
@@ -287,17 +266,6 @@ void Game::DrawScene(float dt, float t) {
 
     // draw player
     m_Player->Draw(*Renderer, *textRenderer, dt);
-
-#if DO_NETWORKING
-    // draw other players
-    for (auto& other : otherPlayers) {
-
-        other.second.renderPos.x = std::lerp(other.second.oldPos.x, other.second.currPos.x, t);
-        other.second.renderPos.y = std::lerp(other.second.oldPos.y, other.second.currPos.y, t);
-
-        Renderer->DrawSprite(m_Player->GetSprite(), other.second.renderPos, m_Player->GetSize(), other.second.rotation, m_Player->GetColor());
-    }
-#endif
 }
 
 // delta time, current time, interpolation factor
@@ -369,47 +337,6 @@ void Game::FilterRooms(float dt)
         }
     ), m_Rooms.end());
 }
-
-#if DO_NETWORKING
-
-void Game::PushPlayer(int id)
-{
-    otherPlayers[id] = OtherPlayer();
-
-    printf("Init player %i\n", id);
-}
-
-void Game::PopPlayer(int id)
-{
-    auto it = otherPlayers.find(id);
-    if (it != otherPlayers.end()) {
-        otherPlayers.erase(it);
-
-        printf("Remove player %i\n", id);
-    }
-
-}
-
-void Game::UpdatePlayer(int id, glm::vec2 pos)
-{
-    auto it = otherPlayers.find(id);
-    if (it != otherPlayers.end()) {
-        it->second.currPos = pos;
-
-        //printf("Update player %i at position: (%f, %f)\n", id, pos.x, pos.y);
-    }
-}
-
-void Game::UpdatePlayerRotation(int id, float rotation)
-{
-    auto it = otherPlayers.find(id);
-    if (it != otherPlayers.end()) {
-        it->second.rotation = rotation;
-
-        //printf("Update player %i at position: (%f, %f)\n", id, pos.x, pos.y);
-    }
-}
-#endif
 
 glm::vec2 Game::GetPlayerPosition()
 {

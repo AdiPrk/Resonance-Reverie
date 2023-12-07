@@ -17,15 +17,6 @@ class Camera;
 struct Rect;
 class ParticleEmitter;
 
-#if DO_NETWORKING
-struct OtherPlayer {
-    glm::vec2 oldPos;
-    glm::vec2 currPos;
-    glm::vec2 renderPos;
-    float rotation = 0;
-};
-#endif
-
 // Game holds all game-related state and functionality.
 // Combines all game-related data into a single class for
 // easy access to each of the components and manageability.
@@ -55,14 +46,6 @@ public:
     void SetSlowMoTime(float t) { m_SlowMoTime = t; }
     void SetTimeFactor(float t) { m_SlowdownFactor = t; }
     bool GameIsSlowMo() const { return m_SlowMoTime > 0.0f; }
-
-#if DO_NETWORKING
-    std::unordered_map<int, OtherPlayer> otherPlayers;
-    void PushPlayer(int id);
-    void PopPlayer(int id);
-    void UpdatePlayer(int id, glm::vec2 pos);
-    void UpdatePlayerRotation(int id, float rotation);
-#endif
 
     glm::vec2 GetPlayerPosition();
     float GetPlayerRotation();
