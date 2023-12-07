@@ -63,7 +63,7 @@ void SwingingBlock::SetupRigidBody() {
     physicsWorld.CreateJoint(&jd);
 }
 
-void SwingingBlock::Draw(SpriteRenderer& renderer, float dt)
+void SwingingBlock::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt)
 {
     glm::vec2 anchorRenderSize = { 10.0f, 10.0f };
 

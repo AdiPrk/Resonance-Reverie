@@ -11,9 +11,9 @@
 #include <Game/Entities/Enemies/greyEnemy.h>
 #include <Game/Entities/Interactables/grapplePoint.h>
 #include <Game/Entities/Environment/light.h>
-
+#include <Game/Entities/Triggers/textTrigger.h>
 #include <Engine/Graphics/Renderer/Sprites/spriteRenderer.h>
-#include <Engine/Graphics/Renderer/camera.h>
+#include <Engine/Graphics/Renderer/Camera/camera.h>
 
 #include <Game/game.h>
 #include "gameLevel.h"
@@ -25,23 +25,10 @@ GameLevel::~GameLevel()
 {
 }
 
-void GameLevel::SetupRoom(Game* game, auto element, bool starting, bool isCurrent, bool setAsCurrent) {
-    Rect roomBounds(element["x"], element["y"], element["w"], element["h"]);
-
-    // std::cout << "Creating Room: " << element << std::endl;
-
-    if (isCurrent && setAsCurrent) {
-        float camScale = element["camScale"];
-        SetCurrentRoomInfo(game, roomBounds, camScale, element);
-    }
-
-    m_BoundingRect = roomBounds;
-    m_ID = element["id"];
-
-    // Accessing array inside the JSON
+void GameLevel::SpawnEntities(Game* game, bool starting, bool isCurrent, bool setAsCurrent, const auto& entities, bool createColliders) {
     float minDistToSpawn = FLT_MAX;
 
-    for (const auto& entity : element["entities"]) {
+    for (const auto& entity : entities) {
         // std::cout << "Entity: " << entity << std::endl;
 
         glm::vec2 pos(entity["x"], entity["y"]);
@@ -69,28 +56,33 @@ void GameLevel::SetupRoom(Game* game, auto element, bool starting, bool isCurren
             float rotation = entity["rotation"];
 
             if (entity["dynamic"] == false) {
-                Block* obj = new Block(pos, size, rotation, ResourceManager::GetTexture("block_solid"));
-                obj->SetupRigidBody();
+                Block* obj = new Block(pos, size, rotation, ResourceManager::GetTexture("ss16x7tiles"), entity["texture"]);
+                if (createColliders) obj->SetupRigidBody();
                 this->Entities.push_back(obj);
             }
-            else{
-                DynamicBlock* obj = new DynamicBlock(pos, size, rotation, ResourceManager::GetTexture("block_solid"));
+            else {
+                DynamicBlock* obj = new DynamicBlock(pos, size, rotation, ResourceManager::GetTexture("ss16x7tiles"), entity["texture"]);
                 obj->SetRestitution(entity["restitution"]);
                 obj->SetDensity(entity["density"]);
-                obj->SetupRigidBody();
+                if (createColliders) obj->SetupRigidBody();
                 this->Entities.push_back(obj);
             }
         }
         else if (entity["type"] == "4") // lava 
         {
             Lava* obj = new Lava(pos, size, ResourceManager::GetTexture("square"));
-            obj->SetupRigidBody();
+            if (createColliders) obj->SetupRigidBody();
             this->Entities.push_back(obj);
         }
         else if (entity["type"] == "5") // safe zone
         {
             SafeZone* obj = new SafeZone(pos, size, ResourceManager::GetTexture("square"));
-            obj->SetupRigidBody();
+            if (createColliders) obj->SetupRigidBody();
+            this->Entities.push_back(obj);
+        }
+        else if (entity["type"] == "6") // text
+        {
+            TextTrigger* obj = new TextTrigger(pos, size, ResourceManager::GetTexture("square"), entity["text"]);
             this->Entities.push_back(obj);
         }
         else if (entity["type"] == "11") // light
@@ -111,15 +103,33 @@ void GameLevel::SetupRoom(Game* game, auto element, bool starting, bool isCurren
             obj->anchorPos = glm::vec2(entity["anchorX"], entity["anchorY"]);
             obj->lineWidth = entity["lineWidth"];
             obj->SetDensity(entity["density"]);
-            obj->SetupRigidBody();
+            if (createColliders) obj->SetupRigidBody();
             this->Entities.push_back(obj);
         }
         else if (entity["type"] == "16") { // Enemy spawner
             GrapplePoint* obj = new GrapplePoint(pos, size, entity["radius"] * gridSize, ResourceManager::GetTexture("circle"));
-            obj->SetupRigidBody();
+            if (createColliders) obj->SetupRigidBody();
             this->Entities.push_back(obj);
         }
     }
+}
+
+void GameLevel::SetupRoom(Game* game, auto element, bool starting, bool isCurrent, bool setAsCurrent) {
+    Rect roomBounds(element["x"], element["y"], element["w"], element["h"]);
+
+    // std::cout << "Creating Room: " << element << std::endl;
+
+    if (isCurrent && setAsCurrent) {
+        float camScale = element["camScale"];
+        SetCurrentRoomInfo(game, roomBounds, camScale, element);
+    }
+
+    m_BoundingRect = roomBounds;
+    m_ID = element["id"];
+
+    // Accessing array inside the JSON
+    SpawnEntities(game, starting, isCurrent, setAsCurrent, element["backgroundEntities"], false);
+    SpawnEntities(game, starting, isCurrent, setAsCurrent, element["foregroundEntities"], true);
 
     std::sort(Entities.begin(), Entities.end(), [](GameObject* a, GameObject* b) {
         return a->GetRenderDepth() < b->GetRenderDepth();
@@ -133,7 +143,7 @@ void GameLevel::SetCurrentRoomInfo(Game* game, Rect& roomBounds, float camScale,
 
     float minDistToSpawn = FLT_MAX;
 
-    for (const auto& entity : element["entities"]) {
+    for (const auto& entity : element["foregroundEntities"]) {
         if (entity["type"] == "2") // player spawn position
         {
             // set player pos
@@ -261,12 +271,12 @@ RoomCode GameLevel::LoadNext(const char* filename, Game* game, const Rect& bound
     return roomCode;
 }
 
-void GameLevel::Draw(SpriteRenderer& renderer, float dt)
+void GameLevel::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt)
 {
     Light::lightIndex = 0;
 
     for (GameObject*& entity : this->Entities) {
-        entity->Draw(renderer, dt);
+        entity->Draw(renderer, textRenderer, dt);
 
         entity->SetLightInfo();
     }

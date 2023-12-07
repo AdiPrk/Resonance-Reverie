@@ -11,8 +11,6 @@ public:
 	Window(unsigned int screenWidth, unsigned int screenHeight);
 	~Window();
 
-	void BeginFrame();
-	void EndFrame();
 	int IsRunning();
 	void SwapBuffers();
 	void LimitFPS();

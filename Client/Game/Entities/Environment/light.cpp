@@ -15,7 +15,7 @@ Light::Light(glm::vec2 pos, float radius, float intensity)
     m_Position = pos;
 }
 
-void Light::Draw(SpriteRenderer& renderer, float dt)
+void Light::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt)
 {
     m_Size = glm::vec2(m_Radius, m_Radius);
     m_Rotation = 0.0f;

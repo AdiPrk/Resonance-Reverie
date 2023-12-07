@@ -13,7 +13,7 @@ public:
     SwingingBlock(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D sprite);
     void SetupRigidBody() override;
 
-    void Draw(SpriteRenderer& renderer, float dt) override;
+    void Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt) override;
     void SetUpdatedTransform() override;
 
     void SetRestitution(float restitution) {

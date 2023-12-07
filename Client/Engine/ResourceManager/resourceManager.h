@@ -17,7 +17,6 @@ public:
     // resource storage
     static std::map<std::string, Shader>    Shaders;
     static std::map<std::string, Texture2D> Textures;
-    //static std::map<std::string, Sound>     Sounds;
     
     // retrieves the stored asset
     static Shader&    GetShader(std::string name);

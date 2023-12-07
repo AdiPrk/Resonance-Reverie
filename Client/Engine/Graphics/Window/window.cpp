@@ -9,8 +9,7 @@ void glfw_error_callback(int error, const char* description)
     std::cerr << "GLFW Error (" << error << "): " << description << std::endl;
 }
 
-#define FULL_SCREEN 0
-#define DEBUG_OPENGL_OUTPUT 0
+#define DEBUG_OPENGL_OUTPUT 1
 
 #if DEBUG_OPENGL_OUTPUT
 void GLAPIENTRY OpenGLDebugCallback(GLenum source,
@@ -21,6 +20,8 @@ void GLAPIENTRY OpenGLDebugCallback(GLenum source,
     const GLchar* message,
     const void* userParam) {
     // Displaying the debug message
+    if (type == GL_DEBUG_TYPE_OTHER) return;
+
     std::cerr << "OpenGL Debug Message (ID: " << id << "):\n";
     std::cerr << "Message: " << message << "\n";
     std::cerr << "Source: ";
@@ -75,6 +76,10 @@ Window::Window(unsigned int screenWidth, unsigned int screenHeight)
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_SAMPLES, 4);
     glEnable(GL_MULTISAMPLE);
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    //glDepthFunc(GL_LEQUAL);
+    //glEnable(GL_STENCIL_TEST);
 
     if (!glfwInit()) {
         std::cout << "Oh Noes, no glfw init!";
@@ -82,21 +87,8 @@ Window::Window(unsigned int screenWidth, unsigned int screenHeight)
 
     glfwSetErrorCallback(glfw_error_callback);
 
-#if FULL_SCREEN
-    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-
-    if (!monitor || !mode) {
-        std::cout << "Failed to get primary monitor or video mode!";
-        return;
-    }
-
-    m_Window = glfwCreateWindow(mode->width, mode->height, "Resonance Reverie", monitor, NULL);
-    glViewport(0, 0, mode->width, mode->height);
-#else 
     m_Window = glfwCreateWindow((int)screenWidth, (int)screenHeight, "Resonance Reverie", NULL, NULL);
     glViewport(0, 0, (int)screenWidth, (int)screenHeight);
-#endif
 
     if (!m_Window)
     {
@@ -142,18 +134,6 @@ Window::~Window()
     }
 
     glfwTerminate();
-}
-
-void Window::BeginFrame()
-{
-    glClear(GL_COLOR_BUFFER_BIT);
-    glfwPollEvents();
-}
-
-void Window::EndFrame()
-{
-    /* Swap front and back buffers */
-    glfwSwapBuffers(m_Window);
 }
 
 int Window::IsRunning() {

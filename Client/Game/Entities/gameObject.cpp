@@ -71,7 +71,7 @@ GameObject::~GameObject()
     }
 }
 
-void GameObject::Draw(SpriteRenderer& renderer, float dt)
+void GameObject::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt)
 {
     renderer.SetShader(ResourceManager::GetShader("sprite"));
     renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);

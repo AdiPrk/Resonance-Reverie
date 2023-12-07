@@ -76,9 +76,9 @@ int main() {
 
         // Render!
         ResonanceReverie.Render(deltaTime, currentFrame, accumulator / fixedTimeStep);
-        window.SwapBuffers();
 
         // Get ready for next frame
+        window.SwapBuffers();
         if (didFTS) {
             InputManager::ResetKeyStates();
         }

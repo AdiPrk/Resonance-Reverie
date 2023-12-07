@@ -28,6 +28,8 @@ public:
     GameLevel() : m_ID(-1), m_BoundingRect(0, 0, 0, 0) { }
     ~GameLevel();
 
+    void SpawnEntities(Game* game, bool starting, bool isCurrent, bool setAsCurrent, const auto& entities, bool createColliders);
+
     // loads the starting level from file
     void LoadStarting(const char* filename, Game* game);
 
@@ -35,7 +37,7 @@ public:
     RoomCode LoadNext(const char* filename, Game* game, const Rect& boundsToSearch, bool setAsCurrent = false);
 
     // render level
-    void Draw(SpriteRenderer& renderer, float dt);
+    void Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt);
 
     const int ID() const { return m_ID; };
     const Rect Bounds() const { return m_BoundingRect; }

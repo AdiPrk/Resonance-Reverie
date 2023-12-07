@@ -13,11 +13,13 @@ uniform bool diagetic; // true if affected by camera
 
 void main()
 {
-    if (diagetic) {
-        gl_Position = projectionView * vec4(vertex.xy, 0.0, 1.0);
-    } else {
-        gl_Position = projection * vec4(vertex.xy, 0.0, 1.0);
-    }
+    float textZ = -0.9;
 
+    if (diagetic) {
+        gl_Position = projectionView * vec4(vertex.xy, textZ, 1.0);
+    } else {
+        gl_Position = projection * vec4(vertex.xy, textZ, 1.0);
+    }
+    
     TexCoords = vertex.zw;
 }

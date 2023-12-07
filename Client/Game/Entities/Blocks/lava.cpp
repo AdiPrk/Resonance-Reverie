@@ -36,7 +36,7 @@ void Lava::SetupRigidBody() {
     m_RigidBody->CreateFixture(&fixtureDef);
 }
 
-void Lava::Draw(SpriteRenderer& renderer, float dt)
+void Lava::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt)
 {
     renderer.SetShader(ResourceManager::GetShader("lava"));
     renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);

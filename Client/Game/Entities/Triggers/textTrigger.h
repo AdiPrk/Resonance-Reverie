@@ -6,15 +6,15 @@
 
 class Texture2D;
 
-class Block : public GameObject
+class TextTrigger : public GameObject
 {
 public:
     // constructor
-    Block(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D sprite, int index);
-    void SetupRigidBody() override;
+    TextTrigger(glm::vec2 pos, glm::vec2 size, Texture2D sprite, const std::string& text);
 
     void Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt) override;
 
 private:
-    int m_Index;
+
+    std::string m_Text;
 };

@@ -210,6 +210,8 @@ rmdir "$(TargetDir)DLLs"</Command>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Graphics\Renderer\Camera\camera.cpp" />
+    <ClCompile Include="Game\Entities\Triggers\textTrigger.cpp" />
     <ClCompile Include="PCH\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -251,6 +253,7 @@ rmdir "$(TargetDir)DLLs"</Command>
     <ClInclude Include="Dependencies\thread-pool\include\BS_thread_pool.hpp" />
     <ClInclude Include="Dependencies\thread-pool\include\BS_thread_pool_light.hpp" />
     <ClInclude Include="Dependencies\threadpool\ThreadPool.h" />
+    <ClInclude Include="Game\Entities\Triggers\textTrigger.h" />
     <ClInclude Include="PCH\pch.h" />
     <ClInclude Include="Engine\Audio\audioManager.h" />
     <ClInclude Include="Game\Entities\Blocks\block.h" />
@@ -270,7 +273,7 @@ rmdir "$(TargetDir)DLLs"</Command>
     <ClInclude Include="Game\Levels\gameLevel.h" />
     <ClInclude Include="Game\Physics\physicsWorld.h" />
     <ClInclude Include="Engine\Graphics\Particles\particleEmitter.h" />
-    <ClInclude Include="Engine\Graphics\Renderer\camera.h" />
+    <ClInclude Include="Engine\Graphics\Renderer\Camera\camera.h" />
     <ClInclude Include="Engine\Graphics\Renderer\Effects\postProcessor.h" />
     <ClInclude Include="Engine\Graphics\Renderer\Sprites\spriteAnimator.h" />
     <ClInclude Include="Engine\Graphics\Renderer\Text\textRenderer.h" />

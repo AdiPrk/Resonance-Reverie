@@ -6,9 +6,10 @@
 #include <Engine/ResourceManager/resourceManager.h>
 
 // constructor
-DynamicBlock::DynamicBlock(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D sprite)
+DynamicBlock::DynamicBlock(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D sprite, int index)
     : GameObject(pos, size, rotation, sprite, COLOR_F_BLOCK)
     , m_BoundingRect(0, 0, 25.f, 25.f)
+    , m_Index(index)
 {
 }
 
@@ -38,10 +39,17 @@ void DynamicBlock::SetupRigidBody() {
     m_RigidBody->CreateFixture(&fixtureDef);
 }
 
-void DynamicBlock::Draw(SpriteRenderer& renderer, float dt)
+void DynamicBlock::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt)
 {
     renderer.SetShader(ResourceManager::GetShader("sprite"));
-    renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
+    //renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
+
+    if (m_Index == -1) {
+        renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
+    }
+    else {
+        renderer.DrawSpriteFrame(m_Sprite, m_Index, m_RenderPosition, m_Size, m_Rotation, m_Color);
+    }
 }
 
 void DynamicBlock::SetUpdatedTransform()

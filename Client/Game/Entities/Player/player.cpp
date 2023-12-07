@@ -10,7 +10,7 @@
 
 // constructor(s)
 Player::Player(Game* game)
-    : GameObject(ResourceManager::GetTexture("ss4x5player")) // sprite, color
+    : GameObject(ResourceManager::GetTexture("ss2x3player")) // sprite, color
     , m_SpawnPosition(0)
     , m_BoundingRect(0, 0, 25.f, 25.f)
     , m_initPosition(true)
@@ -22,8 +22,8 @@ Player::Player(Game* game)
     , m_Light(nullptr)
 {
     //m_Size = { 23.f, 38.f };
-    m_Size = { 23.f, 36.f };
-    m_RenderSize = { 27.f, 42.f };
+    m_Size = { 32.f, 36.f };
+    m_RenderSize = { 37.f, 42.f };
 
     m_Light = new Light(m_Position, 200.0f, 0.1f);
 }
@@ -364,7 +364,7 @@ void Player::SetUpdatedTransform()
     m_BoundingRect.SetScale(m_Size);
 }
 
-void Player::Draw(SpriteRenderer& renderer, float dt) {
+void Player::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt) {
     renderer.SetShader(ResourceManager::GetShader("sprite"));
 
     glm::vec2 truerenderpos = m_RenderPosition - 1.0f;
@@ -373,7 +373,7 @@ void Player::Draw(SpriteRenderer& renderer, float dt) {
     m_Animator.SetLastIndex(1);
     m_Animator.SetFrameDuration(0.2f);
 
-    m_Animator.Update(dt);
+    //m_Animator.Update(dt);
 
     renderer.DrawSpriteFrame(m_Sprite, m_Animator.GetCurrentFrameIndex(), truerenderpos, m_RenderSize, m_Rotation);
 

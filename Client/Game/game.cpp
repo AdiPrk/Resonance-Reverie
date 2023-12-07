@@ -5,7 +5,7 @@
 #include <Engine/Graphics/Renderer/Sprites/spriteRenderer.h>
 #include <Engine/Graphics/Renderer/Text/textRenderer.h>
 #include <Engine/Graphics/Renderer/Effects/postProcessor.h>
-#include <Engine/Graphics/Renderer/camera.h>
+#include <Engine/Graphics/Renderer/Camera/camera.h>
 #include <Engine/Graphics/Particles/particleEmitter.h>
 
 #include <Game/Entities/Player/player.h>
@@ -19,6 +19,7 @@
 SpriteRenderer*  Renderer;
 TextRenderer*    textRenderer;
 ParticleEmitter* playerEmitter;
+
 
 Game::Game(unsigned int width, unsigned int height)
     : m_State(GAME_ACTIVE)
@@ -57,7 +58,7 @@ PhysicsContactListener physicsContactListener;
 void Game::Init(Window* window)
 {
     RandomInit();
-
+    
     m_Window = window;
     m_Camera = new Camera();
     
@@ -77,7 +78,7 @@ void Game::Init(Window* window)
 
     Shader& spriteShader = ResourceManager::GetShader("sprite");
     spriteShader.SetInteger("numLights", 1);
-    spriteShader.SetFloat("ambientLightIntensity", 0.3f);
+    spriteShader.SetFloat("ambientLightIntensity", 0.4f);
 
     // set render-specific controls
     Renderer = new SpriteRenderer(ResourceManager::GetShader("sprite"));
@@ -106,7 +107,7 @@ void Game::Init(Window* window)
     m_Player->SetupRigidBody();
 
     // load levels
-    GameLevel one; one.LoadStarting("Assets/Maps/map.json", this);
+    GameLevel one; one.LoadStarting("Assets/Maps/kk.json", this);
 
     m_Rooms.push_back(one);
 
@@ -205,7 +206,7 @@ void Game::Update(float dt, float accumulator)
 
     if (!m_Player->Bounds().overlaps(m_RoomBounds)) {
         GameLevel newLevel;
-        RoomCode loadedNext = newLevel.LoadNext("Assets/Maps/map.json", this, m_Player->Bounds(), true);
+        RoomCode loadedNext = newLevel.LoadNext("Assets/Maps/kk.json", this, m_Player->Bounds(), true);
 
         if (loadedNext == ROOM_NOT_FOUND) {
             m_Player->Respawn();
@@ -270,9 +271,11 @@ void Game::DrawScene(float dt, float t) {
     }
 
     // draw levels
+    int numParticles = playerEmitter->GetParticleCount() + backgroundEmitter->GetParticleCount();
+    textRenderer->RenderText(std::to_string(numParticles) + " particles", (float)m_Width / 2.f, (float)m_Height / 2.0f - 50, 0.5f, true, glm::vec3(1), true);
     for (auto& room : m_Rooms)
     {
-        room.Draw(*Renderer, dt);
+        room.Draw(*Renderer, *textRenderer, dt);
     }
 
     // Particles
@@ -283,7 +286,7 @@ void Game::DrawScene(float dt, float t) {
     backgroundEmitter->RenderParticlesInstanced();
 
     // draw player
-    m_Player->Draw(*Renderer, dt);
+    m_Player->Draw(*Renderer, *textRenderer, dt);
 
 #if DO_NETWORKING
     // draw other players
@@ -305,17 +308,17 @@ void Game::Render(float dt, float currentTime, float t)
 
     // Clear the screen
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // Begin rendering to postprocessing framebuffer
-    Effects->BeginRender();
+    //Effects->BeginRender();
 
     // Draw the scene!
     DrawScene(dt, t);
 
     // End rendering to postprocessing framebuffer and render the scene
-    Effects->EndRender();
-    Effects->Render();
+    //Effects->EndRender();
+    //Effects->Render();
 
     // Draw fps
     std::string fpsString = std::string("fps: ") + std::to_string((1.f / dt));
@@ -329,9 +332,7 @@ void Game::Render(float dt, float currentTime, float t)
     }
 
     // draw num particles w/ diagetic text
-    // int numParticles = playerEmitter->GetParticleCount() + backgroundEmitter->GetParticleCount();
-    // textRenderer->RenderText(, (float)m_Width / 2.f, (float)m_Height / 2.0f, 0.5f, true, glm::vec3(1), true);
-    // textRenderer->RenderText(std::to_string(numParticles) + " particles", (float)m_Width / 2.f, (float)m_Height / 2.0f + 50, 0.5f, true, glm::vec3(0), true);
+    
     
     if (InputManager::GetKeyTriggered(Key::K)) {
         m_DrawColliders = !m_DrawColliders;

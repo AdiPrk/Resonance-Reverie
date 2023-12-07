@@ -4,6 +4,7 @@
 
 #include <Engine/Graphics/Texture/texture.h>
 #include <Engine/Graphics/Renderer/Sprites/spriteRenderer.h>
+#include <Engine/Graphics/Renderer/Text/textRenderer.h>
 #include <Engine/Graphics/Renderer/Sprites/spriteAnimator.h>
 #include <Engine/Math/rect.h>
 
@@ -21,7 +22,7 @@ public:
     ~GameObject();
 
     virtual void Update(float dt) {};
-    virtual void Draw(SpriteRenderer& renderer, float dt);
+    virtual void Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt);
     virtual void SetUpdatedTransform() {};
     virtual void SetupRigidBody() {};
     virtual bool GetOverlappingBounds(const Rect& gamebounds) const { return true; }
