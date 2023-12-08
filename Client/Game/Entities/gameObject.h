@@ -6,7 +6,6 @@
 #include <Engine/Graphics/Renderer/Sprites/spriteRenderer.h>
 #include <Engine/Graphics/Renderer/Text/textRenderer.h>
 #include <Engine/Graphics/Renderer/Sprites/spriteAnimator.h>
-#include <Engine/Math/rect.h>
 
 // Container object for holding all state relevant for a single
 // game object entity. Each object in the game likely needs the

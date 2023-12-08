@@ -230,8 +230,8 @@ void RenderColliders(SpriteRenderer& renderer)
                     glm::vec2 p1 = PhysicsUtils::MetersToPixels(vertex);
                     glm::vec2 p2 = PhysicsUtils::MetersToPixels(nextVertex);
 
-                    renderer.SetShader(ResourceManager::GetShader("sprite"));
-                    renderer.DrawLine(p1, p2, 2.0f, ResourceManager::GetTexture("square"));
+                    renderer.SetShader("sprite");
+                    renderer.DrawLine(p1, p2, 2.0f, "square");
                 }
             }
             else if (shapeType == b2Shape::e_circle) {

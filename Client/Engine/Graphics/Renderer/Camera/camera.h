@@ -1,8 +1,6 @@
 #pragma once
 
 #include <PCH/pch.h>
-#include <Engine/Math/rect.h>
-#include <Engine/Math/utils.h>
 #include <Engine/Graphics/Window/window.h>
 
 class Camera {
@@ -16,6 +14,7 @@ public:
 
     void CalculateBoundingRect();
 
+    void MoveTo(glm::vec2 moveTo);
     void MoveTo(glm::vec2 moveTo, Rect bounds);
 
     void GlideTo(glm::vec2 glideTo, Rect bounds, float dt);

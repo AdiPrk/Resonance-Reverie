@@ -1,7 +1,6 @@
 #include <PCH/pch.h>
 #include "gameObject.h"
 #include <Game/Physics/physicsWorld.h>
-#include <Engine/ResourceManager/resourceManager.h>
 
 GameObject::GameObject()
     : m_Position(0.0f, 0.0f)
@@ -73,7 +72,7 @@ GameObject::~GameObject()
 
 void GameObject::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt)
 {
-    renderer.SetShader(ResourceManager::GetShader("sprite"));
+    renderer.SetShader("sprite");
     renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
 }
 

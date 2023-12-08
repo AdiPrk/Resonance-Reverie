@@ -3,7 +3,6 @@
 #include "block.h"
 #include <Engine/Graphics/Texture/texture.h>
 #include <Game/Physics/physicsWorld.h>
-#include <Engine/ResourceManager/resourceManager.h>
 
 // constructor
 Block::Block(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D sprite, int index)
@@ -39,7 +38,7 @@ void Block::SetupRigidBody() {
 
 void Block::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt)
 {
-    renderer.SetShader(ResourceManager::GetShader("sprite"));
+    renderer.SetShader("sprite");
 
     if (m_Index == -1) {
         renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color, { 25.0f, 25.0f });

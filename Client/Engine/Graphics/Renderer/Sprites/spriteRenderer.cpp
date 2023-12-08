@@ -23,6 +23,16 @@ void SpriteRenderer::SetShader(Shader& shader)
     shader.Use();
 }
 
+void SpriteRenderer::SetShader(const std::string& shaderName)
+{
+    this->shader = ResourceManager::GetShader(shaderName);
+    shader.Use();
+}
+
+void SpriteRenderer::DrawSprite(const std::string& textureName, glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, glm::vec2 repetition) {
+    DrawSprite(ResourceManager::GetTexture(textureName), position, size, rotation, color, repetition);
+}
+
 void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, glm::vec2 repetition)
 {
     // prepare transformations
@@ -67,6 +77,11 @@ void SpriteRenderer::DrawSpriteFrame(Texture2D& texture, unsigned frame, glm::ve
 {
     texture.Index = frame;
     DrawSprite(texture, position, size, rotation, color, repetition);
+}
+
+void SpriteRenderer::DrawLine(glm::vec2 p1, glm::vec2 p2, float thickness, const std::string& textureName)
+{
+    DrawLine(p1, p2, thickness, ResourceManager::GetTexture(textureName));
 }
 
 void SpriteRenderer::DrawLine(glm::vec2 p1, glm::vec2 p2, float thickness, Texture2D& texture)

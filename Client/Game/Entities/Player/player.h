@@ -3,7 +3,6 @@
 #include <PCH/pch.h>
 
 #include "../gameObject.h"
-#include <Engine/Math/rect.h>
 #include <Game/Levels/gameLevel.h>
 #include "grapple.h"
 #include <Game/game.h>

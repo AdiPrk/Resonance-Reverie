@@ -4,8 +4,7 @@
 
 #include <Game/Entities/gameObject.h>
 
-#include <Engine/Math/rect.h>
-
+struct Rect;
 class Player;
 class SpriteRenderer;
 class Game;

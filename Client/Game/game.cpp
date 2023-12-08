@@ -7,67 +7,47 @@
 #include <Engine/Graphics/Renderer/Effects/postProcessor.h>
 #include <Engine/Graphics/Renderer/Camera/camera.h>
 #include <Engine/Graphics/Particles/particleEmitter.h>
+#include <Engine/Inputs/inputManager.h>
+#include <Engine/Audio/audioManager.h>
 
 #include <Game/Entities/Player/player.h>
 #include <Game/Physics/physicsWorld.h>
-#include <Engine/Inputs/inputManager.h>
-#include <Engine/Math/rect.h>
-
-#include <Engine/Audio/audioManager.h>
 
 // Game-related State data
+
 SpriteRenderer*  Renderer;
 TextRenderer*    textRenderer;
 ParticleEmitter* playerEmitter;
-
-
-Game::Game(unsigned int width, unsigned int height)
-    : m_State(GAME_ACTIVE)
-    , m_RoomBounds(0, 0, 0, 0)
-    , m_Player(nullptr)
-    , m_Camera(nullptr)
-    , m_Width(width)
-    , m_Height(height)
-    , m_Window(nullptr)
-    , Effects(nullptr)
-    , backgroundEmitter(nullptr)
-    , m_DrawColliders(false)
-{
-}
-
-Game::~Game()
-{
-    delete Renderer;
-    delete m_Player;
-    delete m_Camera;
-    delete Effects;
-    delete textRenderer;
-    delete playerEmitter;
-    delete backgroundEmitter;
-}
-
+PhysicsContactListener physicsContactListener;
 constexpr int numParticles = 500;
 constexpr int backgroundParticles = 10000;
 constexpr int totalParticles = numParticles + backgroundParticles;
 
-PhysicsContactListener physicsContactListener;
-
-void Game::Init(Window* window)
+Game::Game(Window* window)
+    : m_State(GAME_ACTIVE)
+    , m_RoomBounds(0, 0, 0, 0)
+    , m_Player(nullptr)
+    , m_Camera(nullptr)
+    , m_Width(window->GetWidth())
+    , m_Height(window->GetHeight())
+    , m_Window(window)
+    , Effects(nullptr)
+    , backgroundEmitter(nullptr)
+    , m_DrawColliders(false)
 {
     RandomInit();
-    
-    m_Window = window;
+
     m_Camera = new Camera();
-    
+
     physicsWorld.SetContactListener(&physicsContactListener);
 
     Shader::SetupUBO();
 
     // load textures
-    ResourceManager::LoadTexturesFromDirectory("Assets/Images/");
+    ResourceManager::LoadTexturesFromDirectory("Game/Assets/Images/");
 
     // load shaders
-    ResourceManager::LoadShadersFromDirectory("Assets/Shaders/");
+    ResourceManager::LoadShadersFromDirectory("Game/Assets/Shaders/");
 
     // configure shaders
     glm::mat4 projection = glm::ortho(0.f, (float)m_Width, (float)m_Height, 0.f, -1.0f, 1.0f);
@@ -81,7 +61,7 @@ void Game::Init(Window* window)
     Renderer = new SpriteRenderer(ResourceManager::GetShader("sprite"));
     Effects = new PostProcessor(ResourceManager::GetShader("postprocessing"), m_Width, m_Height);
     textRenderer = new TextRenderer();
-    textRenderer->Load("Assets/Fonts/OCRAEXT.TTF", 60);
+    textRenderer->Load("Game/Assets/Fonts/OCRAEXT.TTF", 60);
 
     // particles
     playerEmitter = new ParticleEmitter(ResourceManager::GetShader("particle"), ResourceManager::GetTexture("particle"), numParticles);
@@ -98,13 +78,13 @@ void Game::Init(Window* window)
     backgroundEmitter->particleProps.sizeBegin = 25.0f;
     backgroundEmitter->particleProps.sizeEnd = 25.0f;
     backgroundEmitter->particleProps.sizeVariation = 5.0f;
-    
+
     // configure game objects
     m_Player = new Player(this);
     m_Player->SetupRigidBody();
 
     // load levels
-    GameLevel one; one.LoadStarting("Assets/Maps/kk.json", this);
+    GameLevel one; one.LoadStarting("Game/Assets/Maps/kk.json", this);
 
     m_Rooms.push_back(one);
 
@@ -117,6 +97,17 @@ void Game::Init(Window* window)
 
         backgroundEmitter->Emit(2);
     }
+}
+
+Game::~Game()
+{
+    delete Renderer;
+    delete m_Player;
+    delete m_Camera;
+    delete Effects;
+    delete textRenderer;
+    delete playerEmitter;
+    delete backgroundEmitter;
 }
     
 void Game::SetPreviousPositions() {
@@ -150,8 +141,9 @@ void Game::UpdateCamera(float dt)
     m_Camera->UpdateUniforms();
 }
 
-void Game::Update(float dt, float accumulator)
+void Game::Update(float dt)
 {
+    SetPreviousPositions();
     ResourceManager::GetAudioManager().SetListenerLocation(m_Player->GetPosition());
     ResourceManager::GetAudioManager().Update();
 
@@ -197,7 +189,7 @@ void Game::Update(float dt, float accumulator)
 
     if (!m_Player->Bounds().overlaps(m_RoomBounds)) {
         GameLevel newLevel;
-        RoomCode loadedNext = newLevel.LoadNext("Assets/Maps/kk.json", this, m_Player->Bounds(), true);
+        RoomCode loadedNext = newLevel.LoadNext("Game/Assets/Maps/kk.json", this, m_Player->Bounds(), true);
 
         if (loadedNext == ROOM_NOT_FOUND) {
             m_Player->Respawn();
@@ -237,13 +229,13 @@ void Game::Update(float dt, float accumulator)
     ThreadPool::threadPool.wait_for_tasks();
 }
 
-void Game::DrawScene(float dt, float t) {
+void Game::DrawScene(float dt) {
     // draw level backgrounds
-    Renderer->SetShader(ResourceManager::GetShader("background"));
+    Renderer->SetShader("background");
     for (auto& room : m_Rooms)
     {
         Renderer->DrawSprite(
-            ResourceManager::GetTexture("square"),
+            "square",
             glm::vec2(room.Bounds().left, room.Bounds().top),
             glm::vec2(room.Bounds().width, room.Bounds().height)
         );
@@ -269,8 +261,11 @@ void Game::DrawScene(float dt, float t) {
 }
 
 // delta time, current time, interpolation factor
-void Game::Render(float dt, float currentTime, float t)
+void Game::Render(float dt, float ct, float itf)
 {
+    CalculateLerpedPositions(itf);
+    UpdateCamera(dt);
+
     Shader::iTime += CalculateSlowedDT(dt);
     Shader::SetTimeUBO(Shader::iTime);
 
@@ -282,7 +277,7 @@ void Game::Render(float dt, float currentTime, float t)
     //Effects->BeginRender();
 
     // Draw the scene!
-    DrawScene(dt, t);
+    DrawScene(dt);
 
     // End rendering to postprocessing framebuffer and render the scene
     //Effects->EndRender();

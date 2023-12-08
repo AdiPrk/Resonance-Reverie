@@ -3,6 +3,7 @@
 #include <PCH/pch.h>
 #include "Levels/gameLevel.h"
 #include <Engine/Graphics/Window/window.h>
+#include <Engine/application.h>
 
 class PostProcessor;
 
@@ -18,26 +19,22 @@ struct Rect;
 class ParticleEmitter;
 
 // Game holds all game-related state and functionality.
-// Combines all game-related data into a single class for
-// easy access to each of the components and manageability.
-class Game
+// Combines all game-related data
+class Game : public Application
 {
 public:
     // constructor/destructor
-    Game(unsigned int width, unsigned int height);
+    Game(Window* window);
     ~Game();
-    
-    // initialize game state (load all shaders/textures/levels)
-    void Init(Window* window);
-    
+        
     // game loop
     void SetPreviousPositions();
-    void Update(float dt, float accumulator);
+    void Update(float dt) override;
     void CalculateLerpedPositions(float t);
     float CalculateSlowedDT(float dt);
     void UpdateCamera(float dt);
-    void Render(float dt, float currentTime, float t);
-    void DrawScene(float dt, float t);
+    void Render(float dt, float ct, float itf) override;
+    void DrawScene(float dt);
     
     // utils
     void FilterRooms(float dt);

@@ -3,7 +3,6 @@
 #include "swingingBlock.h"
 #include <Engine/Graphics/Texture/texture.h>
 #include <Game/Physics/physicsWorld.h>
-#include <Engine/ResourceManager/resourceManager.h>
 
 // constructor
 SwingingBlock::SwingingBlock(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D sprite)
@@ -68,7 +67,7 @@ void SwingingBlock::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, f
     glm::vec2 anchorRenderSize = { 10.0f, 10.0f };
 
     // Drawing the block and anchor
-    renderer.SetShader(ResourceManager::GetShader("sprite"));
+    renderer.SetShader("sprite");
     renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
     renderer.DrawSprite(m_Sprite, anchorPos, anchorRenderSize);
 
@@ -77,7 +76,7 @@ void SwingingBlock::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, f
     glm::vec2 blockCenter = m_RenderPosition + m_Size / 2.0f;
     glm::vec2 anchorCenter = anchorPos + anchorRenderSize / 2.0f;
 
-    renderer.SetShader(ResourceManager::GetShader("sprite"));
+    renderer.SetShader("sprite");
     renderer.DrawLine(blockCenter, anchorCenter, lineWidth, m_Sprite);
 }
 

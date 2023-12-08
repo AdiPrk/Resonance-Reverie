@@ -10,7 +10,7 @@
 
 // constructor(s)
 Player::Player(Game* game)
-    : GameObject(ResourceManager::GetTexture("ss2x3player")) // sprite, color
+    : GameObject(ResourceManager::GetTexture("ss2x3player"))
     , m_SpawnPosition(0)
     , m_BoundingRect(0, 0, 25.f, 25.f)
     , m_initPosition(true)
@@ -21,7 +21,6 @@ Player::Player(Game* game)
     , m_Game(game)
     , m_Light(nullptr)
 {
-    //m_Size = { 23.f, 38.f };
     m_Size = { 32.f, 36.f };
     m_RenderSize = { 37.f, 42.f };
 
@@ -365,7 +364,7 @@ void Player::SetUpdatedTransform()
 }
 
 void Player::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt) {
-    renderer.SetShader(ResourceManager::GetShader("sprite"));
+    renderer.SetShader("sprite");
 
     glm::vec2 truerenderpos = m_RenderPosition - 1.0f;
     
@@ -386,9 +385,9 @@ void Player::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt
         glm::vec2 playerToAnchor = Lerp(playerCenter, m_GrapplingTo, grappleLerp);
         glm::vec2 anchorToPlayer = Lerp(m_GrapplingTo, playerCenter, grappleLerp);
 
-        renderer.SetShader(ResourceManager::GetShader("saber"));
-        renderer.DrawLine(playerCenter, playerToAnchor, 6.0f, ResourceManager::GetTexture("square"));
-        renderer.DrawLine(anchorToPlayer, m_GrapplingTo, 6.0f, ResourceManager::GetTexture("square"));
+        renderer.SetShader("saber");
+        renderer.DrawLine(playerCenter, playerToAnchor, 6.0f, "square");
+        renderer.DrawLine(anchorToPlayer, m_GrapplingTo, 6.0f, "square");
     }
     else {
         grappleLerp = 0;

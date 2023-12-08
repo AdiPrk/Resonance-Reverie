@@ -38,6 +38,11 @@ void Camera::CalculateBoundingRect() {
     m_BoundingRect.bottom = m_BoundingRect.top + m_BoundingRect.height;
 }
 
+void Camera::MoveTo(glm::vec2 moveTo) {
+    CalculateBoundingRect();
+    m_Position = moveTo;
+}
+
 void Camera::MoveTo(glm::vec2 moveTo, Rect bounds) {
     CalculateBoundingRect();
 

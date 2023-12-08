@@ -14,7 +14,7 @@ TextTrigger::TextTrigger(glm::vec2 pos, glm::vec2 size, Texture2D sprite, const 
 
 void TextTrigger::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt)
 {
-    //renderer.SetShader(ResourceManager::GetShader("sprite"));
+    //renderer.SetShader("sprite");
     //renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color, { 25.0f, 25.0f });
     //float textX = m_Position.x + m_Size.x * 0.5;
     //float textY = m_Position.y + m_Size.y * 0.5;

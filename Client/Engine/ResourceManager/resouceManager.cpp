@@ -102,12 +102,16 @@ Texture2D& ResourceManager::GetTexture(std::string name)
 void ResourceManager::Clear()
 {
     // (properly) delete all shaders	
-    for (const auto& iter : Shaders)
+    for (const auto& iter : Shaders) {
         glDeleteProgram(iter.second.ID);
+    }
+    Shaders.clear();
 
     // (properly) delete all textures
-    for (const auto& iter : Textures)
+    for (const auto& iter : Textures) {
         glDeleteTextures(1, &iter.second.ID);
+    }
+    Textures.clear();
 }
 
 void ResourceManager::BindVAO(GLuint quadVAO)
@@ -132,7 +136,7 @@ void ResourceManager::UpdateAllShaderTimes(float time)
 void ResourceManager::PlaySound(const std::string& source, bool isLooping, float pitch, float volumeMultiplier, bool isSpatial, const glm::vec2& soundPos, float soundRange)
 {
     Sound sound(audioManager);
-    sound.Play("Assets/Audio/" + source, isLooping, pitch, volumeMultiplier, isSpatial, soundPos, soundRange);
+    sound.Play("Game/Assets/Audio/" + source, isLooping, pitch, volumeMultiplier, isSpatial, soundPos, soundRange);
 }
 
 Shader ResourceManager::loadShaderFromFile(const std::string& vShaderFile, const std::string& fShaderFile)

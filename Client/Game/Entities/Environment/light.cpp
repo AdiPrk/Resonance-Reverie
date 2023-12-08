@@ -24,8 +24,8 @@ void Light::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt)
     m_Size *= 2.0f;
     m_Color.w = 0.1f;
 
-    //renderer.SetShader(ResourceManager::GetShader("sprite"));
-    //renderer.DrawSprite(ResourceManager::GetTexture("circle"), m_RenderPosition, m_Size, m_Rotation, m_Color);
+    renderer.SetShader("sprite");
+    renderer.DrawSprite("circle", m_RenderPosition, m_Size, m_Rotation, m_Color);
 }
 
 void Light::SetLightInfo()

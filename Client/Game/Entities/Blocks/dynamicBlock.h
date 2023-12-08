@@ -3,7 +3,6 @@
 #include <PCH/pch.h>
 
 #include "../gameObject.h"
-#include <Engine/Math/rect.h>
 
 class Texture2D;
 

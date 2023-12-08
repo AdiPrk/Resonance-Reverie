@@ -75,7 +75,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\box2d\include;$(SolutionDir)Dependencies\modernjson\include;$(SolutionDir)Dependencies\threadpool\include;$(SolutionDir)Dependencies\enet\include;$(SolutionDir)Dependencies\FMOD\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\box2d\include;$(SolutionDir)Dependencies\modernjson\include;$(SolutionDir)Dependencies\threadpool\include;$(SolutionDir)Dependencies\FMOD\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH/pch.h</PrecompiledHeaderFile>
@@ -93,8 +93,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLFW\lib;$(SolutonDir)Dependencies\GLEW\lib;$(SolutionDir)Dependencies\freetype\lib;$(SolutionDir)Dependencies\box2d\lib;$(SolutionDir)Dependencies\enet\lib;$(SolutionDir)Dependencies\FMOD\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3_mt.lib;opengl32.lib;glew32s.lib;freetype.lib;enet64.lib;ws2_32.lib;winmm.lib;fmod_vc.lib;box2dDebug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLFW\lib;$(SolutonDir)Dependencies\GLEW\lib;$(SolutionDir)Dependencies\freetype\lib;$(SolutionDir)Dependencies\box2d\lib;$(SolutionDir)Dependencies\FMOD\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3_mt.lib;opengl32.lib;glew32s.lib;freetype.lib;ws2_32.lib;winmm.lib;fmod_vc.lib;box2dDebug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
       <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
@@ -123,7 +123,7 @@ rmdir "$(TargetDir)DLLs"</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\box2d\include;$(SolutionDir)Dependencies\modernjson\include;$(SolutionDir)Dependencies\threadpool\include;$(SolutionDir)Dependencies\enet\include;$(SolutionDir)Dependencies\FMOD\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\box2d\include;$(SolutionDir)Dependencies\modernjson\include;$(SolutionDir)Dependencies\threadpool\include;$(SolutionDir)Dependencies\FMOD\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH/pch.h</PrecompiledHeaderFile>
@@ -144,8 +144,8 @@ rmdir "$(TargetDir)DLLs"</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLFW\lib;$(SolutonDir)Dependencies\GLEW\lib;$(SolutionDir)Dependencies\freetype\lib;$(SolutionDir)Dependencies\box2d\lib;$(SolutionDir)Dependencies\enet\lib;$(SolutionDir)Dependencies\FMOD\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3_mt.lib;opengl32.lib;glew32s.lib;freetype.lib;enet64.lib;ws2_32.lib;winmm.lib;fmod_vc.lib;box2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLFW\lib;$(SolutonDir)Dependencies\GLEW\lib;$(SolutionDir)Dependencies\freetype\lib;$(SolutionDir)Dependencies\box2d\lib;$(SolutionDir)Dependencies\FMOD\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3_mt.lib;opengl32.lib;glew32s.lib;freetype.lib;ws2_32.lib;winmm.lib;fmod_vc.lib;box2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
       <EntryPointSymbol>mainCRTStartup </EntryPointSymbol>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
@@ -210,6 +210,7 @@ rmdir "$(TargetDir)DLLs"</Command>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\engine.cpp" />
     <ClCompile Include="Engine\Graphics\Renderer\Camera\camera.cpp" />
     <ClCompile Include="Game\Entities\Triggers\textTrigger.cpp" />
     <ClCompile Include="PCH\pch.cpp">
@@ -245,13 +246,25 @@ rmdir "$(TargetDir)DLLs"</Command>
     <ClCompile Include="Engine\ResourceManager\resouceManager.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\shader.cpp" />
     <ClCompile Include="Engine\Graphics\Texture\texture.cpp" />
-    <ClCompile Include="Game\main.cpp" />
+    <ClCompile Include="Game\main.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">
+      </PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Engine\Math\random.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\thread-pool\include\BS_thread_pool.hpp" />
     <ClInclude Include="Dependencies\thread-pool\include\BS_thread_pool_light.hpp" />
     <ClInclude Include="Dependencies\threadpool\ThreadPool.h" />
+    <ClInclude Include="Engine\application.h" />
+    <ClInclude Include="Engine\engine.h" />
     <ClInclude Include="Game\Entities\Triggers\textTrigger.h" />
     <ClInclude Include="PCH\pch.h" />
     <ClInclude Include="Engine\Audio\audioManager.h" />

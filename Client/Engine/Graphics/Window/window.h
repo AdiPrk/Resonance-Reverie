@@ -32,6 +32,9 @@ public:
 
 	constexpr static double targetFrameLength = 1.0 / 120.0;
 
+	unsigned int GetWidth() { return m_Width; }
+	unsigned int GetHeight() { return m_Height; }
+
 private:
 	std::chrono::high_resolution_clock::time_point m_LastFrameTime;
 	unsigned int m_Width;
