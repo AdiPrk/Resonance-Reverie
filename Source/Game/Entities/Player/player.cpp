@@ -12,7 +12,7 @@
 
 // constructor(s)
 Player::Player(Game* game)
-    : GameObject(ResourceManager::GetTexture("ss2x3player"))
+    : GameObject(Dog::ResourceManager::GetTexture("ss2x3player"))
     , m_SpawnPosition(0)
     , m_BoundingRect(0, 0, 25.f, 25.f)
     , m_initPosition(true)
@@ -104,7 +104,7 @@ void Player::SetupRigidBody() {
 }
 
 void Player::CheckGrapple() {
-    if (!InputManager::GetKeyTriggered(Key::C)) return;
+    if (!Dog::InputManager::GetKeyTriggered(Dog::Key::C)) return;
     
     float minDist = FLT_MAX;
     bool canGrapple = false;
@@ -176,10 +176,10 @@ void Player::Update(float dt) {
         float horizontalSpeed = 1.6f;
         float dampingFactor = 0.74f;
 
-        if (InputManager::GetKeyDown(Key::RIGHT)) {
+        if (Dog::InputManager::GetKeyDown(Dog::Key::RIGHT)) {
             vel.x += horizontalSpeed;
         }
-        if (InputManager::GetKeyDown(Key::LEFT)) {
+        if (Dog::InputManager::GetKeyDown(Dog::Key::LEFT)) {
             vel.x -= horizontalSpeed;
         }
 
@@ -196,7 +196,7 @@ void Player::Update(float dt) {
         }
 
         // Handle Jump Input
-        if (InputManager::GetKeyDown(Key::C) && !m_JumpHeld) {
+        if (Dog::InputManager::GetKeyDown(Dog::Key::C) && !m_JumpHeld) {
             m_JumpRequested = true;
             m_JumpBuffer = m_MaxJumpBuffer;
             m_JumpHeld = true;
@@ -210,7 +210,7 @@ void Player::Update(float dt) {
             m_JumpRequested = false; // Reset jump request
             jumpedUsingBuffer = true;
 
-            ResourceManager::PlaySound("jump.ogg");
+            Dog::ResourceManager::PlaySound("jump.ogg");
         }
 
         // Update Jump Buffer
@@ -222,7 +222,7 @@ void Player::Update(float dt) {
         }
 
         // Reset jump when the jump key is released
-        if (InputManager::GetKeyUp(Key::C)) {
+        if (Dog::InputManager::GetKeyUp(Dog::Key::C)) {
             if ((m_JumpHeld || jumpedUsingBuffer) && vel.y < 0) {
                 vel.y *= 0.5f;
             }
@@ -258,10 +258,10 @@ void Player::Update(float dt) {
         float horizontalSpeed = 0.15f;
         float dampingFactor = 0.99f;
 
-        if (InputManager::GetKeyDown(Key::RIGHT)) {
+        if (Dog::InputManager::GetKeyDown(Dog::Key::RIGHT)) {
             vel.x += horizontalSpeed;
         }
-        if (InputManager::GetKeyDown(Key::LEFT)) {
+        if (Dog::InputManager::GetKeyDown(Dog::Key::LEFT)) {
             vel.x -= horizontalSpeed;
         }
 
@@ -273,7 +273,7 @@ void Player::Update(float dt) {
             //m_Game->Effects->shakeTime = 0.1f;
         }
 
-        if (InputManager::GetKeyUp(Key::C) && m_Game->GameIsSlowMo()) {
+        if (Dog::InputManager::GetKeyUp(Dog::Key::C) && m_Game->GameIsSlowMo()) {
             glm::vec2 v = m_GrapplingTo - (m_Position + m_Size / 2.0f);
             v = glm::normalize(v);
             v *= 50.0f;
@@ -288,15 +288,15 @@ void Player::Update(float dt) {
             m_Game->SetSlowMoTime(0.0f);
 
             m_State = GRAPPLE_LAUNCH;
-            ResourceManager::PlaySound("jumpWoosh.mp3");
+            Dog::ResourceManager::PlaySound("jumpWoosh.mp3");
             m_Grappling = false;
 
-            Renderer::GetPostProcessor()->shakeTime = 0.05f;
+            Dog::Renderer::GetPostProcessor()->shakeTime = 0.05f;
 
             break;
         }
 
-        if (m_Grapple.GetLength() < 0.08f || InputManager::GetKeyUp(Key::C))
+        if (m_Grapple.GetLength() < 0.08f || Dog::InputManager::GetKeyUp(Dog::Key::C))
         {
             m_State = PlayerStates::NORMAL;
             m_Grapple.ReleaseGrapple();
@@ -366,7 +366,7 @@ void Player::SetUpdatedTransform()
 }
 
 void Player::Draw(float dt) {
-    Renderer::SetShader("sprite");
+    Dog::Renderer::SetShader("sprite");
 
     glm::vec2 truerenderpos = m_RenderPosition - 1.0f;
     
@@ -376,7 +376,7 @@ void Player::Draw(float dt) {
 
     //m_Animator.Update(dt);
 
-    Renderer::DrawSpriteFrame(m_Sprite, m_Animator.GetCurrentFrameIndex(), truerenderpos, m_RenderSize, m_Rotation);
+    Dog::Renderer::DrawSpriteFrame(m_Sprite, m_Animator.GetCurrentFrameIndex(), truerenderpos, m_RenderSize, m_Rotation);
 
     static float grappleLerp = 0.0f;
     if (m_Grappling) {
@@ -384,22 +384,22 @@ void Player::Draw(float dt) {
         grappleLerp = std::min(grappleLerp, 1.0f);
         // Calculating line info
         glm::vec2 playerCenter = m_RenderPosition + m_Size / 2.0f;
-        glm::vec2 playerToAnchor = Lerp(playerCenter, m_GrapplingTo, grappleLerp);
-        glm::vec2 anchorToPlayer = Lerp(m_GrapplingTo, playerCenter, grappleLerp);
+        glm::vec2 playerToAnchor = Dog::Lerp(playerCenter, m_GrapplingTo, grappleLerp);
+        glm::vec2 anchorToPlayer = Dog::Lerp(m_GrapplingTo, playerCenter, grappleLerp);
 
-        Renderer::SetShader("saber");
-        Renderer::DrawLine(playerCenter, playerToAnchor, 6.0f, "square");
-        Renderer::DrawLine(anchorToPlayer, m_GrapplingTo, 6.0f, "square");
+        Dog::Renderer::SetShader("saber");
+        Dog::Renderer::DrawLine(playerCenter, playerToAnchor, 6.0f, "square");
+        Dog::Renderer::DrawLine(anchorToPlayer, m_GrapplingTo, 6.0f, "square");
     }
     else {
         grappleLerp = 0;
     }
 
-    m_Light->m_Position = m_RenderPosition + m_Size * 0.5f;
-    Shader& pfx = ResourceManager::GetShader("sprite");
+    /*m_Light->m_Position = m_RenderPosition + m_Size * 0.5f;
+    Dog::Shader& pfx = Dog::ResourceManager::GetShader("sprite");
     std::string liStr = "lights[" + std::to_string(Light::lightIndex) + "]";
     pfx.SetVector2f(liStr + ".position", m_Light->m_Position);
     pfx.SetFloat(liStr + ".radius", m_Light->m_Radius);
     pfx.SetFloat(liStr + ".intensity", m_Light->m_Intensity);
-    Light::lightIndex++;
+    Light::lightIndex++;*/
 }

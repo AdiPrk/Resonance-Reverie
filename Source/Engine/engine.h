@@ -1,18 +1,22 @@
 #pragma once
 
-class Window;
-class Application;
+namespace Dog {
 
-class DogEngine {
-public:
-	DogEngine(unsigned int width, unsigned int height);
-	~DogEngine();
+	class Window;
+	class Application;
 
-	int Run(Application* app);
+	class DogEngine {
+	public:
+		DogEngine(unsigned int width, unsigned int height);
+		~DogEngine();
 
-	Window* GetWindow() { return m_Window; }
+		int Run(Application* app);
 
-private:
-	Window* m_Window;
-	Application* m_Application;
-};
+		Window* GetWindow() { return m_Window; }
+
+	private:
+		Window* m_Window;
+		Application* m_Application;
+	};
+
+}

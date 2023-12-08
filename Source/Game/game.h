@@ -4,6 +4,8 @@
 #include "Levels/gameLevel.h"
 #include <Engine/Graphics/Window/window.h>
 #include <Engine/application.h>
+#include <Engine/Graphics/Renderer/Camera/camera.h>
+#include <Engine/Graphics/Particles/particleEmitter.h>
 
 class PostProcessor;
 
@@ -14,17 +16,15 @@ enum GameState {
     GAME_WIN
 };
 
-class Camera;
-struct Rect;
-class ParticleEmitter;
+struct Dog::Rect;
 
 // Game holds all game-related state and functionality.
 // Combines all game-related data
-class Game : public Application
+class Game : public Dog::Application
 {
 public:
     // constructor/destructor
-    Game(Window* window);
+    Game(Dog::Window* window);
     ~Game();
         
     // game loop
@@ -38,8 +38,8 @@ public:
     
     // utils
     void FilterRooms(float dt);
-    const Rect& Bounds() const { return m_RoomBounds; }
-    void SetBounds(const Rect& bounds) { m_RoomBounds = bounds; }
+    const Dog::Rect& Bounds() const { return m_RoomBounds; }
+    void SetBounds(const Dog::Rect& bounds) { m_RoomBounds = bounds; }
     void SetSlowMoTime(float t) { m_SlowMoTime = t; }
     void SetTimeFactor(float t) { m_SlowdownFactor = t; }
     bool GameIsSlowMo() const { return m_SlowMoTime > 0.0f; }
@@ -51,17 +51,17 @@ private:
     friend GameLevel;
     
     Player* m_Player;
-    Camera* m_Camera;
+    Dog::Camera* m_Camera;
     unsigned int m_Width;
     unsigned int m_Height;
-    Rect m_RoomBounds;
+    Dog::Rect m_RoomBounds;
     GameState m_State;
     std::vector<GameLevel> m_Rooms;
-    Window* m_Window;
+    Dog::Window* m_Window;
     float m_SlowMoTime = 0;
     float m_SlowdownFactor = 1.0f;
     float m_FreezeTime = 0.0f;
-    ParticleEmitter* backgroundEmitter;
+    Dog::ParticleEmitter* backgroundEmitter;
 
     bool m_DrawColliders;
 };

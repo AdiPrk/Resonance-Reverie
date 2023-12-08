@@ -25,8 +25,8 @@ void Light::Draw(float dt)
     m_Size *= 2.0f;
     m_Color.w = 0.1f;
 
-    Renderer::SetShader("sprite");
-    Renderer::DrawSprite("circle", m_RenderPosition, m_Size, m_Rotation, m_Color);
+    Dog::Renderer::SetShader("sprite");
+    Dog::Renderer::DrawSprite("circle", m_RenderPosition, m_Size, m_Rotation, m_Color);
 }
 
 void Light::SetLightInfo()

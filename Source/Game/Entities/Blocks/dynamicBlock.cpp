@@ -6,7 +6,7 @@
 #include <Engine/Graphics/Renderer/renderer.h>
 
 // constructor
-DynamicBlock::DynamicBlock(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D sprite, int index)
+DynamicBlock::DynamicBlock(glm::vec2 pos, glm::vec2 size, float rotation, Dog::Texture2D sprite, int index)
     : GameObject(pos, size, rotation, sprite, COLOR_F_BLOCK)
     , m_BoundingRect(0, 0, 25.f, 25.f)
     , m_Index(index)
@@ -41,14 +41,14 @@ void DynamicBlock::SetupRigidBody() {
 
 void DynamicBlock::Draw(float dt)
 {
-    Renderer::SetShader("sprite");
+    Dog::Renderer::SetShader("sprite");
     //Renderer::DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
 
     if (m_Index == -1) {
-        Renderer::DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
+        Dog::Renderer::DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
     }
     else {
-        Renderer::DrawSpriteFrame(m_Sprite, m_Index, m_RenderPosition, m_Size, m_Rotation, m_Color);
+        Dog::Renderer::DrawSpriteFrame(m_Sprite, m_Index, m_RenderPosition, m_Size, m_Rotation, m_Color);
     }
 }
 
@@ -62,12 +62,12 @@ void DynamicBlock::SetUpdatedTransform()
     m_BoundingRect.SetScale(m_Size);
 }
 
-bool DynamicBlock::GetOverlappingBounds(const Rect& gamebounds) const
+bool DynamicBlock::GetOverlappingBounds(const Dog::Rect& gamebounds) const
 {
     return gamebounds.overlaps(m_BoundingRect);
 }
 
-bool DynamicBlock::GetOutOfBounds(const Rect& gamebounds) const
+bool DynamicBlock::GetOutOfBounds(const Dog::Rect& gamebounds) const
 {
     return !gamebounds.contains(m_BoundingRect);
 }

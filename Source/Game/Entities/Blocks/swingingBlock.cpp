@@ -7,7 +7,7 @@
 #include <Engine/Graphics/Renderer/renderer.h>
 
 // constructor
-SwingingBlock::SwingingBlock(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D sprite)
+SwingingBlock::SwingingBlock(glm::vec2 pos, glm::vec2 size, float rotation, Dog::Texture2D sprite)
     : GameObject(pos, size, rotation, sprite, COLOR_F_BLOCK)
 {
 }
@@ -69,17 +69,17 @@ void SwingingBlock::Draw(float dt)
     glm::vec2 anchorRenderSize = { 10.0f, 10.0f };
 
     // Drawing the block and anchor
-    Renderer::SetShader("sprite");
-    Renderer::DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
-    Renderer::DrawSprite(m_Sprite, anchorPos, anchorRenderSize);
+    Dog::Renderer::SetShader("sprite");
+    Dog::Renderer::DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
+    Dog::Renderer::DrawSprite(m_Sprite, anchorPos, anchorRenderSize);
 
     // Calculating line info
 
     glm::vec2 blockCenter = m_RenderPosition + m_Size / 2.0f;
     glm::vec2 anchorCenter = anchorPos + anchorRenderSize / 2.0f;
 
-    Renderer::SetShader("sprite");
-    Renderer::DrawLine(blockCenter, anchorCenter, lineWidth, m_Sprite);
+    Dog::Renderer::SetShader("sprite");
+    Dog::Renderer::DrawLine(blockCenter, anchorCenter, lineWidth, m_Sprite);
 }
 
 void SwingingBlock::SetUpdatedTransform()

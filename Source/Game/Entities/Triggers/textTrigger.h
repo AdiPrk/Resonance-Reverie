@@ -10,7 +10,7 @@ class TextTrigger : public GameObject
 {
 public:
     // constructor
-    TextTrigger(glm::vec2 pos, glm::vec2 size, Texture2D sprite, const std::string& text);
+    TextTrigger(glm::vec2 pos, glm::vec2 size, Dog::Texture2D sprite, const std::string& text);
 
     void Draw(float dt) override;
 

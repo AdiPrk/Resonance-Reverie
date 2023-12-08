@@ -230,8 +230,8 @@ void RenderColliders()
                     glm::vec2 p1 = PhysicsUtils::MetersToPixels(vertex);
                     glm::vec2 p2 = PhysicsUtils::MetersToPixels(nextVertex);
 
-                    Renderer::SetShader("sprite");
-                    Renderer::DrawLine(p1, p2, 2.0f, "square");
+                    Dog::Renderer::SetShader("sprite");
+                    Dog::Renderer::DrawLine(p1, p2, 2.0f, "square");
                 }
             }
             else if (shapeType == b2Shape::e_circle) {
@@ -240,7 +240,7 @@ void RenderColliders()
                 float radius = PhysicsUtils::MetersToPixels(circleShape->m_radius);
                 position -= radius;
                 radius *= 2;
-                Renderer::DrawSprite(ResourceManager::GetTexture("circleOutline2"), position, { radius, radius }, 0.0f, { 1.0, 1.0, 1.0, 1.0f });
+                Dog::Renderer::DrawSprite(Dog::ResourceManager::GetTexture("circleOutline2"), position, { radius, radius }, 0.0f, { 1.0, 1.0, 1.0, 1.0f });
             }
         }
     }

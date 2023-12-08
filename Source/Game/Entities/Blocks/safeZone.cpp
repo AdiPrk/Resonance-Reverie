@@ -5,7 +5,7 @@
 #include <Game/Physics/physicsWorld.h>
 
 // constructor
-SafeZone::SafeZone(glm::vec2 pos, glm::vec2 size, Texture2D sprite)
+SafeZone::SafeZone(glm::vec2 pos, glm::vec2 size, Dog::Texture2D sprite)
     : GameObject(pos, size, sprite, COLOR_F_SAFEZONE)
 {
 }

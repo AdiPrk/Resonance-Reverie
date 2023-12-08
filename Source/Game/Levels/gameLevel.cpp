@@ -55,12 +55,12 @@ void GameLevel::SpawnEntities(Game* game, bool starting, bool isCurrent, bool se
             float rotation = entity["rotation"];
 
             if (entity["dynamic"] == false) {
-                Block* obj = new Block(pos, size, rotation, ResourceManager::GetTexture("ss16x7tiles"), entity["texture"]);
+                Block* obj = new Block(pos, size, rotation, Dog::ResourceManager::GetTexture("ss16x7tiles"), entity["texture"]);
                 if (createColliders) obj->SetupRigidBody();
                 this->Entities.push_back(obj);
             }
             else {
-                DynamicBlock* obj = new DynamicBlock(pos, size, rotation, ResourceManager::GetTexture("ss16x7tiles"), entity["texture"]);
+                DynamicBlock* obj = new DynamicBlock(pos, size, rotation, Dog::ResourceManager::GetTexture("ss16x7tiles"), entity["texture"]);
                 obj->SetRestitution(entity["restitution"]);
                 obj->SetDensity(entity["density"]);
                 if (createColliders) obj->SetupRigidBody();
@@ -69,19 +69,19 @@ void GameLevel::SpawnEntities(Game* game, bool starting, bool isCurrent, bool se
         }
         else if (entity["type"] == "4") // lava 
         {
-            Lava* obj = new Lava(pos, size, ResourceManager::GetTexture("square"));
+            Lava* obj = new Lava(pos, size, Dog::ResourceManager::GetTexture("square"));
             if (createColliders) obj->SetupRigidBody();
             this->Entities.push_back(obj);
         }
         else if (entity["type"] == "5") // safe zone
         {
-            SafeZone* obj = new SafeZone(pos, size, ResourceManager::GetTexture("square"));
+            SafeZone* obj = new SafeZone(pos, size, Dog::ResourceManager::GetTexture("square"));
             if (createColliders) obj->SetupRigidBody();
             this->Entities.push_back(obj);
         }
         else if (entity["type"] == "6") // text
         {
-            TextTrigger* obj = new TextTrigger(pos, size, ResourceManager::GetTexture("square"), entity["text"]);
+            TextTrigger* obj = new TextTrigger(pos, size, Dog::ResourceManager::GetTexture("square"), entity["text"]);
             this->Entities.push_back(obj);
         }
         else if (entity["type"] == "11") // light
@@ -91,14 +91,14 @@ void GameLevel::SpawnEntities(Game* game, bool starting, bool isCurrent, bool se
         }
         else if (entity["type"] == "14") { // Enemy spawner
             float numGreys = entity["numGreys"];
-            Rect elementBounds = { pos.x, pos.y, size.x, size.y };
+            Dog::Rect elementBounds = { pos.x, pos.y, size.x, size.y };
             SpawnEnemies(0, (int)numGreys, elementBounds);
         }
         else if (entity["type"] == "15") // safe zone
         {
             float rotation = entity["rotation"];
 
-            SwingingBlock* obj = new SwingingBlock(pos, size, rotation, ResourceManager::GetTexture("block"));
+            SwingingBlock* obj = new SwingingBlock(pos, size, rotation, Dog::ResourceManager::GetTexture("block"));
             obj->anchorPos = glm::vec2(entity["anchorX"], entity["anchorY"]);
             obj->lineWidth = entity["lineWidth"];
             obj->SetDensity(entity["density"]);
@@ -106,7 +106,7 @@ void GameLevel::SpawnEntities(Game* game, bool starting, bool isCurrent, bool se
             this->Entities.push_back(obj);
         }
         else if (entity["type"] == "16") { // Enemy spawner
-            GrapplePoint* obj = new GrapplePoint(pos, size, entity["radius"] * gridSize, ResourceManager::GetTexture("circle"));
+            GrapplePoint* obj = new GrapplePoint(pos, size, entity["radius"] * gridSize, Dog::ResourceManager::GetTexture("circle"));
             if (createColliders) obj->SetupRigidBody();
             this->Entities.push_back(obj);
         }
@@ -114,7 +114,7 @@ void GameLevel::SpawnEntities(Game* game, bool starting, bool isCurrent, bool se
 }
 
 void GameLevel::SetupRoom(Game* game, auto element, bool starting, bool isCurrent, bool setAsCurrent) {
-    Rect roomBounds(element["x"], element["y"], element["w"], element["h"]);
+    Dog::Rect roomBounds(element["x"], element["y"], element["w"], element["h"]);
 
     // std::cout << "Creating Room: " << element << std::endl;
 
@@ -135,7 +135,7 @@ void GameLevel::SetupRoom(Game* game, auto element, bool starting, bool isCurren
     });
 }
 
-void GameLevel::SetCurrentRoomInfo(Game* game, Rect& roomBounds, float camScale, auto element)
+void GameLevel::SetCurrentRoomInfo(Game* game, Dog::Rect& roomBounds, float camScale, auto element)
 {
     game->SetBounds(roomBounds);
     game->m_Camera->SetScale(camScale);
@@ -187,7 +187,7 @@ void GameLevel::LoadStarting(const char* filename, Game* game)
     }
 }
 
-RoomCode GameLevel::LoadNext(const char* filename, Game* game, const Rect& boundsToSearch, bool setAsCurrent)
+RoomCode GameLevel::LoadNext(const char* filename, Game* game, const Dog::Rect& boundsToSearch, bool setAsCurrent)
 {
     // Get the json data
     json data;
@@ -209,7 +209,7 @@ RoomCode GameLevel::LoadNext(const char* filename, Game* game, const Rect& bound
     RoomCode roomCode = ROOM_NOT_FOUND;
 
     for (const auto& element : data) {
-        Rect roomBounds = { element["x"], element["y"], element["w"], element["h"] };
+        Dog::Rect roomBounds = { element["x"], element["y"], element["w"], element["h"] };
 
         if (!roomBounds.overlaps(boundsToSearch)) continue;
 
@@ -256,7 +256,7 @@ RoomCode GameLevel::LoadNext(const char* filename, Game* game, const Rect& bound
 
             if (roomExists) continue;
 
-            Rect otherRoomBounds = { other["x"], other["y"], other["w"], other["h"] };
+            Dog::Rect otherRoomBounds = { other["x"], other["y"], other["w"], other["h"] };
 
             if (roomBounds.bordersOverlap(otherRoomBounds)) {
                 // Setup the room! :)
@@ -281,18 +281,18 @@ void GameLevel::Draw(float dt)
     }
 }
 
-void GameLevel::SpawnEnemies(int enemyID, int numEnemies, Rect spawnBounds)
+void GameLevel::SpawnEnemies(int enemyID, int numEnemies, Dog::Rect spawnBounds)
 {
     for (int i = 0; i < numEnemies; i++)
     {
         glm::vec2 size = { gridSize, gridSize };
 
         glm::vec2 pos = {
-            spawnBounds.left + size.x + RandomFloat() * (spawnBounds.width - size.x * 2),
-            spawnBounds.top + size.y + RandomFloat() * (spawnBounds.height - size.y * 2)
+            spawnBounds.left + size.x + Dog::RandomFloat() * (spawnBounds.width - size.x * 2),
+            spawnBounds.top + size.y + Dog::RandomFloat() * (spawnBounds.height - size.y * 2)
         };
 
-        GreyEnemy* obj = new GreyEnemy(pos, size, ResourceManager::GetTexture("circle"), glm::vec4(0.5f, 0.5f, 0.5f, 1.f));
+        GreyEnemy* obj = new GreyEnemy(pos, size, Dog::ResourceManager::GetTexture("circle"), glm::vec4(0.5f, 0.5f, 0.5f, 1.f));
         obj->SetupRigidBody();
         this->Entities.push_back(obj);
     }

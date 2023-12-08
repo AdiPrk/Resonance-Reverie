@@ -6,7 +6,7 @@
 #include <Engine/Graphics/Renderer/renderer.h>
 
 // constructor
-Lava::Lava(glm::vec2 pos, glm::vec2 size, Texture2D sprite)
+Lava::Lava(glm::vec2 pos, glm::vec2 size, Dog::Texture2D sprite)
     : GameObject(pos, size, sprite, COLOR_F_LAVA)
 {
     //m_RenderDepth = -1.0f;
@@ -38,6 +38,6 @@ void Lava::SetupRigidBody() {
 
 void Lava::Draw(float dt)
 {
-    Renderer::SetShader("lava");
-    Renderer::DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
+    Dog::Renderer::SetShader("lava");
+    Dog::Renderer::DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
 }

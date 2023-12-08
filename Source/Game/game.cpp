@@ -12,13 +12,13 @@
 #include <Game/Physics/physicsWorld.h>
 
 // Game-related State data
-ParticleEmitter* playerEmitter;
+Dog::ParticleEmitter* playerEmitter;
 PhysicsContactListener physicsContactListener;
 constexpr int numParticles = 500;
 constexpr int backgroundParticles = 10000;
 constexpr int totalParticles = numParticles + backgroundParticles;
 
-Game::Game(Window* window)
+Game::Game(Dog::Window* window)
     : m_State(GAME_ACTIVE)
     , m_RoomBounds(0, 0, 0, 0)
     , m_Player(nullptr)
@@ -29,22 +29,22 @@ Game::Game(Window* window)
     , backgroundEmitter(nullptr)
     , m_DrawColliders(false)
 {
-    RandomInit();
+    Dog::RandomInit();
 
-    m_Camera = new Camera();
+    m_Camera = new Dog::Camera();
 
     physicsWorld.SetContactListener(&physicsContactListener);
 
-    Shader::SetupUBO();
+    Dog::Shader::SetupUBO();
 
     // load textures and shaders
-    ResourceManager::LoadTexturesFromDirectory("Game/Assets/Images/");
-    ResourceManager::LoadShadersFromDirectory("Game/Assets/Shaders/");
+    Dog::ResourceManager::LoadTexturesFromDirectory("Game/Assets/Images/");
+    Dog::ResourceManager::LoadShadersFromDirectory("Game/Assets/Shaders/");
 
     // particles
-    playerEmitter = new ParticleEmitter(ResourceManager::GetShader("particle"), ResourceManager::GetTexture("particle"), numParticles);
-    backgroundEmitter = new ParticleEmitter(ResourceManager::GetShader("particle"), ResourceManager::GetTexture("star"), backgroundParticles);
-    InitParticles(totalParticles);
+    playerEmitter = new Dog::ParticleEmitter(Dog::ResourceManager::GetShader("particle"), Dog::ResourceManager::GetTexture("particle"), numParticles);
+    backgroundEmitter = new Dog::ParticleEmitter(Dog::ResourceManager::GetShader("particle"), Dog::ResourceManager::GetTexture("star"), backgroundParticles);
+    Dog::InitParticles(totalParticles);
 
     playerEmitter->particleProps.color = { 0.f, 2.f, 7.f, 1.0f };
 
@@ -52,7 +52,7 @@ Game::Game(Window* window)
     backgroundEmitter->particleProps.velocity = { 150.0f, 0.0f };
     backgroundEmitter->particleProps.velocityVariation = { 100.f, 30.f };
     backgroundEmitter->particleProps.color = { 1.f, 1.f, 1.f, 1.f };
-    backgroundEmitter->particleProps.fadeStyle = PARTICLE_FADE_STYLE::FADE_IN_OUT;
+    backgroundEmitter->particleProps.fadeStyle = Dog::PARTICLE_FADE_STYLE::FADE_IN_OUT;
     backgroundEmitter->particleProps.sizeBegin = 25.0f;
     backgroundEmitter->particleProps.sizeEnd = 25.0f;
     backgroundEmitter->particleProps.sizeVariation = 5.0f;
@@ -69,8 +69,8 @@ Game::Game(Window* window)
     m_Camera->MoveTo(m_Player->GetPosition(), m_RoomBounds);
 
     for (int i = 0; i < 100; i++) {
-        float bex = m_RoomBounds.left + m_RoomBounds.width * RandomFloat() - 250;
-        float bey = m_RoomBounds.top + m_RoomBounds.height * RandomFloat();
+        float bex = m_RoomBounds.left + m_RoomBounds.width * Dog::RandomFloat() - 250;
+        float bey = m_RoomBounds.top + m_RoomBounds.height * Dog::RandomFloat();
         backgroundEmitter->SetPosition({ bex, bey });
 
         backgroundEmitter->Emit(2);
@@ -119,8 +119,8 @@ void Game::UpdateCamera(float dt)
 void Game::Update(float dt)
 {
     SetPreviousPositions();
-    ResourceManager::GetAudioManager().SetListenerLocation(m_Player->GetPosition());
-    ResourceManager::GetAudioManager().Update();
+    Dog::ResourceManager::GetAudioManager().SetListenerLocation(m_Player->GetPosition());
+    Dog::ResourceManager::GetAudioManager().Update();
 
     if (m_FreezeTime > 0) {
         m_FreezeTime -= dt;
@@ -178,7 +178,7 @@ void Game::Update(float dt)
         }
     }
 
-    Renderer::UpdatePostProcessing(dt);
+    Dog::Renderer::UpdatePostProcessing(dt);
 
     // camera->position = player->Position;
     playerEmitter->SetPosition(m_Player->GetRenderPosition() + m_Player->GetSize() / 2.f);
@@ -191,7 +191,7 @@ void Game::Update(float dt)
         playerEmitter->Emit();
 
         float bex = m_RoomBounds.left - 500.0f;// + m_RoomBounds.width * RandomFloat();
-        float bey = m_RoomBounds.top + m_RoomBounds.height * RandomFloat();
+        float bey = m_RoomBounds.top + m_RoomBounds.height * Dog::RandomFloat();
         backgroundEmitter->SetPosition({ bex, bey });
 
         backgroundEmitter->Emit();
@@ -201,15 +201,15 @@ void Game::Update(float dt)
     backgroundEmitter->Update(dt);
 
     // Wait for threadpool to be done
-    ThreadPool::threadPool.wait_for_tasks();
+    Dog::ThreadPool::threadPool.wait_for_tasks();
 }
 
 void Game::DrawScene(float dt) {
     // draw level backgrounds
-    Renderer::SetShader("background");
+    Dog::Renderer::SetShader("background");
     for (auto& room : m_Rooms)
     {
-        Renderer::DrawSprite(
+        Dog::Renderer::DrawSprite(
             "square",
             glm::vec2(room.Bounds().left, room.Bounds().top),
             glm::vec2(room.Bounds().width, room.Bounds().height)
@@ -218,14 +218,14 @@ void Game::DrawScene(float dt) {
 
     // draw levels
     int numParticles = playerEmitter->GetParticleCount() + backgroundEmitter->GetParticleCount();
-    Renderer::RenderText(std::to_string(numParticles) + " particles", (float)m_Width / 2.f, (float)m_Height / 2.0f - 50, 0.5f, true, glm::vec3(1), true);
+    Dog::Renderer::RenderText(std::to_string(numParticles) + " particles", (float)m_Width / 2.f, (float)m_Height / 2.0f - 50, 0.5f, true, glm::vec3(1), true);
     for (auto& room : m_Rooms)
     {
         room.Draw(dt);
     }
 
     // Particles
-    playerEmitter->particleProps.color = { RandomFloat(), RandomFloat(), RandomFloat(), 1.f };
+    playerEmitter->particleProps.color = { Dog::RandomFloat(), Dog::RandomFloat(), Dog::RandomFloat(), 1.f };
     playerEmitter->GrabParticles();
     backgroundEmitter->GrabParticles();
     playerEmitter->RenderParticlesInstanced();
@@ -241,37 +241,37 @@ void Game::Render(float dt, float ct, float itf)
     CalculateLerpedPositions(itf);
     UpdateCamera(dt);
 
-    Shader::iTime += CalculateSlowedDT(dt);
-    Shader::SetTimeUBO(Shader::iTime);
+    Dog::Shader::iTime += CalculateSlowedDT(dt);
+    Dog::Shader::SetTimeUBO(Dog::Shader::iTime);
 
     // Clear the screen
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // Begin rendering to postprocessing framebuffer
-    Renderer::BeginPostProcessing();
+    Dog::Renderer::BeginPostProcessing();
 
     // Draw the scene!
     DrawScene(dt);
 
     // End rendering to postprocessing framebuffer and render the scene
-    Renderer::EndPostProcessing();
+    Dog::Renderer::EndPostProcessing();
 
     // Draw fps
     std::string fpsString = std::string("fps: ") + std::to_string((1.f / dt));
-    Renderer::RenderText(fpsString, 50.f, 90.0f, 0.5f, false, glm::vec3(0));
-    Renderer::RenderText(fpsString, 50.f, 50.f, 0.5f, false);
+    Dog::Renderer::RenderText(fpsString, 50.f, 90.0f, 0.5f, false, glm::vec3(0));
+    Dog::Renderer::RenderText(fpsString, 50.f, 50.f, 0.5f, false);
 
     // fullscreen toggle
-    Renderer::RenderText("press F to toggle fullscreen", 50.f, (float)m_Height - 70, 0.5f, false);
-    if (InputManager::GetKeyTriggered(Key::F)) {
+    Dog::Renderer::RenderText("press F to toggle fullscreen", 50.f, (float)m_Height - 70, 0.5f, false);
+    if (Dog::InputManager::GetKeyTriggered(Dog::Key::F)) {
         m_Window->ToggleFullscreen();
     }
 
     // draw num particles w/ diagetic text
     
     
-    if (InputManager::GetKeyTriggered(Key::K)) {
+    if (Dog::InputManager::GetKeyTriggered(Dog::Key::K)) {
         m_DrawColliders = !m_DrawColliders;
     }
 
@@ -285,7 +285,7 @@ void Game::FilterRooms(float dt)
     //if (!m_Camera->IsZoomEqualTarget()) return;
 
     std::vector<GameLevel>& rooms = m_Rooms;
-    Rect camRect = this->m_RoomBounds;// m_Camera->Bounds();
+    Dog::Rect camRect = this->m_RoomBounds;// m_Camera->Bounds();
     
     // Filter out rooms if out of frame for over a second
     m_Rooms.erase(std::remove_if(m_Rooms.begin(), m_Rooms.end(),

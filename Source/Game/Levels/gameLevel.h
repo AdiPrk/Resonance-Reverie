@@ -32,23 +32,23 @@ public:
     void LoadStarting(const char* filename, Game* game);
 
     // Loads the level the player is in, true if next room found
-    RoomCode LoadNext(const char* filename, Game* game, const Rect& boundsToSearch, bool setAsCurrent = false);
+    RoomCode LoadNext(const char* filename, Game* game, const Dog::Rect& boundsToSearch, bool setAsCurrent = false);
 
     // render level
     void Draw(float dt);
 
     const int ID() const { return m_ID; };
-    const Rect Bounds() const { return m_BoundingRect; }
+    const Dog::Rect Bounds() const { return m_BoundingRect; }
     float& DeleteTimer() { return m_OutOfFrameFor; }
 
-    void SpawnEnemies(int enemyID, int numEnemies, Rect spawnBounds);
+    void SpawnEnemies(int enemyID, int numEnemies, Dog::Rect spawnBounds);
 
 private:
 
     void SetupRoom(Game* game, auto element, bool starting, bool isCurrent, bool setAsCurrent);
-    void SetCurrentRoomInfo(Game* game, Rect& roomBounds, float camScale, auto element);
+    void SetCurrentRoomInfo(Game* game, Dog::Rect& roomBounds, float camScale, auto element);
 
     int m_ID;
-    Rect m_BoundingRect;
+    Dog::Rect m_BoundingRect;
     float m_OutOfFrameFor = 0;
 };

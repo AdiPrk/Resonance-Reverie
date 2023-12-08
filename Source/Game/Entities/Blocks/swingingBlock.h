@@ -10,7 +10,7 @@ class SwingingBlock : public GameObject
 {
 public:
     // constructor
-    SwingingBlock(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D sprite);
+    SwingingBlock(glm::vec2 pos, glm::vec2 size, float rotation, Dog::Texture2D sprite);
     void SetupRigidBody() override;
 
     void Draw(float dt) override;

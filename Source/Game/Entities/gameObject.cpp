@@ -18,7 +18,7 @@ GameObject::GameObject()
 {
 }
 
-GameObject::GameObject(Texture2D sprite, glm::vec4 color)
+GameObject::GameObject(Dog::Texture2D sprite, glm::vec4 color)
     : m_Position(0.0f, 0.0f)
     , m_Size(1.0f, 1.0f)
     , m_Velocity(0.0f)
@@ -33,7 +33,7 @@ GameObject::GameObject(Texture2D sprite, glm::vec4 color)
 {
 }
 
-GameObject::GameObject(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D sprite, glm::vec4 color, glm::vec2 velocity)
+GameObject::GameObject(glm::vec2 pos, glm::vec2 size, float rotation, Dog::Texture2D sprite, glm::vec4 color, glm::vec2 velocity)
     : m_Position(pos)
     , m_Size(size)
     , m_Velocity(velocity)
@@ -48,7 +48,7 @@ GameObject::GameObject(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D 
 {
 }
 
-GameObject::GameObject(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec4 color, glm::vec2 velocity)
+GameObject::GameObject(glm::vec2 pos, glm::vec2 size, Dog::Texture2D sprite, glm::vec4 color, glm::vec2 velocity)
     : m_Position(pos)
     , m_Size(size)
     , m_Velocity(velocity)
@@ -73,8 +73,8 @@ GameObject::~GameObject()
 
 void GameObject::Draw(float dt)
 {
-    Renderer::SetShader("sprite");
-    Renderer::DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
+    Dog::Renderer::SetShader("sprite");
+    Dog::Renderer::DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
 }
 
 void GameObject::setPreviousPosition()

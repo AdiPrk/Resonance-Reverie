@@ -2,20 +2,24 @@
 
 #include "entt.hpp"
 
-class Entity;
+namespace Dog {
 
-class Scene
-{
-public:
-	Scene();
-	~Scene();
+	class Entity;
 
-	Entity CreateEntity(const std::string& name = std::string());
+	class Scene
+	{
+	public:
+		Scene();
+		~Scene();
 
-	void OnUpdate(float dt);
+		Entity CreateEntity(const std::string& name = std::string());
 
-private:
-	entt::registry m_Registry;
+		void OnUpdate(float dt);
 
-	friend class Entity;
-};
+	private:
+		entt::registry m_Registry;
+
+		friend class Entity;
+	};
+
+}

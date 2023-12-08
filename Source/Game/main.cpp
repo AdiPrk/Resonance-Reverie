@@ -3,7 +3,7 @@
 
 int main() {
     // Create Engine and Game
-    DogEngine Engine(1600, 900);
+    Dog::DogEngine Engine(1600, 900);
     Game ResonanceReverie(Engine.GetWindow());
     
     // Run Engine!

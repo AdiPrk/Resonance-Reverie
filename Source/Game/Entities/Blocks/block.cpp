@@ -6,7 +6,7 @@
 #include <Engine/Graphics/Renderer/renderer.h>
 
 // constructor
-Block::Block(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D sprite, int index)
+Block::Block(glm::vec2 pos, glm::vec2 size, float rotation, Dog::Texture2D sprite, int index)
     : GameObject(pos, size, rotation, sprite, COLOR_F_BLOCK)
     , m_Index(index)
 {
@@ -39,12 +39,12 @@ void Block::SetupRigidBody() {
 
 void Block::Draw(float dt)
 {
-    Renderer::SetShader("sprite");
+    Dog::Renderer::SetShader("sprite");
 
     if (m_Index == -1) {
-        Renderer::DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color, { 25.0f, 25.0f });
+        Dog::Renderer::DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color, { 25.0f, 25.0f });
     }
     else {
-        Renderer::DrawSpriteFrame(m_Sprite, m_Index, m_RenderPosition, m_Size, m_Rotation, m_Color, { 25.0f, 25.0f });
+        Dog::Renderer::DrawSpriteFrame(m_Sprite, m_Index, m_RenderPosition, m_Size, m_Rotation, m_Color, { 25.0f, 25.0f });
     }
 }

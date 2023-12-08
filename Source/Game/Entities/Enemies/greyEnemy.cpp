@@ -6,10 +6,10 @@
 #include <Engine/Inputs/inputManager.h>
 
 // constructor
-GreyEnemy::GreyEnemy(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec4 color, glm::vec2 velocity)
+GreyEnemy::GreyEnemy(glm::vec2 pos, glm::vec2 size, Dog::Texture2D sprite, glm::vec4 color, glm::vec2 velocity)
     : GameObject(pos, size, sprite, color, velocity)
 {
-    float randAngle = RandomFloat() * 6.28f;
+    float randAngle = Dog::RandomFloat() * 6.28f;
     glm::vec2 vel = { cosf(randAngle), sinf(randAngle) };
     vel *= 3.f;
 

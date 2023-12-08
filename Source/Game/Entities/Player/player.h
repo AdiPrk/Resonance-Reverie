@@ -38,7 +38,7 @@ public:
     // Reset player
     void Respawn();
 
-    const Rect Bounds() const { return m_BoundingRect; }
+    const Dog::Rect Bounds() const { return m_BoundingRect; }
 
     bool isGrounded;
     bool leftSensorGrounded = false;
@@ -58,7 +58,7 @@ private:
 
     bool m_initPosition;
     glm::vec2 m_SpawnPosition;
-    Rect m_BoundingRect;
+    Dog::Rect m_BoundingRect;
     bool m_Respawn;
     bool m_Facing = false; // false is left
 

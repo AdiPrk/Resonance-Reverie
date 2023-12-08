@@ -6,7 +6,7 @@
 #include <Engine/Graphics/Renderer/renderer.h>
 
 // constructor
-GrapplePoint::GrapplePoint(glm::vec2 pos, glm::vec2 size, float radius, Texture2D sprite)
+GrapplePoint::GrapplePoint(glm::vec2 pos, glm::vec2 size, float radius, Dog::Texture2D sprite)
     : GameObject(pos, size, 0.0f, sprite, COLOR_F_BLOCK)
     , m_Radius(radius)
 {
@@ -38,10 +38,10 @@ void GrapplePoint::SetupRigidBody() {
 
 void GrapplePoint::Draw(float dt)
 {
-    Renderer::SetShader("sprite");
-    Renderer::DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
+    Dog::Renderer::SetShader("sprite");
+    Dog::Renderer::DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
 
     glm::vec2 radSize(m_Radius);
 
-    Renderer::DrawSprite(m_Sprite, m_RenderPosition - radSize + m_Size * 0.5f, radSize * 2.0f, m_Rotation, { 1.0f, 1.0f, 1.0f, 0.1f });
+    Dog::Renderer::DrawSprite(m_Sprite, m_RenderPosition - radSize + m_Size * 0.5f, radSize * 2.0f, m_Rotation, { 1.0f, 1.0f, 1.0f, 0.1f });
 }

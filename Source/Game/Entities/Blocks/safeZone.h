@@ -10,7 +10,7 @@ class SafeZone : public GameObject
 {
 public:
     // constructor
-    SafeZone(glm::vec2 pos, glm::vec2 size, Texture2D sprite);
+    SafeZone(glm::vec2 pos, glm::vec2 size, Dog::Texture2D sprite);
     void SetupRigidBody() override;
 
 };
