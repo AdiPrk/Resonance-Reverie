@@ -9,12 +9,8 @@ class SpriteRenderer
 {
 public:
     // Constructor (inits shaders/shapes)
-    SpriteRenderer(Shader& shader);
+    SpriteRenderer();
     ~SpriteRenderer();
-
-    // set shader
-    void SetShader(Shader& shader);
-    void SetShader(const std::string& shaderName);
 
     // Renders a defined quad textured with given sprite
     void DrawSprite(const std::string& textureName, glm::vec2 position, glm::vec2 size = glm::vec2(10.0f, 10.0f), float rotation = 0.0f, glm::vec4 color = glm::vec4(1.0f), glm::vec2 repetition = glm::vec2(0));
@@ -27,7 +23,7 @@ public:
 
 private:
     // Render state
-    Shader       shader;
+    
     unsigned int quadVAO;
     
     // Initializes and configures the quad's buffer and vertex attributes

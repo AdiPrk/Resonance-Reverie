@@ -4,7 +4,8 @@
     "y": 0,
     "w": 1600,
     "h": 900,
-    "entities": [
+    "backgroundEntities": [],
+    "foregroundEntities": [
       {
         "x": 0,
         "y": 800,
@@ -481,7 +482,8 @@
     "y": -225,
     "w": 2075,
     "h": 1325,
-    "entities": [
+    "backgroundEntities": [],
+    "foregroundEntities": [
       {
         "x": 1600,
         "y": 700,
@@ -573,7 +575,8 @@
     "y": 900,
     "w": 1600,
     "h": 900,
-    "entities": [
+    "backgroundEntities": [],
+    "foregroundEntities": [
       {
         "x": 0,
         "y": 900,

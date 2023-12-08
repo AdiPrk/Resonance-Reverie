@@ -27,13 +27,6 @@ void Texture2D::Generate(unsigned int width, unsigned int height, unsigned char*
     this->Height = height;
     this->NumSprites = numSprites;
 
-    if (data) {
-        std::cout << "Creating " << Columns << "x" << Rows << " Texture, Size: " << width << "x" << height << std::endl;
-    }
-    else {
-        std::cout << "Loading Empty Texture:" << std::endl;
-        std::cout << "Creating " << Columns << "x" << Rows << " Texture, Size: " << width << "x" << height << std::endl;
-    }
     // create Texture
     if (numSprites == 1) {
         glBindTexture(GL_TEXTURE_2D, this->ID);

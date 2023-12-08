@@ -3,8 +3,6 @@
 #include <PCH/pch.h>
 
 #include <Engine/Graphics/Texture/texture.h>
-#include <Engine/Graphics/Renderer/Sprites/spriteRenderer.h>
-#include <Engine/Graphics/Renderer/Text/textRenderer.h>
 #include <Engine/Graphics/Renderer/Sprites/spriteAnimator.h>
 
 // Container object for holding all state relevant for a single
@@ -21,7 +19,7 @@ public:
     ~GameObject();
 
     virtual void Update(float dt) {};
-    virtual void Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt);
+    virtual void Draw(float dt);
     virtual void SetUpdatedTransform() {};
     virtual void SetupRigidBody() {};
     virtual bool GetOverlappingBounds(const Rect& gamebounds) const { return true; }

@@ -5,28 +5,16 @@
 #include "Engine/Graphics/Shader/shader.h"
 #include "Engine/Graphics/Texture/texture.h"
 #include <Engine/ResourceManager/resourceManager.h>
+#include <Engine/Graphics/Renderer/renderer.h>
 
-SpriteRenderer::SpriteRenderer(Shader& shader)
+SpriteRenderer::SpriteRenderer()
 {
-    this->shader = shader;
     this->initRenderData();
 }
 
 SpriteRenderer::~SpriteRenderer()
 {
     glDeleteVertexArrays(1, &this->quadVAO);
-}
-
-void SpriteRenderer::SetShader(Shader& shader)
-{
-    this->shader = shader;
-    shader.Use();
-}
-
-void SpriteRenderer::SetShader(const std::string& shaderName)
-{
-    this->shader = ResourceManager::GetShader(shaderName);
-    shader.Use();
 }
 
 void SpriteRenderer::DrawSprite(const std::string& textureName, glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, glm::vec2 repetition) {
@@ -36,38 +24,36 @@ void SpriteRenderer::DrawSprite(const std::string& textureName, glm::vec2 positi
 void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, glm::vec2 repetition)
 {
     // prepare transformations
-    this->shader.Use();
-
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(position + size * 0.5f, 0.0f));  // first translate
     model = glm::rotate(model, rotation, glm::vec3(0.0f, 0.0f, 1.0f)); // then rotate
     model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f)); // translate
     model = glm::scale(model, glm::vec3(size, 1.0f)); // scale by size
 
-    this->shader.SetMatrix4("model", model);
+    Renderer::GetActiveShader().SetMatrix4("model", model);
 
     // render textured quad
-    if (this->shader.HasUniform("spriteColor")) {
-        this->shader.SetVector4f("spriteColor", color);
+    if (Renderer::GetActiveShader().HasUniform("spriteColor")) {
+        Renderer::GetActiveShader().SetVector4f("spriteColor", color);
     }
     
     if (texture.IsSpriteSheet) {
         static unsigned index = texture.Index;
         if (texture.Index != index) {
             index = texture.Index;
-            this->shader.SetUnsigned("spriteIndex", index);
+            Renderer::GetActiveShader().SetUnsigned("spriteIndex", index);
         }
     }
 
     if ((repetition.x == 0 || repetition.y == 0)) {
-        this->shader.SetVector2f("repetition", 1.0f, 1.0f);
+        Renderer::GetActiveShader().SetVector2f("repetition", 1.0f, 1.0f);
     }
     else {
-        this->shader.SetVector2f("repetition", size.x / repetition.x, size.y / repetition.y);
+        Renderer::GetActiveShader().SetVector2f("repetition", size.x / repetition.x, size.y / repetition.y);
     }
 
     // Set the texture handle as a uniform
-    this->shader.SetUniformHandle("textureHandle", texture.textureHandle);
+    Renderer::GetActiveShader().SetUniformHandle("textureHandle", texture.textureHandle);
    
     ResourceManager::BindVAO(this->quadVAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

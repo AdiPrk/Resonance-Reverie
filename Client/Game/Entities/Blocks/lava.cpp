@@ -3,6 +3,7 @@
 #include "lava.h"
 #include <Engine/Graphics/Texture/texture.h>
 #include <Game/Physics/physicsWorld.h>
+#include <Engine/Graphics/Renderer/renderer.h>
 
 // constructor
 Lava::Lava(glm::vec2 pos, glm::vec2 size, Texture2D sprite)
@@ -35,8 +36,8 @@ void Lava::SetupRigidBody() {
     m_RigidBody->CreateFixture(&fixtureDef);
 }
 
-void Lava::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt)
+void Lava::Draw(float dt)
 {
-    renderer.SetShader("lava");
-    renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
+    Renderer::SetShader("lava");
+    Renderer::DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
 }

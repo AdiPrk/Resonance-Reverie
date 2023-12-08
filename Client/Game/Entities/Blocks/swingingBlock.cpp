@@ -3,6 +3,8 @@
 #include "swingingBlock.h"
 #include <Engine/Graphics/Texture/texture.h>
 #include <Game/Physics/physicsWorld.h>
+#include <Engine/Graphics/Renderer/renderer.h>
+#include <Engine/Graphics/Renderer/renderer.h>
 
 // constructor
 SwingingBlock::SwingingBlock(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D sprite)
@@ -62,22 +64,22 @@ void SwingingBlock::SetupRigidBody() {
     physicsWorld.CreateJoint(&jd);
 }
 
-void SwingingBlock::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt)
+void SwingingBlock::Draw(float dt)
 {
     glm::vec2 anchorRenderSize = { 10.0f, 10.0f };
 
     // Drawing the block and anchor
-    renderer.SetShader("sprite");
-    renderer.DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
-    renderer.DrawSprite(m_Sprite, anchorPos, anchorRenderSize);
+    Renderer::SetShader("sprite");
+    Renderer::DrawSprite(m_Sprite, m_RenderPosition, m_Size, m_Rotation, m_Color);
+    Renderer::DrawSprite(m_Sprite, anchorPos, anchorRenderSize);
 
     // Calculating line info
 
     glm::vec2 blockCenter = m_RenderPosition + m_Size / 2.0f;
     glm::vec2 anchorCenter = anchorPos + anchorRenderSize / 2.0f;
 
-    renderer.SetShader("sprite");
-    renderer.DrawLine(blockCenter, anchorCenter, lineWidth, m_Sprite);
+    Renderer::SetShader("sprite");
+    Renderer::DrawLine(blockCenter, anchorCenter, lineWidth, m_Sprite);
 }
 
 void SwingingBlock::SetUpdatedTransform()

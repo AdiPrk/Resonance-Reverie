@@ -3,8 +3,8 @@
 #include <Engine/ResourceManager/resourceManager.h>
 #include "../Sprites/spriteRenderer.h"
 
-PostProcessor::PostProcessor(Shader shader, unsigned int width, unsigned int height)
-    : PostProcessingShader(shader)
+PostProcessor::PostProcessor(unsigned int width, unsigned int height)
+    : PostProcessingShader(ResourceManager::GetShader("defaultpostprocessing"))
     , Texture()
     , Width(width)
     , Height(height)

@@ -3,7 +3,7 @@
 #include <Game/Entities/Player/player.h>
 #include <Game/Entities/Interactables/grapplePoint.h>
 #include <Engine/ResourceManager/resourceManager.h>
-#include <Engine/Graphics/Renderer/Sprites/spriteRenderer.h>
+#include <Engine/Graphics/Renderer/renderer.h>
 
 b2World physicsWorld(b2Vec2(0.0f, 20.0f));
 
@@ -207,7 +207,7 @@ void PhysicsContactListener::PostSolve(b2Contact* contact, const b2ContactImpuls
 }
 
 
-void RenderColliders(SpriteRenderer& renderer)
+void RenderColliders()
 {
     for (b2Body* body = physicsWorld.GetBodyList(); body != nullptr; body = body->GetNext())
     {
@@ -230,8 +230,8 @@ void RenderColliders(SpriteRenderer& renderer)
                     glm::vec2 p1 = PhysicsUtils::MetersToPixels(vertex);
                     glm::vec2 p2 = PhysicsUtils::MetersToPixels(nextVertex);
 
-                    renderer.SetShader("sprite");
-                    renderer.DrawLine(p1, p2, 2.0f, "square");
+                    Renderer::SetShader("sprite");
+                    Renderer::DrawLine(p1, p2, 2.0f, "square");
                 }
             }
             else if (shapeType == b2Shape::e_circle) {
@@ -240,7 +240,7 @@ void RenderColliders(SpriteRenderer& renderer)
                 float radius = PhysicsUtils::MetersToPixels(circleShape->m_radius);
                 position -= radius;
                 radius *= 2;
-                renderer.DrawSprite(ResourceManager::GetTexture("circleOutline2"), position, { radius, radius }, 0.0f, { 1.0, 1.0, 1.0, 1.0f });
+                Renderer::DrawSprite(ResourceManager::GetTexture("circleOutline2"), position, { radius, radius }, 0.0f, { 1.0, 1.0, 1.0, 1.0f });
             }
         }
     }

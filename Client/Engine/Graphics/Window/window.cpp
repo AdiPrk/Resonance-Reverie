@@ -63,11 +63,17 @@ void GLAPIENTRY OpenGLDebugCallback(GLenum source,
 }
 #endif
 
+unsigned int Window::m_Width = 0;
+unsigned int Window::m_Height = 0;
+float Window::m_AspectRatio = 0;
+GLFWwindow* Window::m_Window = nullptr;
+
 Window::Window(unsigned int screenWidth, unsigned int screenHeight)
-    : m_Window()
-    , m_Width(screenWidth)
-    , m_Height(screenHeight)
 {
+    m_Width = screenWidth;
+    m_Height = screenHeight;
+    m_AspectRatio = static_cast<float>(m_Width) / static_cast<float>(m_Height);
+
     m_LastFrameTime = std::chrono::high_resolution_clock::now();
 
     glfwWindowHint(GL_MAJOR_VERSION, 4);
@@ -192,12 +198,12 @@ void Window::ToggleFullscreen()
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     int newWidth = width;
-    int newHeight = (int)(width / WINDOW_ASPECT);
+    int newHeight = (int)(width / Window::GetAspectRatio());
 
     if (newHeight > height)
     {
         newHeight = height;
-        newWidth = (int)(height * WINDOW_ASPECT);
+        newWidth = (int)(height * Window::GetAspectRatio());
     }
 
     int xOffset = (width - newWidth) / 2;

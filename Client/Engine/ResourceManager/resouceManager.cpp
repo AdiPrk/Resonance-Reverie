@@ -17,6 +17,10 @@ GLuint ResourceManager::CurrentVAO = -1;
 
 Shader& ResourceManager::LoadShader(const std::string& vShaderFile, const std::string& fShaderFile, std::string name)
 {
+    if (Shaders.contains(name)) return Shaders[name];
+
+    std::cout << "Loading Shader: " << name << std::endl;
+
     Shader& shader = Shaders[name];
 
     shader = loadShaderFromFile(vShaderFile, fShaderFile);
@@ -90,6 +94,10 @@ void ResourceManager::LoadShadersFromDirectory(const char* directory)
 
 Texture2D& ResourceManager::LoadTexture(const std::string& file, std::string name, unsigned columns, unsigned rows)
 {
+    if (Textures.contains(name)) return Textures[name];
+
+    std::cout << "Loading Texture: " << name << std::endl;
+
     Textures[name] = loadTextureFromFile(file, columns, rows);
     return Textures[name];
 }
@@ -189,7 +197,6 @@ Texture2D ResourceManager::loadTextureFromFile(const std::string& file, unsigned
     // load image
     int width, height, nrChannels;
     unsigned char* data = stbi_load(file.c_str(), &width, &height, &nrChannels, 0);
-    std::cout << "Texture Loaded: " << file.c_str() << std::endl;
 
     // check if data is loaded successfully
     if (!data)
@@ -219,7 +226,6 @@ Texture2D ResourceManager::loadTextureFromFile(const std::string& file, unsigned
     texture.IsSpriteSheet = columns != 1 || rows != 1;
     
     texture.Generate(width, height, data, rows * columns);
-    std::cout << std::endl;
 
     // and finally free image data
     stbi_image_free(data);

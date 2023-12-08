@@ -12,7 +12,6 @@
 #include <Game/Entities/Interactables/grapplePoint.h>
 #include <Game/Entities/Environment/light.h>
 #include <Game/Entities/Triggers/textTrigger.h>
-#include <Engine/Graphics/Renderer/Sprites/spriteRenderer.h>
 #include <Engine/Graphics/Renderer/Camera/camera.h>
 
 #include <Game/game.h>
@@ -271,12 +270,12 @@ RoomCode GameLevel::LoadNext(const char* filename, Game* game, const Rect& bound
     return roomCode;
 }
 
-void GameLevel::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt)
+void GameLevel::Draw(float dt)
 {
     Light::lightIndex = 0;
 
     for (GameObject*& entity : this->Entities) {
-        entity->Draw(renderer, textRenderer, dt);
+        entity->Draw(dt);
 
         entity->SetLightInfo();
     }

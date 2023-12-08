@@ -23,7 +23,7 @@ public:
     float invertTime = 0.0f;
     float greyscaleTime = 0.0f;
     // constructor
-    PostProcessor(Shader shader, unsigned int width, unsigned int height);
+    PostProcessor(unsigned int width, unsigned int height);
     // update
     void Update(float dt);
     void UpdateEffect(float& effectTime, bool& effectFlag, float dt);

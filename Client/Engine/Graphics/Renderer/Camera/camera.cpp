@@ -4,7 +4,7 @@
 #include <Engine/Graphics/Shader/shader.h>
 
 Camera::Camera()
-    : m_CameraSize(SCREEN_WIDTH, SCREEN_HEIGHT)
+    : m_CameraSize(Window::GetWidth(), Window::GetHeight())
     , m_BoundingRect()
 {
 }
@@ -21,7 +21,7 @@ glm::mat4 Camera::GetViewMatrix() {
 
 void Camera::UpdateUniforms() {
     glm::mat4 view = GetViewMatrix();
-    glm::mat4 proj = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f, -1.0f, 1.0f);
+    glm::mat4 proj = glm::ortho(0.f, float(Window::GetWidth()), float(Window::GetHeight()), 0.f, -1.0f, 1.0f);
     glm::mat4 projView = proj * view;
 
     Shader::SetViewAndProjectionView(view, projView);

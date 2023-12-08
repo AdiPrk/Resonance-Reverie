@@ -6,12 +6,14 @@
 #include <Engine/Graphics/Window/window.h>
 #include <Engine/ResourceManager/resourceManager.h>
 #include <Engine/Inputs/inputManager.h>
+#include <Engine/Graphics/Renderer/renderer.h>
 
 DogEngine::DogEngine(unsigned int width, unsigned int height)
     : m_Application(nullptr)
 {
-	m_Window = new Window(SCREEN_WIDTH, SCREEN_HEIGHT);
+	m_Window = new Window(width, height);
 	InputManager::Init(m_Window->GetWindow());
+    Renderer::Init(width, height);
 }
 
 DogEngine::~DogEngine()

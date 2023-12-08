@@ -2,10 +2,6 @@
 
 #include <PCH/pch.h>
 
-constexpr unsigned int SCREEN_WIDTH = 1600;
-constexpr unsigned int SCREEN_HEIGHT = 900;
-constexpr float WINDOW_ASPECT = static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT);
-
 class Window {
 public:
 	Window(unsigned int screenWidth, unsigned int screenHeight);
@@ -32,12 +28,14 @@ public:
 
 	constexpr static double targetFrameLength = 1.0 / 120.0;
 
-	unsigned int GetWidth() { return m_Width; }
-	unsigned int GetHeight() { return m_Height; }
+	static unsigned int GetWidth() { return m_Width; }
+	static unsigned int GetHeight() { return m_Height; }
+	static float GetAspectRatio() { return m_AspectRatio; }
 
 private:
 	std::chrono::high_resolution_clock::time_point m_LastFrameTime;
-	unsigned int m_Width;
-	unsigned int m_Height;
-	GLFWwindow* m_Window;
+	static unsigned int m_Width;
+	static unsigned int m_Height;
+	static float m_AspectRatio;
+	static GLFWwindow* m_Window;
 };

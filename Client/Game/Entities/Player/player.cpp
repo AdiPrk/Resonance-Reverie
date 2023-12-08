@@ -7,6 +7,8 @@
 #include <Engine/ResourceManager/resourceManager.h>
 #include <Engine/Graphics/Renderer/Effects/postProcessor.h>
 #include <Game/Entities/Environment/light.h>
+#include <Engine/Graphics/Renderer/renderer.h>
+#include <Engine/Graphics/Renderer/renderer.h>
 
 // constructor(s)
 Player::Player(Game* game)
@@ -289,7 +291,7 @@ void Player::Update(float dt) {
             ResourceManager::PlaySound("jumpWoosh.mp3");
             m_Grappling = false;
 
-            m_Game->Effects->shakeTime = 0.05f;
+            Renderer::GetPostProcessor()->shakeTime = 0.05f;
 
             break;
         }
@@ -363,8 +365,8 @@ void Player::SetUpdatedTransform()
     m_BoundingRect.SetScale(m_Size);
 }
 
-void Player::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt) {
-    renderer.SetShader("sprite");
+void Player::Draw(float dt) {
+    Renderer::SetShader("sprite");
 
     glm::vec2 truerenderpos = m_RenderPosition - 1.0f;
     
@@ -374,7 +376,7 @@ void Player::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt
 
     //m_Animator.Update(dt);
 
-    renderer.DrawSpriteFrame(m_Sprite, m_Animator.GetCurrentFrameIndex(), truerenderpos, m_RenderSize, m_Rotation);
+    Renderer::DrawSpriteFrame(m_Sprite, m_Animator.GetCurrentFrameIndex(), truerenderpos, m_RenderSize, m_Rotation);
 
     static float grappleLerp = 0.0f;
     if (m_Grappling) {
@@ -385,9 +387,9 @@ void Player::Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt
         glm::vec2 playerToAnchor = Lerp(playerCenter, m_GrapplingTo, grappleLerp);
         glm::vec2 anchorToPlayer = Lerp(m_GrapplingTo, playerCenter, grappleLerp);
 
-        renderer.SetShader("saber");
-        renderer.DrawLine(playerCenter, playerToAnchor, 6.0f, "square");
-        renderer.DrawLine(anchorToPlayer, m_GrapplingTo, 6.0f, "square");
+        Renderer::SetShader("saber");
+        Renderer::DrawLine(playerCenter, playerToAnchor, 6.0f, "square");
+        Renderer::DrawLine(anchorToPlayer, m_GrapplingTo, 6.0f, "square");
     }
     else {
         grappleLerp = 0;

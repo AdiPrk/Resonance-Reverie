@@ -212,6 +212,7 @@ rmdir "$(TargetDir)DLLs"</Command>
   <ItemGroup>
     <ClCompile Include="Engine\engine.cpp" />
     <ClCompile Include="Engine\Graphics\Renderer\Camera\camera.cpp" />
+    <ClCompile Include="Engine\Graphics\Renderer\renderer.cpp" />
     <ClCompile Include="Engine\Scene\entity.cpp" />
     <ClCompile Include="Engine\Scene\scene.cpp" />
     <ClCompile Include="Game\Entities\Triggers\textTrigger.cpp" />
@@ -267,6 +268,7 @@ rmdir "$(TargetDir)DLLs"</Command>
     <ClInclude Include="Dependencies\threadpool\ThreadPool.h" />
     <ClInclude Include="Engine\application.h" />
     <ClInclude Include="Engine\engine.h" />
+    <ClInclude Include="Engine\Graphics\Renderer\renderer.h" />
     <ClInclude Include="Engine\Scene\components.h" />
     <ClInclude Include="Engine\Scene\entity.h" />
     <ClInclude Include="Engine\Scene\scene.h" />

@@ -6,7 +6,6 @@
 
 struct Rect;
 class Player;
-class SpriteRenderer;
 class Game;
 
 enum RoomCode {
@@ -36,7 +35,7 @@ public:
     RoomCode LoadNext(const char* filename, Game* game, const Rect& boundsToSearch, bool setAsCurrent = false);
 
     // render level
-    void Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt);
+    void Draw(float dt);
 
     const int ID() const { return m_ID; };
     const Rect Bounds() const { return m_BoundingRect; }

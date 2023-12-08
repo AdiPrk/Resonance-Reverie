@@ -2,21 +2,16 @@
 #include "game.h"
 
 #include <Engine/ResourceManager/resourceManager.h>
-#include <Engine/Graphics/Renderer/Sprites/spriteRenderer.h>
-#include <Engine/Graphics/Renderer/Text/textRenderer.h>
-#include <Engine/Graphics/Renderer/Effects/postProcessor.h>
 #include <Engine/Graphics/Renderer/Camera/camera.h>
 #include <Engine/Graphics/Particles/particleEmitter.h>
 #include <Engine/Inputs/inputManager.h>
 #include <Engine/Audio/audioManager.h>
+#include <Engine/Graphics/Renderer/renderer.h>
 
 #include <Game/Entities/Player/player.h>
 #include <Game/Physics/physicsWorld.h>
 
 // Game-related State data
-
-SpriteRenderer*  Renderer;
-TextRenderer*    textRenderer;
 ParticleEmitter* playerEmitter;
 PhysicsContactListener physicsContactListener;
 constexpr int numParticles = 500;
@@ -31,7 +26,6 @@ Game::Game(Window* window)
     , m_Width(window->GetWidth())
     , m_Height(window->GetHeight())
     , m_Window(window)
-    , Effects(nullptr)
     , backgroundEmitter(nullptr)
     , m_DrawColliders(false)
 {
@@ -43,25 +37,9 @@ Game::Game(Window* window)
 
     Shader::SetupUBO();
 
-    // load textures
+    // load textures and shaders
     ResourceManager::LoadTexturesFromDirectory("Game/Assets/Images/");
-
-    // load shaders
     ResourceManager::LoadShadersFromDirectory("Game/Assets/Shaders/");
-
-    // configure shaders
-    glm::mat4 projection = glm::ortho(0.f, (float)m_Width, (float)m_Height, 0.f, -1.0f, 1.0f);
-    Shader::SetProjectionUBO(projection);
-
-    Shader& spriteShader = ResourceManager::GetShader("sprite");
-    spriteShader.SetInteger("numLights", 1);
-    spriteShader.SetFloat("ambientLightIntensity", 0.4f);
-
-    // set render-specific controls
-    Renderer = new SpriteRenderer(ResourceManager::GetShader("sprite"));
-    Effects = new PostProcessor(ResourceManager::GetShader("postprocessing"), m_Width, m_Height);
-    textRenderer = new TextRenderer();
-    textRenderer->Load("Game/Assets/Fonts/OCRAEXT.TTF", 60);
 
     // particles
     playerEmitter = new ParticleEmitter(ResourceManager::GetShader("particle"), ResourceManager::GetTexture("particle"), numParticles);
@@ -84,7 +62,7 @@ Game::Game(Window* window)
     m_Player->SetupRigidBody();
 
     // load levels
-    GameLevel one; one.LoadStarting("Game/Assets/Maps/kk.json", this);
+    GameLevel one; one.LoadStarting("Game/Assets/Maps/map.json", this);
 
     m_Rooms.push_back(one);
 
@@ -101,11 +79,8 @@ Game::Game(Window* window)
 
 Game::~Game()
 {
-    delete Renderer;
     delete m_Player;
     delete m_Camera;
-    delete Effects;
-    delete textRenderer;
     delete playerEmitter;
     delete backgroundEmitter;
 }
@@ -189,7 +164,7 @@ void Game::Update(float dt)
 
     if (!m_Player->Bounds().overlaps(m_RoomBounds)) {
         GameLevel newLevel;
-        RoomCode loadedNext = newLevel.LoadNext("Game/Assets/Maps/kk.json", this, m_Player->Bounds(), true);
+        RoomCode loadedNext = newLevel.LoadNext("Game/Assets/Maps/map.json", this, m_Player->Bounds(), true);
 
         if (loadedNext == ROOM_NOT_FOUND) {
             m_Player->Respawn();
@@ -203,7 +178,7 @@ void Game::Update(float dt)
         }
     }
 
-    Effects->Update(dt);
+    Renderer::UpdatePostProcessing(dt);
 
     // camera->position = player->Position;
     playerEmitter->SetPosition(m_Player->GetRenderPosition() + m_Player->GetSize() / 2.f);
@@ -231,10 +206,10 @@ void Game::Update(float dt)
 
 void Game::DrawScene(float dt) {
     // draw level backgrounds
-    Renderer->SetShader("background");
+    Renderer::SetShader("background");
     for (auto& room : m_Rooms)
     {
-        Renderer->DrawSprite(
+        Renderer::DrawSprite(
             "square",
             glm::vec2(room.Bounds().left, room.Bounds().top),
             glm::vec2(room.Bounds().width, room.Bounds().height)
@@ -243,10 +218,10 @@ void Game::DrawScene(float dt) {
 
     // draw levels
     int numParticles = playerEmitter->GetParticleCount() + backgroundEmitter->GetParticleCount();
-    textRenderer->RenderText(std::to_string(numParticles) + " particles", (float)m_Width / 2.f, (float)m_Height / 2.0f - 50, 0.5f, true, glm::vec3(1), true);
+    Renderer::RenderText(std::to_string(numParticles) + " particles", (float)m_Width / 2.f, (float)m_Height / 2.0f - 50, 0.5f, true, glm::vec3(1), true);
     for (auto& room : m_Rooms)
     {
-        room.Draw(*Renderer, *textRenderer, dt);
+        room.Draw(dt);
     }
 
     // Particles
@@ -257,7 +232,7 @@ void Game::DrawScene(float dt) {
     backgroundEmitter->RenderParticlesInstanced();
 
     // draw player
-    m_Player->Draw(*Renderer, *textRenderer, dt);
+    m_Player->Draw(dt);
 }
 
 // delta time, current time, interpolation factor
@@ -274,22 +249,21 @@ void Game::Render(float dt, float ct, float itf)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // Begin rendering to postprocessing framebuffer
-    //Effects->BeginRender();
+    Renderer::BeginPostProcessing();
 
     // Draw the scene!
     DrawScene(dt);
 
     // End rendering to postprocessing framebuffer and render the scene
-    //Effects->EndRender();
-    //Effects->Render();
+    Renderer::EndPostProcessing();
 
     // Draw fps
     std::string fpsString = std::string("fps: ") + std::to_string((1.f / dt));
-    textRenderer->RenderText(fpsString, 50.f, 90.0f, 0.5f, false, glm::vec3(0));
-    textRenderer->RenderText(fpsString, 50.f, 50.f, 0.5f, false);
+    Renderer::RenderText(fpsString, 50.f, 90.0f, 0.5f, false, glm::vec3(0));
+    Renderer::RenderText(fpsString, 50.f, 50.f, 0.5f, false);
 
     // fullscreen toggle
-    textRenderer->RenderText("press F to toggle fullscreen", 50.f, (float)m_Height - 70, 0.5f, false);
+    Renderer::RenderText("press F to toggle fullscreen", 50.f, (float)m_Height - 70, 0.5f, false);
     if (InputManager::GetKeyTriggered(Key::F)) {
         m_Window->ToggleFullscreen();
     }
@@ -302,7 +276,7 @@ void Game::Render(float dt, float ct, float itf)
     }
 
     if (m_DrawColliders) {
-        RenderColliders(*Renderer);
+        RenderColliders();
     }
 }
 

@@ -30,7 +30,7 @@ public:
 
     // Update player
     void Update(float dt) override;
-    void Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt) override;
+    void Draw(float dt) override;
     void SetUpdatedTransform() override;
     
     b2Body*& GetRigidbody() { return m_RigidBody; }

@@ -13,7 +13,7 @@ public:
     Block(glm::vec2 pos, glm::vec2 size, float rotation, Texture2D sprite, int index);
     void SetupRigidBody() override;
 
-    void Draw(SpriteRenderer& renderer, TextRenderer& textRenderer, float dt) override;
+    void Draw(float dt) override;
 
 private:
     int m_Index;

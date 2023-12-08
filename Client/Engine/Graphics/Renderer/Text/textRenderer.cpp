@@ -8,7 +8,7 @@
 
 TextRenderer::TextRenderer()
 {
-    this->TextShader = ResourceManager::GetShader("text");
+    this->TextShader = ResourceManager::GetShader("defaulttext");
     // configure VAO/VBO for texture quads
     glGenVertexArrays(1, &this->VAO);
     glGenBuffers(1, &this->VBO);

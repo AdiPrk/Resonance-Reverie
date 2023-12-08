@@ -45,11 +45,7 @@ public:
     bool GameIsSlowMo() const { return m_SlowMoTime > 0.0f; }
 
     glm::vec2 GetPlayerPosition();
-    float GetPlayerRotation();
-
-    PostProcessor* Effects;
-
-    
+    float GetPlayerRotation();    
 
 private:
     friend GameLevel;
