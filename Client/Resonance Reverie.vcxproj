@@ -75,7 +75,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\box2d\include;$(SolutionDir)Dependencies\modernjson\include;$(SolutionDir)Dependencies\threadpool\include;$(SolutionDir)Dependencies\FMOD\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\box2d\include;$(SolutionDir)Dependencies\modernjson\include;$(SolutionDir)Dependencies\threadpool\include;$(SolutionDir)Dependencies\FMOD\include;$(SolutionDir)Dependencies\entt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH/pch.h</PrecompiledHeaderFile>
@@ -123,7 +123,7 @@ rmdir "$(TargetDir)DLLs"</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\box2d\include;$(SolutionDir)Dependencies\modernjson\include;$(SolutionDir)Dependencies\threadpool\include;$(SolutionDir)Dependencies\FMOD\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\box2d\include;$(SolutionDir)Dependencies\modernjson\include;$(SolutionDir)Dependencies\threadpool\include;$(SolutionDir)Dependencies\FMOD\include;$(SolutionDir)Dependencies\entt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH/pch.h</PrecompiledHeaderFile>
@@ -169,7 +169,7 @@ rmdir "$(TargetDir)DLLs"</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\box2d\include;$(SolutionDir)Dependencies\modernjson\include;$(SolutionDir)Dependencies\threadpool\include;$(SolutionDir)Dependencies\FMOD\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\box2d\include;$(SolutionDir)Dependencies\modernjson\include;$(SolutionDir)Dependencies\threadpool\include;$(SolutionDir)Dependencies\FMOD\include;$(SolutionDir)Dependencies\entt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH/pch.h</PrecompiledHeaderFile>
@@ -212,6 +212,8 @@ rmdir "$(TargetDir)DLLs"</Command>
   <ItemGroup>
     <ClCompile Include="Engine\engine.cpp" />
     <ClCompile Include="Engine\Graphics\Renderer\Camera\camera.cpp" />
+    <ClCompile Include="Engine\Scene\entity.cpp" />
+    <ClCompile Include="Engine\Scene\scene.cpp" />
     <ClCompile Include="Game\Entities\Triggers\textTrigger.cpp" />
     <ClCompile Include="PCH\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -265,6 +267,9 @@ rmdir "$(TargetDir)DLLs"</Command>
     <ClInclude Include="Dependencies\threadpool\ThreadPool.h" />
     <ClInclude Include="Engine\application.h" />
     <ClInclude Include="Engine\engine.h" />
+    <ClInclude Include="Engine\Scene\components.h" />
+    <ClInclude Include="Engine\Scene\entity.h" />
+    <ClInclude Include="Engine\Scene\scene.h" />
     <ClInclude Include="Game\Entities\Triggers\textTrigger.h" />
     <ClInclude Include="PCH\pch.h" />
     <ClInclude Include="Engine\Audio\audioManager.h" />
