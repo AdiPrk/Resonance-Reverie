@@ -100,7 +100,7 @@ namespace Dog {
         glViewport(0, 0, this->Width, this->Height);
 
         glBindFramebuffer(GL_FRAMEBUFFER, this->MSFBO);
-        Renderer::Clear();
+        Renderer::ClearColorAndDepthBuffer();
     }
 
     void PostProcessor::EndRender()

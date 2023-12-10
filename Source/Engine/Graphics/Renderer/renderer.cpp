@@ -52,14 +52,14 @@ namespace Dog {
         m_TextRenderer->Load(fontPath, fontSize);
     }
 
-    void Renderer::Clear(const glm::vec4& color)
-    {
-        m_ClearColor = color;
-    }
-
     void Renderer::Clear(float r, float g, float b, float a)
     {
         m_ClearColor = glm::vec4(r, g, b, a);
+    }
+
+    void Renderer::Clear(const glm::vec4& color)
+    {
+        m_ClearColor = color;
     }
 
     void Renderer::ClearColorAndDepthBuffer() {

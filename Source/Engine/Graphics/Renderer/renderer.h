@@ -28,7 +28,6 @@ namespace Dog {
 
 		// Render a quad. Uses a default internal shader.
 		static void DrawQuad(glm::vec2 position, glm::vec2 size = glm::vec2(10.0f, 10.0f), float rotation = 0.0f, glm::vec4 color = glm::vec4(1.0f));
-
 		
 		// Renders a quad textured with given sprite. Uses the last set shader.
 		static void DrawSprite(const std::string& textureName, glm::vec2 position, glm::vec2 size = glm::vec2(10.0f, 10.0f), float rotation = 0.0f, glm::vec4 color = glm::vec4(1.0f), glm::vec2 repetition = glm::vec2(0));

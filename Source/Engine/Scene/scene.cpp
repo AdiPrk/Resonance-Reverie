@@ -8,6 +8,17 @@
 
 namespace Dog {
 
+	static b2BodyType DogRigidbody2DTypeToBox2D(RigidbodyComponent::BodyType bodyType)
+	{
+		switch (bodyType)
+		{
+			case RigidbodyComponent::BodyType::Static: return b2_staticBody;
+			case RigidbodyComponent::BodyType::Dynamic: return b2_dynamicBody;
+			case RigidbodyComponent::BodyType::Kinematic: return b2_kinematicBody;
+			default: throw "Unknown body type";
+		}
+	}
+
 	Scene::Scene(const std::string& name)
 		: m_Name(name)
 	{

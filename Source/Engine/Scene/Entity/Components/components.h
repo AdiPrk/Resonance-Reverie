@@ -2,10 +2,15 @@
 
 #include <Engine/PCH/pch.h>
 #include <Engine/Graphics/Texture/texture.h>
+#include <Engine/ResourceManager/resourceManager.h>
 
 namespace Dog {
 
+	// Forward Declarations ----------- //
 	class ScriptableEntity;
+
+	// -------------------------------- //
+	// Basic Components --------------- //
 
 	struct TagComponent
 	{
@@ -19,20 +24,20 @@ namespace Dog {
 
 	struct TransformComponent
 	{
-		glm::vec2 position;
-		glm::vec2 scale;
-		float rotation;
+		glm::vec2 position = { 0.0f, 0.0f };
+		glm::vec2 scale = { 50.0f, 50.0f };
+		float rotation = 0;
 
-		TransformComponent() 
-			: position(0, 0)
-			, scale(50, 50)
-			, rotation(0) {}
+		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
 		TransformComponent(const glm::vec2& pos, const glm::vec2& size, float rot)
 			: position(pos)
 			, scale(size)
 			, rotation(rot) {}
 	};
+
+	// -------------------------------- //
+	// Graphics Components ------------ //
 
 	struct QuadRendererComponent
 	{
@@ -77,6 +82,39 @@ namespace Dog {
 			, diagetic(useCamera) {}
 	};
 
+	// -------------------------------- //
+	// Physics Components ------------- //
+
+	struct RigidbodyComponent
+	{
+		enum class BodyType { Static = 0, Dynamic = 1, Kinematic = 2};
+		BodyType Type = BodyType::Static;
+		bool FixedRotation = false;
+		b2Body* Body;
+
+		RigidbodyComponent() = default;
+		RigidbodyComponent(const RigidbodyComponent&) = default;
+	};
+
+	struct BoxColliderComponent
+	{
+		glm::vec2 Offset = { 0.0f, 0.0f };
+		glm::vec2 Size = { 25.0f, 25.0f };
+
+		float Density = 1.0f;
+		float Friction = 0.5f;
+		float Restitution = 0.0f;
+		float RestitutionThreshold = 0.5f;
+
+		b2Fixture* Fixture;
+
+		BoxColliderComponent() = default;
+		BoxColliderComponent(const BoxColliderComponent&) = default;
+	};
+
+	// -------------------------------- //
+	// Scripting Components ----------- //
+
 	struct NativeScriptComponent
 	{
 		ScriptableEntity* Instance = nullptr;
@@ -91,5 +129,7 @@ namespace Dog {
 			DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
 		}
 	};
+
+	// -------------------------------- //
 
 }
