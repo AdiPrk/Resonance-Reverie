@@ -1,8 +1,8 @@
 #pragma once
 
-#include "scene.h"
-
+#include "../scene.h"
 #include "entt.hpp"
+#include "Components/components.h"
 
 namespace Dog {
 
@@ -28,9 +28,8 @@ namespace Dog {
 		template<typename T>
 		bool HasComponent()
 		{
-			// to do: test if this actually works
 			return m_Scene->m_Registry.any_of<T>(m_EntityHandle);
-			// depricated: return m_Scene->m_Registry.has<T>(m_EntityHandle);
+			// depricated now i think: return m_Scene->m_Registry.has<T>(m_EntityHandle);
 		}
 
 		template<typename T>
@@ -39,9 +38,26 @@ namespace Dog {
 			m_Scene->m_Registry.remove<T>(m_EntityHandle);
 		}
 
-		operator bool() const { return static_cast<std::uint32_t>(m_EntityHandle) != 0; }
+		Scene* GetScene() { return m_Scene; }
+		
+		operator bool() const { return m_EntityHandle != entt::null; }
+		operator entt::entity() const { return m_EntityHandle; }
+		operator uint32_t() const { return (uint32_t)m_EntityHandle; }
+		const std::string& GetName() { return GetComponent<TagComponent>().Tag; }
+
+
+		bool operator==(const Entity& other) const
+		{
+			return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene;
+		}
+		
+		bool operator!=(const Entity& other) const
+		{
+			return !(*this == other);
+		}
+
 	private:
-		entt::entity m_EntityHandle{ 0 };
+		entt::entity m_EntityHandle{ entt::null };
 		Scene* m_Scene = nullptr;
 	};
 

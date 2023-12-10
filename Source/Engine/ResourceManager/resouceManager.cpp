@@ -1,9 +1,10 @@
-#include <PCH/pch.h>
+#include <Engine/PCH/pch.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 
 #include "resourceManager.h"
+#include <Engine/Graphics/Renderer/renderer.h>
 
 namespace Dog {
 
@@ -26,7 +27,7 @@ namespace Dog {
         Shader& shader = Shaders[name];
 
         shader = loadShaderFromFile(vShaderFile, fShaderFile);
-        shader.SetUniformsFromCode();
+        // shader.SetUniformsFromCode(); // - an optimization which is really not worth completing for now.
 
         shader.BindUBO("Matricies", Shader::uboMatricesBindingPoint);
         shader.BindUBO("Time", Shader::uboTimeBindingPoint);
@@ -129,17 +130,6 @@ namespace Dog {
         if (CurrentVAO != quadVAO) {
             glBindVertexArray(quadVAO);
             CurrentVAO = quadVAO;
-        }
-    }
-
-    void ResourceManager::UpdateAllShaderTimes(float time)
-    {
-        for (auto& [name, shader] : Shaders)
-        {
-            if (shader.HasUniform("iTime"))
-            {
-                shader.SetFloat("iTime", time);
-            }
         }
     }
 

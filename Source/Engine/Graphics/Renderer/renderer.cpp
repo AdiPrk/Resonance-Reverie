@@ -1,8 +1,9 @@
-#include <PCH/pch.h>
+#include <Engine/PCH/pch.h>
 #include "renderer.h"
 #include "Sprites/spriteRenderer.h"
 #include "Text/textRenderer.h"
 #include "Effects/postProcessor.h"
+#include "Camera/camera.h"
 #include <Engine/Graphics/Shader/shader.h>
 #include <Engine/ResourceManager/resourceManager.h>
 
@@ -11,7 +12,9 @@ namespace Dog {
     TextRenderer* Renderer::m_TextRenderer = nullptr;
     SpriteRenderer* Renderer::m_SpriteRenderer = nullptr;
     PostProcessor* Renderer::m_PostProcessor = nullptr;
+    Camera Renderer::m_Camera;;
     Shader Renderer::m_ActiveShader;
+    glm::vec4 Renderer::m_ClearColor{ 0, 0, 0, 1 };
 
     void Renderer::Init(unsigned int width, unsigned int height)
     {
@@ -29,6 +32,9 @@ namespace Dog {
 
         glm::mat4 projection = glm::ortho(0.f, (float)width, (float)height, 0.f, -1.0f, 1.0f);
         Shader::SetProjectionUBO(projection);
+
+        m_Camera = Camera({ width * 0.5f, height * 0.5f });
+        m_Camera.UpdateUniforms();
     }
 
     void Renderer::SetShader(Shader& shader)
@@ -44,6 +50,27 @@ namespace Dog {
     void Renderer::LoadText(const std::string& fontPath, unsigned int fontSize)
     {
         m_TextRenderer->Load(fontPath, fontSize);
+    }
+
+    void Renderer::Clear(const glm::vec4& color)
+    {
+        m_ClearColor = color;
+    }
+
+    void Renderer::Clear(float r, float g, float b, float a)
+    {
+        m_ClearColor = glm::vec4(r, g, b, a);
+    }
+
+    void Renderer::ClearColorAndDepthBuffer() {
+        glClearColor(m_ClearColor.r, m_ClearColor.g, m_ClearColor.b, m_ClearColor.a);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    void Renderer::DrawQuad(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color)
+    {
+        SetShader("defaultsprite");
+        m_SpriteRenderer->DrawSprite("square", position, size, rotation, color);
     }
 
     void Renderer::DrawSprite(const std::string& textureName, glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, glm::vec2 repetition)
@@ -92,4 +119,10 @@ namespace Dog {
         m_PostProcessor->Render();
     }
 
+    void Renderer::Update(float dt)
+    {
+        Shader::iTime += dt;
+        Shader::SetTimeUBO(Shader::iTime);
+        UpdatePostProcessing(dt);
+    }
 }

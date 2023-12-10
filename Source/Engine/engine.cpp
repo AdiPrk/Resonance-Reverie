@@ -1,4 +1,4 @@
-#include <PCH/pch.h>
+#include <Engine/PCH/pch.h>
 
 #include "engine.h"
 #include "application.h"
@@ -7,15 +7,16 @@
 #include <Engine/ResourceManager/resourceManager.h>
 #include <Engine/Inputs/inputManager.h>
 #include <Engine/Graphics/Renderer/renderer.h>
+#include "Scene/sceneManager.h"
 
 namespace Dog {
 
     DogEngine::DogEngine(unsigned int width, unsigned int height)
-        : m_Application(nullptr)
     {
         m_Window = new Window(width, height);
-        InputManager::Init(m_Window->GetWindow());
+        Input::Init(m_Window->GetWindow());
         Renderer::Init(width, height);
+        RandomInit();
     }
 
     DogEngine::~DogEngine()
@@ -23,9 +24,9 @@ namespace Dog {
         ResourceManager::Clear();
     }
 
-    int DogEngine::Run(Application* app)
+    int DogEngine::Run(Scene* startScene)
     {
-        m_Application = app;
+        SceneManager::Init(startScene);
 
         /* Loop until the user closes the window */
         const float fixedTimeStep = 1.0f / 60.0f;
@@ -47,21 +48,22 @@ namespace Dog {
             while (accumulator >= fixedTimeStep)
             {
                 glfwPollEvents();
-                InputManager::Update();
+                Input::Update();
 
-                m_Application->Update(fixedTimeStep);
+                SceneManager::Update(fixedTimeStep);
 
                 accumulator -= fixedTimeStep;
                 didFTS = true;
             }
 
             // Render!
-            m_Application->Render(deltaTime, currentTime, accumulator / fixedTimeStep);
+            Renderer::Update(deltaTime);
+            SceneManager::Render(deltaTime, currentTime, accumulator / fixedTimeStep);
 
             // Get ready for next frame
             m_Window->SwapBuffers();
             if (didFTS) {
-                InputManager::ResetKeyStates();
+                Input::ResetKeyStates();
             }
         }
 

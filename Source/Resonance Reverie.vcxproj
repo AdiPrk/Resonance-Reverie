@@ -78,7 +78,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\box2d\include;$(SolutionDir)Dependencies\modernjson\include;$(SolutionDir)Dependencies\threadpool\include;$(SolutionDir)Dependencies\FMOD\include;$(SolutionDir)Dependencies\entt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>Engine/dogpch.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -126,7 +126,7 @@ rmdir "$(TargetDir)DLLs"</Command>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\box2d\include;$(SolutionDir)Dependencies\modernjson\include;$(SolutionDir)Dependencies\threadpool\include;$(SolutionDir)Dependencies\FMOD\include;$(SolutionDir)Dependencies\entt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>Engine/dogpch.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -172,7 +172,7 @@ rmdir "$(TargetDir)DLLs"</Command>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\box2d\include;$(SolutionDir)Dependencies\modernjson\include;$(SolutionDir)Dependencies\threadpool\include;$(SolutionDir)Dependencies\FMOD\include;$(SolutionDir)Dependencies\entt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>Engine/dogpch.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -210,13 +210,58 @@ rmdir "$(TargetDir)DLLs"</Command>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Engine\engine.cpp" />
-    <ClCompile Include="Engine\Graphics\Renderer\Camera\camera.cpp" />
-    <ClCompile Include="Engine\Graphics\Renderer\renderer.cpp" />
-    <ClCompile Include="Engine\Scene\entity.cpp" />
-    <ClCompile Include="Engine\Scene\scene.cpp" />
-    <ClCompile Include="Game\Entities\Triggers\textTrigger.cpp" />
-    <ClCompile Include="PCH\pch.cpp">
+    <ClCompile Include="Engine\dogpch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">dogpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">dogpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">dogpch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Engine\engine.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Renderer\Camera\camera.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Renderer\renderer.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Engine\Scene\Entity\entity.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Engine\Scene\scene.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Engine\Scene\sceneManager.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Game\game.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/dogpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/dogpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/dogpch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Game\main.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/dogpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/dogpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/dogpch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Engine\PCH\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Create</PrecompiledHeader>
@@ -224,73 +269,91 @@ rmdir "$(TargetDir)DLLs"</Command>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Engine\Audio\audioManager.cpp" />
-    <ClCompile Include="Game\Entities\Blocks\block.cpp" />
-    <ClCompile Include="Game\Entities\Blocks\dynamicBlock.cpp" />
-    <ClCompile Include="Game\Entities\Blocks\swingingBlock.cpp" />
-    <ClCompile Include="Game\Entities\Enemies\greyEnemy.cpp" />
-    <ClCompile Include="Game\Entities\Blocks\lava.cpp" />
-    <ClCompile Include="Game\Entities\Environment\light.cpp" />
-    <ClCompile Include="Game\Entities\Interactables\grapplePoint.cpp" />
-    <ClCompile Include="Game\Entities\Player\grapple.cpp" />
-    <ClCompile Include="Game\Entities\Player\player.cpp" />
-    <ClCompile Include="Game\Entities\Blocks\safeZone.cpp" />
-    <ClCompile Include="Game\game.cpp" />
-    <ClCompile Include="Game\Entities\gameObject.cpp" />
-    <ClCompile Include="Engine\Inputs\inputManager.cpp" />
-    <ClCompile Include="Game\Levels\gameLevel.cpp" />
-    <ClCompile Include="Game\Physics\physicsWorld.cpp" />
-    <ClCompile Include="Engine\Graphics\Particles\particleEmitter.cpp" />
-    <ClCompile Include="Engine\Graphics\Renderer\Effects\postProcessor.cpp" />
-    <ClCompile Include="Engine\Graphics\Renderer\Sprites\spriteAnimator.cpp" />
-    <ClCompile Include="Engine\Graphics\Renderer\Text\textRenderer.cpp" />
-    <ClCompile Include="Engine\Graphics\Window\window.cpp" />
-    <ClCompile Include="Engine\Graphics\Renderer\Sprites\spriteRenderer.cpp" />
-    <ClCompile Include="Engine\ResourceManager\resouceManager.cpp" />
-    <ClCompile Include="Engine\Graphics\Shader\shader.cpp" />
-    <ClCompile Include="Engine\Graphics\Texture\texture.cpp" />
-    <ClCompile Include="Game\main.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </PrecompiledHeaderFile>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">
-      </PrecompiledHeaderFile>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </PrecompiledHeaderFile>
+    <ClCompile Include="Engine\Audio\audioManager.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Engine\Math\random.cpp" />
+    <ClCompile Include="Engine\Inputs\inputManager.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Particles\particleEmitter.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Renderer\Effects\postProcessor.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Renderer\Sprites\spriteAnimator.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Renderer\Text\textRenderer.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Window\window.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Renderer\Sprites\spriteRenderer.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Engine\ResourceManager\resouceManager.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Shader\shader.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Texture\texture.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Engine\Math\random.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\gameScene.cpp" />
+    <ClCompile Include="Game\Scenes\titleScene.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/dogpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/dogpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/dogpch.h</PrecompiledHeaderFile>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\thread-pool\include\BS_thread_pool.hpp" />
     <ClInclude Include="Dependencies\thread-pool\include\BS_thread_pool_light.hpp" />
     <ClInclude Include="Dependencies\threadpool\ThreadPool.h" />
     <ClInclude Include="Engine\application.h" />
+    <ClInclude Include="Engine\dogpch.h" />
     <ClInclude Include="Engine\engine.h" />
     <ClInclude Include="Engine\Graphics\Renderer\renderer.h" />
-    <ClInclude Include="Engine\Scene\components.h" />
-    <ClInclude Include="Engine\Scene\entity.h" />
+    <ClInclude Include="Engine\Scene\Entity\Components\components.h" />
+    <ClInclude Include="Engine\Scene\Entity\entity.h" />
     <ClInclude Include="Engine\Scene\scene.h" />
-    <ClInclude Include="Game\Entities\Triggers\textTrigger.h" />
-    <ClInclude Include="PCH\pch.h" />
-    <ClInclude Include="Engine\Audio\audioManager.h" />
-    <ClInclude Include="Game\Entities\Blocks\block.h" />
-    <ClInclude Include="Game\Entities\Blocks\dynamicBlock.h" />
-    <ClInclude Include="Game\Entities\Blocks\swingingBlock.h" />
-    <ClInclude Include="Game\Entities\Enemies\greyEnemy.h" />
-    <ClInclude Include="Game\Entities\Blocks\lava.h" />
-    <ClInclude Include="Game\Entities\Environment\light.h" />
-    <ClInclude Include="Game\Entities\Interactables\grapplePoint.h" />
-    <ClInclude Include="Game\Entities\Player\grapple.h" />
-    <ClInclude Include="Game\Entities\Player\player.h" />
-    <ClInclude Include="Game\Entities\Blocks\safeZone.h" />
+    <ClInclude Include="Engine\Scene\Entity\scriptableEntity.h" />
+    <ClInclude Include="Engine\Scene\sceneManager.h" />
     <ClInclude Include="Game\game.h" />
-    <ClInclude Include="Game\Entities\gameObject.h" />
+    <ClInclude Include="Engine\PCH\pch.h" />
+    <ClInclude Include="Engine\Audio\audioManager.h" />
     <ClInclude Include="Engine\Inputs\glfwInputStates.h" />
     <ClInclude Include="Engine\Inputs\inputManager.h" />
-    <ClInclude Include="Game\Levels\gameLevel.h" />
-    <ClInclude Include="Game\Physics\physicsWorld.h" />
     <ClInclude Include="Engine\Graphics\Particles\particleEmitter.h" />
     <ClInclude Include="Engine\Graphics\Renderer\Camera\camera.h" />
     <ClInclude Include="Engine\Graphics\Renderer\Effects\postProcessor.h" />
@@ -304,6 +367,8 @@ rmdir "$(TargetDir)DLLs"</Command>
     <ClInclude Include="Engine\Math\random.h" />
     <ClInclude Include="Engine\Math\rect.h" />
     <ClInclude Include="Engine\Math\utils.h" />
+    <ClInclude Include="Game\Scenes\gameScene.h" />
+    <ClInclude Include="Game\Scenes\titleScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Images\paddle.png" />
@@ -313,9 +378,6 @@ rmdir "$(TargetDir)DLLs"</Command>
     <Image Include="Assets\Images\powerup_passthrough.png" />
     <Image Include="Assets\Images\powerup_speed.png" />
     <Image Include="Assets\Images\powerup_sticky.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Game\gameprogress.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

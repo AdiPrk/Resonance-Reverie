@@ -1,6 +1,6 @@
 #pragma once
 
-#include <PCH/pch.h>
+#include <Engine/PCH/pch.h>
 #include "glfwInputStates.h"
 
 namespace Dog {
@@ -8,7 +8,7 @@ namespace Dog {
 // GLFW supports 16 controllers
 #define MAX_GAMEPADS 16
 
-	class InputManager
+	class Input
 	{
 	public:
 		// Init

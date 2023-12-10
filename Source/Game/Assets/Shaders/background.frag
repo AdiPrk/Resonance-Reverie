@@ -23,5 +23,5 @@ void main()
         uv += sin(v1+col+t*10.0)/factor;
         col += vec2(sin(uv.x-uv.y+v1.x-col.y),sin(uv.y-uv.x+v1.y-col.x));
     }
-    fragColor = vec4(vec3(col.x+1.0,col.x-col.y/2.0,col.x*2.0)/2.0,0.035);
+    fragColor = vec4(vec3(col.x+1.0,col.x-col.y/2.0,col.x*2.0)/2.0,0.05);
 }

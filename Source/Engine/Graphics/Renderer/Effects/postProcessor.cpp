@@ -1,7 +1,8 @@
-#include <PCH/pch.h>
+#include <Engine/PCH/pch.h>
 #include "postProcessor.h"
 #include <Engine/ResourceManager/resourceManager.h>
 #include "../Sprites/spriteRenderer.h"
+#include <Engine/Graphics/Renderer/renderer.h>
 
 namespace Dog {
 
@@ -16,6 +17,7 @@ namespace Dog {
         , Invert(false)
         , Greyscale(false)
         , Blur(false)
+        , Disco(false)
         , m_ViewportInfo()
     {
         // initialize renderbuffer/framebuffer object
@@ -98,8 +100,7 @@ namespace Dog {
         glViewport(0, 0, this->Width, this->Height);
 
         glBindFramebuffer(GL_FRAMEBUFFER, this->MSFBO);
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        Renderer::Clear();
     }
 
     void PostProcessor::EndRender()
@@ -119,7 +120,13 @@ namespace Dog {
         this->PostProcessingShader.Use();
         this->PostProcessingShader.SetInteger("confuse", this->Confuse);
         this->PostProcessingShader.SetInteger("chaos", this->Chaos);
+        this->PostProcessingShader.SetInteger("blur", this->Blur);
         this->PostProcessingShader.SetInteger("shake", this->Shake);
+        this->PostProcessingShader.SetFloat("shakeScale", this->shakeScale);
+        this->PostProcessingShader.SetFloat("blurStrength", this->blurStrength);
+        this->PostProcessingShader.SetInteger("invert", this->Invert);
+        this->PostProcessingShader.SetInteger("greyscale", this->Greyscale);
+        this->PostProcessingShader.SetInteger("disco", this->Disco);
 
         // Set the texture
         this->PostProcessingShader.SetUniformHandle("scene", this->Texture.textureHandle);

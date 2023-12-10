@@ -1,6 +1,6 @@
 #pragma once
 
-#include <PCH/pch.h>
+#include <Engine/PCH/pch.h>
 #include <Engine/Graphics/Window/window.h>
 
 namespace Dog {
@@ -9,6 +9,7 @@ namespace Dog {
     public:
 
         Camera();
+        Camera(const glm::vec2& pos);
 
         glm::mat4 GetViewMatrix();
 

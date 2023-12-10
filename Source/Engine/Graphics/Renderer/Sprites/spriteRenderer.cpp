@@ -1,4 +1,4 @@
-#include <PCH/pch.h>
+#include <Engine/PCH/pch.h>
 
 #include "spriteRenderer.h"
 
@@ -35,10 +35,8 @@ namespace Dog {
         Renderer::GetActiveShader().SetMatrix4("model", model);
 
         // render textured quad
-        if (Renderer::GetActiveShader().HasUniform("spriteColor")) {
-            Renderer::GetActiveShader().SetVector4f("spriteColor", color);
-        }
-
+        Renderer::GetActiveShader().SetVector4f("spriteColor", color);
+        
         if (texture.IsSpriteSheet) {
             static unsigned index = texture.Index;
             if (texture.Index != index) {

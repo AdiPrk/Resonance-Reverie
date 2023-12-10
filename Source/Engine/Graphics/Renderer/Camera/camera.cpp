@@ -1,4 +1,4 @@
-#include <PCH/pch.h>
+#include <Engine/PCH/pch.h>
 #include "camera.h"
 
 #include <Engine/Graphics/Shader/shader.h>
@@ -7,9 +7,12 @@ namespace Dog {
 
     Camera::Camera()
         : m_CameraSize(Window::GetWidth(), Window::GetHeight())
+        , m_BoundingRect() {}
+
+    Camera::Camera(const glm::vec2& pos)
+        : m_CameraSize(Window::GetWidth(), Window::GetHeight())
         , m_BoundingRect()
-    {
-    }
+        , m_Position(pos) {}
 
     glm::mat4 Camera::GetViewMatrix() {
         glm::mat4 view = glm::mat4(1.0f);

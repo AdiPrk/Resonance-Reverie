@@ -6,14 +6,13 @@ out vec2 TexCoords;
 uniform bool  chaos;
 uniform bool  confuse;
 uniform bool  shake;
-uniform float iTime;
+uniform bool disco;
+uniform float shakeScale;
 
-// Get a pseudo random number
-float randNum(vec2 p) {
-    p = fract(p * vec2(142.215, 501.253));
-    p += dot(p, p + 23.45);
-    return fract(p.x * p.y);
-}
+layout (std140) uniform Time
+{
+    float iTime;
+};
 
 void main()
 {
@@ -33,10 +32,21 @@ void main()
     {
         TexCoords = texture;
     }
+
+    if (disco) {
+        gl_Position.xy *= 1.35;
+
+        float rotAng = iTime * 0.5;
+        float c = cos(rotAng);
+        float s = sin(rotAng);
+        mat2 rot = mat2(c, -s, s, c);
+        gl_Position.xy *= rot;
+    }
+
     if (shake)
     {
-        float strength = 0.003f;
-        gl_Position.x += cos(iTime * 20) * strength;        
-        gl_Position.y += cos(iTime * 30) * strength;        
+        float strength = shakeScale / 10.0;
+        gl_Position.x += cos(iTime * 50) * strength;        
+        gl_Position.y += cos(iTime * 60) * strength;        
     }
 }  

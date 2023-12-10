@@ -1,24 +1,24 @@
-#include <PCH/pch.h>
+#include <Engine/PCH/pch.h>
 #include "inputManager.h"
 #include <Engine/Graphics/Window/window.h>
 
 namespace Dog {
 
 	//storing the keys and variables
-	KeyStates InputManager::keyStates[static_cast<int>(Key::TOTALKEYS)];
-	MouseStates InputManager::mouseStates[static_cast<int>(Mouse::LAST)];
-	GamepadButtonStates InputManager::prevGamepadButtonStates[MAX_GAMEPADS][static_cast<int>(GamepadButton::LAST)];
-	GamepadButtonStates InputManager::gamepadButtonStates[MAX_GAMEPADS][static_cast<int>(GamepadButton::LAST)];
-	GamepadAxisStates InputManager::gamepadAxisStates[MAX_GAMEPADS][static_cast<int>(GamepadAxis::LAST)];
-	GLFWwindow* InputManager::m_Window = nullptr;
+	KeyStates Input::keyStates[static_cast<int>(Key::TOTALKEYS)];
+	MouseStates Input::mouseStates[static_cast<int>(Mouse::LAST)];
+	GamepadButtonStates Input::prevGamepadButtonStates[MAX_GAMEPADS][static_cast<int>(GamepadButton::LAST)];
+	GamepadButtonStates Input::gamepadButtonStates[MAX_GAMEPADS][static_cast<int>(GamepadButton::LAST)];
+	GamepadAxisStates Input::gamepadAxisStates[MAX_GAMEPADS][static_cast<int>(GamepadAxis::LAST)];
+	GLFWwindow* Input::m_Window = nullptr;
 
-	float InputManager::degree;
-	float InputManager::previousDegree;
-	GLFWcursor* InputManager::standardCursor;
+	float Input::degree;
+	float Input::previousDegree;
+	GLFWcursor* Input::standardCursor;
 
 
 	//setting some callbacks
-	void InputManager::Init(GLFWwindow* window)
+	void Input::Init(GLFWwindow* window)
 	{
 		m_Window = window;
 
@@ -30,7 +30,7 @@ namespace Dog {
 		glfwSetCursor(window, standardCursor);
 	}
 
-	void InputManager::ResetKeyStates() {
+	void Input::ResetKeyStates() {
 		for (auto& key : keyStates)
 		{
 			key.keyTriggered = false;
@@ -45,7 +45,7 @@ namespace Dog {
 	}
 
 	// update
-	void InputManager::Update()
+	void Input::Update()
 	{
 		if (GetKeyDown(Key::ESCAPE))
 			glfwSetWindowShouldClose(m_Window, true);
@@ -61,7 +61,7 @@ namespace Dog {
 
 	// Keys
 
-	bool InputManager::GetKeyDown(Key key)
+	bool Input::GetKeyDown(Key key)
 	{
 		if (key <= Key::UNKNOWN || key >= Key::TOTALKEYS)
 		{
@@ -71,7 +71,7 @@ namespace Dog {
 		return keyStates[static_cast<int>(key)].keyDown;
 	}
 
-	bool InputManager::GetKeyTriggered(Key key)
+	bool Input::GetKeyTriggered(Key key)
 	{
 		if (key <= Key::UNKNOWN || key >= Key::TOTALKEYS)
 		{
@@ -81,7 +81,7 @@ namespace Dog {
 		return keyStates[static_cast<int>(key)].keyTriggered;
 	}
 
-	bool InputManager::GetKeyReleased(Key key)
+	bool Input::GetKeyReleased(Key key)
 	{
 		if (key <= Key::UNKNOWN || key >= Key::TOTALKEYS)
 		{
@@ -91,7 +91,7 @@ namespace Dog {
 		return keyStates[static_cast<int>(key)].keyReleased;
 	}
 
-	bool InputManager::GetKeyUp(Key key)
+	bool Input::GetKeyUp(Key key)
 	{
 		if (key <= Key::UNKNOWN || key >= Key::TOTALKEYS)
 		{
@@ -103,22 +103,22 @@ namespace Dog {
 
 	// Mouse
 
-	bool InputManager::GetMouseDown(Mouse mouseButton)
+	bool Input::GetMouseDown(Mouse mouseButton)
 	{
 		return mouseStates[static_cast<int>(mouseButton)].mouseDown;
 	}
 
-	bool InputManager::GetMouseTriggered(Mouse mouseButton)
+	bool Input::GetMouseTriggered(Mouse mouseButton)
 	{
 		return mouseStates[static_cast<int>(mouseButton)].mouseTriggered;
 	}
 
-	bool InputManager::GetMouseReleased(Mouse mouseButton)
+	bool Input::GetMouseReleased(Mouse mouseButton)
 	{
 		return mouseStates[static_cast<int>(mouseButton)].mouseReleased;
 	}
 
-	glm::vec2 InputManager::GetCursorPosition()
+	glm::vec2 Input::GetCursorPosition()
 	{
 		/*GLint viewport[4];
 		glGetIntegerv(GL_VIEWPORT, viewport);
@@ -141,24 +141,24 @@ namespace Dog {
 		return { 0.f, 0.f };
 	}
 
-	float InputManager::GetDegree()
+	float Input::GetDegree()
 	{
 		return degree;
 	}
 
-	float InputManager::GetPreviousDegree()
+	float Input::GetPreviousDegree()
 	{
 		return previousDegree;
 	}
 
-	void InputManager::SetPreviousDegree(float setDegree)
+	void Input::SetPreviousDegree(float setDegree)
 	{
 		previousDegree = setDegree;
 	}
 
 	// Callbacks
 
-	void InputManager::KeyPressCallback(GLFWwindow* windowPointer, int key, int scanCode, int action, int mod) noexcept
+	void Input::KeyPressCallback(GLFWwindow* windowPointer, int key, int scanCode, int action, int mod) noexcept
 	{
 		(void)windowPointer;
 		(void)scanCode;
@@ -176,7 +176,7 @@ namespace Dog {
 		}
 	}
 
-	void InputManager::MousePressCallback(GLFWwindow* windowPointer, int mouseButton, int action, int mod) noexcept
+	void Input::MousePressCallback(GLFWwindow* windowPointer, int mouseButton, int action, int mod) noexcept
 	{
 		(void)windowPointer;
 		(void)mod;
@@ -193,7 +193,7 @@ namespace Dog {
 		}
 	}
 
-	void InputManager::MouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset) noexcept
+	void Input::MouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset) noexcept
 	{
 		degree -= static_cast<float>(yoffset);
 		if (degree < -20.0f)
@@ -204,12 +204,12 @@ namespace Dog {
 
 	// Gamepad
 
-	bool InputManager::GetGamepadPresent(int gamepad)
+	bool Input::GetGamepadPresent(int gamepad)
 	{
 		return glfwJoystickIsGamepad(gamepad);
 	}
 
-	bool InputManager::GetGamepadButtonPressed(int gamepad, GamepadButton button)
+	bool Input::GetGamepadButtonPressed(int gamepad, GamepadButton button)
 	{
 		GLFWgamepadstate state;
 		if (glfwGetGamepadState(gamepad, &state))
@@ -221,7 +221,7 @@ namespace Dog {
 		return false;
 	}
 
-	bool InputManager::GetGamepadButtonTriggered(int gamepad, GamepadButton button)
+	bool Input::GetGamepadButtonTriggered(int gamepad, GamepadButton button)
 	{
 		GLFWgamepadstate state;
 		if (glfwGetGamepadState(gamepad, &state))
@@ -233,13 +233,13 @@ namespace Dog {
 			gamepadButtonStates[gamepad][static_cast<int>(button)].buttonDown;
 	}
 
-	bool InputManager::GetGamepadButtonReleased(int gamepad, GamepadButton button)
+	bool Input::GetGamepadButtonReleased(int gamepad, GamepadButton button)
 	{
 		return prevGamepadButtonStates[gamepad][static_cast<int>(button)].buttonDown &&
 			!gamepadButtonStates[gamepad][static_cast<int>(button)].buttonDown;
 	}
 
-	float InputManager::GetGamepadAxisValue(int gamepad, GamepadAxis axis)
+	float Input::GetGamepadAxisValue(int gamepad, GamepadAxis axis)
 	{
 		GLFWgamepadstate state;
 		if (glfwGetGamepadState(gamepad, &state))

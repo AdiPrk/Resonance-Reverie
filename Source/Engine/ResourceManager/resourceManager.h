@@ -1,6 +1,6 @@
 #pragma once
 
-#include <PCH/pch.h>
+#include <Engine/PCH/pch.h>
 
 #include <Engine/Graphics/Shader/shader.h>
 #include <Engine/Graphics/texture/texture.h>
@@ -38,9 +38,6 @@ namespace Dog {
 
         // Bind a VAO
         static void BindVAO(GLuint quadVAO);
-
-        // Update the iTime variable on all shaders
-        static void UpdateAllShaderTimes(float time);
 
         static AudioManager& GetAudioManager() { return audioManager; }
         static void PlaySound(const std::string& source, bool isLooping = false, float pitch = 1.0f, float volumeMultiplier = 1.0f, bool isSpatial = false, const glm::vec2& soundPos = { 0, 0 }, float soundRange = 500.0f);

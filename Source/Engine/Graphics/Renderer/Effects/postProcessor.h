@@ -1,6 +1,6 @@
 #pragma once
 
-#include <PCH/pch.h>
+#include <Engine/PCH/pch.h>
 
 #include <Engine/Graphics/Texture/texture.h>
 #include <Engine/Graphics/Shader/shader.h>
@@ -18,7 +18,7 @@ namespace Dog {
         Texture2D Texture;
         unsigned int Width, Height;
         // options
-        bool Confuse, Chaos, Shake, Invert, Greyscale, Blur;
+        bool Confuse, Chaos, Shake, Invert, Greyscale, Blur, Disco;
         float shakeTime = 0.0f;
         float shakeScale = 0.05f;
         float blurTime = 0.0f;
