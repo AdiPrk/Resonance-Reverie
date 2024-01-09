@@ -69,6 +69,7 @@ namespace Dog {
     unsigned int Window::m_Height = 0;
     float Window::m_AspectRatio = 0;
     GLFWwindow* Window::m_Window = nullptr;
+    bool Window::m_IsFullscreen = false;
 
     Window::Window(unsigned int screenWidth, unsigned int screenHeight)
     {
@@ -186,6 +187,7 @@ namespace Dog {
         if (glfwGetWindowMonitor(m_Window)) {
             // If in fullscreen mode, switch to windowed mode with previous window size and position
             glfwSetWindowMonitor(m_Window, nullptr, windowedPosX, windowedPosY, windowedWidth, windowedHeight, 0);
+            m_IsFullscreen = false;
         }
         else {
             // Store the current window size and position before switching to fullscreen
@@ -194,6 +196,14 @@ namespace Dog {
 
             // Switch to fullscreen mode
             glfwSetWindowMonitor(m_Window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+            m_IsFullscreen = true;
+        }
+    }
+
+    void Window::SetFullscreen(bool fullScreen)
+    {
+        if (m_IsFullscreen != fullScreen) {
+            ToggleFullscreen();
         }
     }
 

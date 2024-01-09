@@ -11,6 +11,9 @@
 
 namespace Dog {
 
+    Window* DogEngine::m_Window = nullptr;
+    Window* GetWindow() { return DogEngine::GetWindow(); } // Globally Available
+
     DogEngine::DogEngine(unsigned int width, unsigned int height)
     {
         m_Window = new Window(width, height);

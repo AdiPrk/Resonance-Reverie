@@ -22,6 +22,10 @@ namespace Dog {
 		template<typename T>
 		T& GetComponent()
 		{
+			if (!HasComponent<T>())
+			{
+				throw "Entity does not have component!";
+			}
 			return m_Scene->m_Registry.get<T>(m_EntityHandle);
 		}
 

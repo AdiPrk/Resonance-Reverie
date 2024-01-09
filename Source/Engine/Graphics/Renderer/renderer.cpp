@@ -12,7 +12,7 @@ namespace Dog {
     TextRenderer* Renderer::m_TextRenderer = nullptr;
     SpriteRenderer* Renderer::m_SpriteRenderer = nullptr;
     PostProcessor* Renderer::m_PostProcessor = nullptr;
-    Camera Renderer::m_Camera;;
+    Camera Renderer::m_Camera;
     Shader Renderer::m_ActiveShader;
     glm::vec4 Renderer::m_ClearColor{ 0, 0, 0, 1 };
 
@@ -121,6 +121,9 @@ namespace Dog {
 
     void Renderer::Update(float dt)
     {
+        m_Camera.UpdateZoom(dt);
+        m_Camera.UpdateUniforms();
+
         Shader::iTime += dt;
         Shader::SetTimeUBO(Shader::iTime);
         UpdatePostProcessing(dt);

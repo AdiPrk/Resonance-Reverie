@@ -21,7 +21,7 @@ namespace Dog {
 
 		static Shader& GetActiveShader() { return m_ActiveShader; }
 
-		// Clear the screen
+		// Sets the screen's clear color.
 		static void Clear(float r, float g, float b, float a);
 		static void Clear(const glm::vec4& color = m_ClearColor);
 		static void ClearColorAndDepthBuffer();
@@ -49,6 +49,7 @@ namespace Dog {
 		// Getters
 		static PostProcessor* GetPostProcessor() { return m_PostProcessor; }
 		static const glm::vec4& GetClearColor() { return m_ClearColor; }
+		static Camera& GetCamera() { return m_Camera; }
 		static void Update(float dt);
 		
 	private:

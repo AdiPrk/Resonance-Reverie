@@ -17,6 +17,8 @@ namespace Dog {
 
         void CalculateBoundingRect();
 
+        void UpdateZoom(float dt);
+
         void MoveTo(glm::vec2 moveTo);
         void MoveTo(glm::vec2 moveTo, Rect bounds);
 
@@ -24,6 +26,7 @@ namespace Dog {
 
         const Rect Bounds() const { return m_BoundingRect; }
         void SetScale(float scale) { m_TargetZoom = scale; }
+        void SetScaleInstant(float scale) { m_TargetZoom = scale; m_Zoom = scale; }
 
         const bool IsZoomEqualTarget() const { return m_Zoom == m_TargetZoom; }
 

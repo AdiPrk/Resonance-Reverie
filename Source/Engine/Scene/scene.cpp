@@ -1,23 +1,14 @@
 #include <Engine/PCH/pch.h>
-#include "scene.h"
 
-#include "Entity/Components/components.h"
 #include <Engine/Graphics/Renderer/renderer.h>
+#include <Engine/Physics/physics.h>
+#include <Engine/Physics/physicsUtils.h>
 
+#include "scene.h"
+#include "Entity/Components/components.h"
 #include "Entity/entity.h"
 
 namespace Dog {
-
-	static b2BodyType DogRigidbody2DTypeToBox2D(RigidbodyComponent::BodyType bodyType)
-	{
-		switch (bodyType)
-		{
-			case RigidbodyComponent::BodyType::Static: return b2_staticBody;
-			case RigidbodyComponent::BodyType::Dynamic: return b2_dynamicBody;
-			case RigidbodyComponent::BodyType::Kinematic: return b2_kinematicBody;
-			default: throw "Unknown body type";
-		}
-	}
 
 	Scene::Scene(const std::string& name)
 		: m_Name(name)
@@ -28,8 +19,10 @@ namespace Dog {
 	{
 	}
 
+	// Create an entity with the transform and tag components
 	Entity Scene::CreateEntity(const std::string& name)
 	{
+		std::cout << "Creating Entity " << name << " in scene " << this->m_Name << std::endl;;
 		Entity entity = { m_Registry.create(), this };
 		entity.AddComponent<TransformComponent>();
 		auto& tag = entity.AddComponent<TagComponent>();
@@ -58,21 +51,44 @@ namespace Dog {
 
 	void Scene::InitScene()
 	{
-		m_PhysicsWorld = new b2World({ 0.0f, -9.81f });
+		m_PhysicsWorld = new b2World({ 0.0f, 9.81f });
 	}
 
 	void Scene::UpdateScene(float dt)
 	{
-		m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+		// Update/create the colliders
+		Physics::UpdatePhysicsColliders(m_Registry, m_PhysicsWorld);
+
+		// Run the scripts
+		m_Registry.view<NativeScriptComponent>().each([=](auto entity, NativeScriptComponent& nsc)
 		{
 			if (!nsc.Instance)
 			{
 				nsc.Instance = nsc.InstantiateScript();
+				
+				for (auto& [name, value] : nsc.TemporaryVariables) {
+					nsc.Instance->SetVariable(name, value);
+				}
+				nsc.TemporaryVariables.clear();
+
 				nsc.Instance->m_Entity = Entity{ entity, this };
 				nsc.Instance->OnCreate();
 			}
 
 			nsc.Instance->OnUpdate(dt);
+		});
+
+		// Update the physics simulation
+		m_PhysicsWorld->Step(dt, 6, 2);
+
+		// Update components with box2d info
+		m_Registry.view<TransformComponent, RigidbodyComponent>().each([](auto entity, TransformComponent& transform, RigidbodyComponent& rb)
+		{			
+			if (!rb.Body) return;
+			
+			const auto& position = rb.Body->GetPosition();
+			transform.Position = Utils::MetersToPixels(position) - transform.Scale * 0.5f;
+			transform.Rotation = rb.Body->GetAngle();
 		});
 	}
 
@@ -81,16 +97,18 @@ namespace Dog {
 		Renderer::ClearColorAndDepthBuffer();
 
 		m_Registry.view<TransformComponent, QuadRendererComponent>().each([](auto entity, TransformComponent& transform, QuadRendererComponent& quad) {
-			Renderer::DrawQuad(transform.position, transform.scale, transform.rotation, quad.color);
+			Renderer::DrawQuad(transform.Position, transform.Scale, transform.Rotation, quad.Color);
 		});
 
 		m_Registry.view<TransformComponent, SpriteRendererComponent>().each([](auto entity, TransformComponent& transform, SpriteRendererComponent& sprite) {
-			Renderer::DrawSprite(sprite.texture, transform.position, transform.scale, transform.rotation, sprite.color);
+			Renderer::DrawSprite(sprite.Texture, transform.Position, transform.Scale, transform.Rotation, sprite.Color, sprite.Repetition);
 		});
 
 		m_Registry.view<TransformComponent, TextRendererComponent>().each([](auto entity, TransformComponent& transform, TextRendererComponent& text) {
-			Renderer::RenderText(text.text, transform.position.x, transform.position.y, text.scale, text.centered, text.color, text.diagetic);
+			Renderer::RenderText(text.Text, transform.Position.x, transform.Position.y, text.Scale, text.Centered, text.Color, text.Diagetic);
 		});
+
+		Physics::RenderColliders(*m_PhysicsWorld);
 	}
 
 	void Scene::ExitScene()

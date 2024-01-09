@@ -14,11 +14,13 @@ namespace Dog {
 		Scene(const std::string& name);
 		~Scene();
 
+		// Scene functions defined by client
 		virtual void Init() {}
 		virtual void Update(float dt) {}
 		virtual void Render(float dt, float ct, float itf) {}
 		virtual void Exit() {}
 
+		// Create an entity with the transform and tag components
 		Entity CreateEntity(const std::string& name = std::string());
 		void DestroyEntity(Entity entity);
 		void DestroyEntityByTag(const std::string& name);
@@ -31,6 +33,7 @@ namespace Dog {
 
 		b2World* m_PhysicsWorld = nullptr;
 
+		// Scene functions that are the same for every scene
 		void InitScene();
 		void UpdateScene(float dt);
 		void RenderScene(float dt, float ct, float itf);

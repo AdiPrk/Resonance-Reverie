@@ -1,6 +1,7 @@
 #include <Engine/dogpch.h>
 #include "titleScene.h"
 #include "gameScene.h"
+#include "../Scripts/startScript.h"
 
 static TitleScene sceneInstance;
 
@@ -11,45 +12,31 @@ Dog::Scene* TitleScene::GetInstance()
 
 void TitleScene::Init()
 {
-	Dog::Entity titleEntity;
-	Dog::Entity startEntity;
+	Dog::ResourceManager::LoadShadersFromDirectory("Game/Assets/Shaders");
+	Dog::ResourceManager::LoadTexturesFromDirectory("Game/Assets/Images");
 
-	titleEntity = CreateEntity("o.o");
-	startEntity = CreateEntity("v.v");
+	Dog::Entity titleEntity = CreateEntity("title");
+	titleEntity.AddComponent<Dog::TextRendererComponent>("Resonance Reverie");
+	titleEntity.GetComponent<Dog::TransformComponent>().Position = glm::vec2(WINDOW_WIDTH * 0.5f, WINDOW_HEIGHT * 0.2f);
 
-	class StartEntityScript : public Dog::ScriptableEntity
-	{
-	public:
-		void OnUpdate(float dt) {
-			if (Dog::Input::GetMouseTriggered(Dog::Mouse::LEFT)) {
-				Dog::SceneManager::SetNextScene(GameScene::GetInstance());
-			}
-		}
-	};
-
+	Dog::Entity startEntity = CreateEntity("start");
 	startEntity.AddComponent<Dog::NativeScriptComponent>().Bind<StartEntityScript>();
-
-	titleEntity.AddComponent<Dog::TextRendererComponent>("Title Sceen");
-	titleEntity.GetComponent<Dog::TransformComponent>().position = glm::vec2(500, 200);
-
-	startEntity.AddComponent<Dog::TextRendererComponent>("Start by Left Clicking!");
-	startEntity.GetComponent<Dog::TransformComponent>().position = glm::vec2(500, 500);
-
-	printf("title init\n");
+	startEntity.AddComponent<Dog::TextRendererComponent>("Start by Left Clicking!").Scale = 0.4f;
+	startEntity.GetComponent<Dog::TransformComponent>().Position = glm::vec2(WINDOW_WIDTH * 0.5f, WINDOW_HEIGHT * 0.75f);
 }
 
 void TitleScene::Update(float dt)
 {
-	printf("title update\n");
 }
 
 void TitleScene::Render(float dt, float ct, float itf)
 {
-	Dog::Renderer::Clear(0.5f, 0.0f, 0.0f, 1.0f);
-	printf("title render\n");
+	Dog::Renderer::Clear(0.0f, 0.0f, 0.0f, 1.0f);
+	
+	Dog::Renderer::SetShader("background");
+	Dog::Renderer::DrawSprite("square", { 0, 0 }, { WINDOW_WIDTH, WINDOW_HEIGHT });
 }
 
 void TitleScene::Exit()
 {
-	printf("title exit\n");
 }

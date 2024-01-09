@@ -44,7 +44,6 @@ namespace Dog {
     }
 
     void Camera::MoveTo(glm::vec2 moveTo) {
-        CalculateBoundingRect();
         m_Position = moveTo;
     }
 
@@ -60,12 +59,13 @@ namespace Dog {
         m_Position = moveTo;
     }
 
-    void Camera::GlideTo(glm::vec2 glideTo, Rect bounds, float dt) {
+    void Camera::UpdateZoom(float dt) {
         m_Zoom = Lerp(m_Zoom, m_TargetZoom, 6.0f * dt);
         if (fabsf(m_Zoom - m_TargetZoom) < 0.0005f) m_Zoom = m_TargetZoom;
-        //m_Zoom = 0.3f;
         CalculateBoundingRect();
+    }
 
+    void Camera::GlideTo(glm::vec2 glideTo, Rect bounds, float dt) {
         if (bounds.width >= m_BoundingRect.width) // to avoid crashing with clamp
         {
             glideTo.x = std::clamp(glideTo.x, bounds.left + m_BoundingRect.width / 2.f, bounds.right - m_BoundingRect.width / 2.f);

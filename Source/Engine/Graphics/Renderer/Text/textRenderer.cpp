@@ -10,6 +10,7 @@ namespace Dog {
     TextRenderer::TextRenderer()
     {
         this->TextShader = Dog::ResourceManager::GetShader("defaulttext");
+        this->TextShader.Use();
         // configure VAO/VBO for texture quads
         glGenVertexArrays(1, &this->VAO);
         glGenBuffers(1, &this->VBO);
@@ -19,6 +20,25 @@ namespace Dog {
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
 
+        //int edge_kernel[9] = {
+        //    -1, -1, -1,
+        //    -1,  8, -1,
+        //    -1, -1, -1
+        //};
+        //glUniform1iv(glGetUniformLocation(this->TextShader.ID, "edge_kernel"), 9, edge_kernel);
+        //float offset = 1.0f / 20.0f;
+        //float offsets[9][2] = {
+        //    { -offset,  offset  },  // top-left
+        //    {  0.0f,    offset  },  // top-center
+        //    {  offset,  offset  },  // top-right
+        //    { -offset,  0.0f    },  // center-left
+        //    {  0.0f,    0.0f    },  // center-center
+        //    {  offset,  0.0f    },  // center - right
+        //    { -offset, -offset  },  // bottom-left
+        //    {  0.0f,   -offset  },  // bottom-center
+        //    {  offset, -offset  }   // bottom-right    
+        //};
+        //glUniform2fv(glGetUniformLocation(this->TextShader.ID, "offsets"), 9, (float*)offsets);
     }
 
     void TextRenderer::Load(std::string font, unsigned int fontSize)

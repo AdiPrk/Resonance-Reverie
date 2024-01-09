@@ -13,10 +13,12 @@ namespace Dog {
 
 		int Run(Scene* startScene);
 
-		Window* GetWindow() { return m_Window; }
+		static Window* GetWindow() { return m_Window; }
 
 	private:
-		Window* m_Window;
+		static Window* m_Window;
 	};
+
+	Window* GetWindow();
 
 }

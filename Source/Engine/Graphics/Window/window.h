@@ -13,6 +13,7 @@ namespace Dog {
 		void SwapBuffers();
 		void LimitFPS();
 		void ToggleFullscreen();
+		void SetFullscreen(bool fullScreen = true);
 
 		GLFWwindow* GetWindow() { return m_Window; };
 
@@ -40,6 +41,7 @@ namespace Dog {
 		static unsigned int m_Height;
 		static float m_AspectRatio;
 		static GLFWwindow* m_Window;
+		static bool m_IsFullscreen;
 	};
 
 }

@@ -233,6 +233,11 @@ rmdir "$(TargetDir)DLLs"</Command>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Engine\Physics\physics.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/dogpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/dogpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/dogpch.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Engine\Scene\Entity\entity.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
@@ -325,6 +330,7 @@ rmdir "$(TargetDir)DLLs"</Command>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Game\Scenes\gameScene.cpp" />
+    <ClCompile Include="Game\Scenes\pauseScene.cpp" />
     <ClCompile Include="Game\Scenes\titleScene.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/dogpch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/dogpch.h</PrecompiledHeaderFile>
@@ -339,6 +345,7 @@ rmdir "$(TargetDir)DLLs"</Command>
     <ClInclude Include="Engine\dogpch.h" />
     <ClInclude Include="Engine\engine.h" />
     <ClInclude Include="Engine\Graphics\Renderer\renderer.h" />
+    <ClInclude Include="Engine\Physics\physics.h" />
     <ClInclude Include="Engine\Scene\Entity\Components\components.h" />
     <ClInclude Include="Engine\Scene\Entity\entity.h" />
     <ClInclude Include="Engine\Scene\scene.h" />
@@ -361,8 +368,14 @@ rmdir "$(TargetDir)DLLs"</Command>
     <ClInclude Include="Engine\Math\random.h" />
     <ClInclude Include="Engine\Math\rect.h" />
     <ClInclude Include="Engine\Math\utils.h" />
+    <ClInclude Include="Engine\Physics\physicsUtils.h" />
     <ClInclude Include="Game\Scenes\gameScene.h" />
+    <ClInclude Include="Game\Scenes\pauseScene.h" />
     <ClInclude Include="Game\Scenes\titleScene.h" />
+    <ClInclude Include="Game\Scripts\cameraController.h" />
+    <ClInclude Include="Game\Scripts\playerController.h" />
+    <ClInclude Include="Game\Scripts\spawnRoom.h" />
+    <ClInclude Include="Game\Scripts\startScript.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Images\paddle.png" />

@@ -3,6 +3,6 @@
 
 int main() {
     // Create and Run Application!
-    Dog::DogEngine Engine(1280, 720);
+    Dog::DogEngine Engine(WINDOW_WIDTH, WINDOW_HEIGHT);
     return Engine.Run(TitleScene::GetInstance());
 }
