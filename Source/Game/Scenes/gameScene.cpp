@@ -20,7 +20,7 @@ void GameScene::Init()
 	Dog::Entity runGame = CreateEntity();
 	auto& script = runGame.AddComponent<Dog::NativeScriptComponent>();
 	script.Bind<SpawnRoomScript>();
-	script.SetVariable("filename", std::string("Game/Assets/Maps/kk.json"));
+	script.SetVariable("filename", std::string("Game/Assets/Maps/map.json"));
 }
 
 void GameScene::Update(float dt)
