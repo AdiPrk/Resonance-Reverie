@@ -7,6 +7,7 @@
 #include "scene.h"
 #include "Entity/Components/components.h"
 #include "Entity/entity.h"
+#include "sceneManager.h"
 
 namespace Dog {
 
@@ -22,7 +23,7 @@ namespace Dog {
 	// Create an entity with the transform and tag components
 	Entity Scene::CreateEntity(const std::string& name)
 	{
-		std::cout << "Creating Entity " << name << " in scene " << this->m_Name << std::endl;;
+		// std::cout << "Creating Entity " << name << " in scene " << this->m_Name << std::endl;;
 		Entity entity = { m_Registry.create(), this };
 		entity.AddComponent<TransformComponent>();
 		auto& tag = entity.AddComponent<TagComponent>();
@@ -32,8 +33,32 @@ namespace Dog {
 		return entity;
 	}
 
+	Entity Scene::CreateEntityInGroup(const std::string& group, const std::string& name)
+	{
+		auto ent = CreateEntity(name);
+		ent.m_Group = group;
+		m_EntityGroups[group].push_back(ent);
+		return ent;
+	}
+
+	Entity CreateEntity(const std::string& name) {
+		return SceneManager::GetCurrentScene()->CreateEntity(name);
+	}
+
+	Entity CreateEntityInGroup(const std::string& group, const std::string& name) {
+		return SceneManager::GetCurrentScene()->CreateEntityInGroup(group, name);
+	}
+
 	void Scene::DestroyEntity(Entity entity)
 	{
+		if (entity.HasComponent<RigidbodyComponent>())
+		{
+			auto& body = entity.GetComponent<RigidbodyComponent>().Body;
+			if (body != nullptr) {
+				m_PhysicsWorld->DestroyBody(body);
+			}
+		}
+
 		m_TagToEntityMap.erase(entity.GetName());
 		m_Registry.destroy(entity);
 	}
@@ -47,6 +72,19 @@ namespace Dog {
 	Entity Scene::GetEntityByTag(const std::string& name)
 	{
 		return m_TagToEntityMap[name];
+	}
+
+	std::vector<Entity>& Scene::GetEntityGroup(const std::string& groupName)
+	{
+		return m_EntityGroups[groupName];
+	}
+
+	Entity GetEntity(const std::string& name) {
+		return SceneManager::GetCurrentScene()->GetEntityByTag(name);
+	}
+
+	std::vector<Entity>& GetEntityGroup(const std::string& groupName) {
+		return SceneManager::GetCurrentScene()->GetEntityGroup(groupName);
 	}
 
 	void Scene::InitScene()

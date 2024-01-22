@@ -22,7 +22,7 @@ namespace Dog {
         void MoveTo(glm::vec2 moveTo);
         void MoveTo(glm::vec2 moveTo, Rect bounds);
 
-        void GlideTo(glm::vec2 glideTo, Rect bounds, float dt);
+        void GlideTo(glm::vec2 glideTo, float dt);
 
         const Rect Bounds() const { return m_BoundingRect; }
         void SetScale(float scale) { m_TargetZoom = scale; }
@@ -30,7 +30,12 @@ namespace Dog {
 
         const bool IsZoomEqualTarget() const { return m_Zoom == m_TargetZoom; }
 
+        void SetMovementBounds(const Rect& bounds) {
+            m_MovementBounds = bounds;
+        }
+
     private:
+        Rect m_MovementBounds;
         Rect m_BoundingRect;
         glm::vec2 m_Position = glm::vec2(0.0f, 0.0f);
         glm::vec2 m_CameraSize;

@@ -238,6 +238,11 @@ rmdir "$(TargetDir)DLLs"</Command>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/dogpch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/dogpch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Engine\Scene\Entity\Components\components.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Engine\Scene\Entity\entity.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Engine/PCH/pch.h</PrecompiledHeaderFile>
@@ -374,7 +379,9 @@ rmdir "$(TargetDir)DLLs"</Command>
     <ClInclude Include="Game\Scenes\titleScene.h" />
     <ClInclude Include="Game\Scripts\cameraController.h" />
     <ClInclude Include="Game\Scripts\playerController.h" />
-    <ClInclude Include="Game\Scripts\spawnRoom.h" />
+    <ClInclude Include="Game\Scripts\spawnEntities.h" />
+    <ClInclude Include="Game\Scripts\spawnNextRoom.h" />
+    <ClInclude Include="Game\Scripts\spawnStartingRoom.h" />
     <ClInclude Include="Game\Scripts\startScript.h" />
   </ItemGroup>
   <ItemGroup>

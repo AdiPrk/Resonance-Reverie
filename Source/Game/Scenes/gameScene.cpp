@@ -2,7 +2,7 @@
 #include "gameScene.h"
 #include "titleScene.h"
 #include "pauseScene.h"
-#include "../Scripts/spawnRoom.h"
+#include "../Scripts/spawnStartingRoom.h"
 #include "../Scripts/cameraController.h"
 
 static GameScene gameSceneInstance;
@@ -18,21 +18,20 @@ void GameScene::Init()
 	cameraController.AddComponent<Dog::NativeScriptComponent>().Bind<CameraControllerScript>();
 
 	Dog::Entity runGame = CreateEntity();
-	auto& script = runGame.AddComponent<Dog::NativeScriptComponent>();
-	script.Bind<SpawnRoomScript>();
+	auto& script = runGame.AddComponent<Dog::NativeScriptComponent>().Bind<SpawnStartingRoomScript>();
 	script.SetVariable("filename", std::string("Game/Assets/Maps/map.json"));
 }
 
 void GameScene::Update(float dt)
 {
 	if (Dog::Input::GetMouseTriggered(Dog::Mouse::LEFT)) {
-		Dog::SceneManager::SetNextScene(TitleScene::GetInstance());
+		//Dog::SceneManager::SetNextScene(TitleScene::GetInstance());
 	}
 }
 
 void GameScene::Render(float dt, float ct, float itf)
 {
-	Dog::Renderer::Clear(0.5f, 0.0f, 0.0f, 1.0f);
+	Dog::Renderer::Clear(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 void GameScene::Exit()

@@ -73,19 +73,19 @@ namespace Dog {
         m_SpriteRenderer->DrawSprite("square", position, size, rotation, color);
     }
 
-    void Renderer::DrawSprite(const std::string& textureName, glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, glm::vec2 repetition)
+    void Renderer::DrawSprite(const std::string& textureName, glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, glm::vec2 repetition, float depth)
     {
-        m_SpriteRenderer->DrawSprite(textureName, position, size, rotation, color, repetition);
+        m_SpriteRenderer->DrawSprite(textureName, position, size, rotation, color, repetition, depth);
     }
 
-    void Renderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, glm::vec2 repetition)
+    void Renderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, glm::vec2 repetition, float depth)
     {
-        m_SpriteRenderer->DrawSprite(texture, position, size, rotation, color, repetition);
+        m_SpriteRenderer->DrawSprite(texture, position, size, rotation, color, repetition, depth);
     }
 
-    void Renderer::DrawSpriteFrame(Texture2D& texture, unsigned frame, glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, glm::vec2 repetition)
+    void Renderer::DrawSpriteFrame(Texture2D& texture, unsigned frame, glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, glm::vec2 repetition, float depth)
     {
-        m_SpriteRenderer->DrawSpriteFrame(texture, frame, position, size, rotation, color, repetition);
+        m_SpriteRenderer->DrawSpriteFrame(texture, frame, position, size, rotation, color, repetition, depth);
     }
 
     void Renderer::DrawLine(glm::vec2 p1, glm::vec2 p2, float thickness, const std::string& textureName)

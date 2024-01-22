@@ -27,5 +27,4 @@ namespace Dog {
 
 		static bool IsChangingScenes() { return (m_IsRestarting || (m_ActiveScene != m_NextScene)); }
 	};
-
 }

@@ -5,17 +5,19 @@
 class CameraControllerScript : public Dog::ScriptableEntity
 {
 public:
-	void OnCreate()
-	{
-	}
+	void OnCreate() { }
 
 	void OnUpdate(float dt)
 	{
+		GetComponent<Dog::TransformComponent>();
+
 		auto player = GetEntity("player");
 		auto playerTransform = player.GetComponent<Dog::TransformComponent>();
 		
 		auto& camera = Dog::Renderer::GetCamera();
-		camera.MoveTo(playerTransform.Position);
+		camera.GlideTo(playerTransform.Position, dt);
 		camera.SetScale(1.25f);
 	}
+
+
 };

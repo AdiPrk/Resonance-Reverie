@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Engine/dogpch.h>
+#include "spawnNextRoom.h"
 
 b2FixtureDef standingFixtureDef;
 b2FixtureDef crouchingFixtureDef;
@@ -17,6 +18,7 @@ public:
 		
 		auto& rb = AddComponent<Dog::RigidbodyComponent>();
 		rb.Type = Dog::RigidbodyComponent::BodyType::Dynamic;
+		rb.FixedRotation = true;
 
 		auto& collider = AddComponent<Dog::BoxColliderComponent>();
 		
@@ -61,12 +63,15 @@ public:
 
 	void OnUpdate(float dt)
 	{
-		auto rb = GetComponent<Dog::RigidbodyComponent>();
+		auto& rb = GetComponent<Dog::RigidbodyComponent>();
 		if (!rb.Body) return;
+
+		auto& collider = GetComponent<Dog::BoxColliderComponent>();
+		auto& transform = GetComponent<Dog::TransformComponent>();
 
 		auto velocity = rb.Body->GetLinearVelocity();
 		
-		float speed = 50.0f;
+		float speed = 25.0f;
 
 		if (Dog::Input::GetKeyDown(Dog::Key::A))
 			velocity.x -= speed * dt;
@@ -79,7 +84,6 @@ public:
 
 		if (Dog::Input::GetKeyTriggered(Dog::Key::K))
 		{
-			auto& collider = GetComponent<Dog::BoxColliderComponent>();
 			bool standing = GetVariable<bool>("standing");
 			if (standing)
 			{
@@ -96,5 +100,32 @@ public:
 		}
 
 		rb.Body->SetLinearVelocity(velocity);
+
+		glm::vec2 pos = rb.GetPosition();
+		collider.Bounds.left = pos.x - transform.Scale.x * 0.5f;
+		collider.Bounds.top = pos.y - transform.Scale.y * 0.5f;
+		collider.Bounds.SetScale(transform.Scale);
+
+		/*printf("pos: %f, %f\n", pos.x, pos.y);
+		if (GetVariable<bool>("standing")) {
+			collider.Bounds.left = pos.x - transform.Scale.x * 0.5f;
+			collider.Bounds.top = pos.y - transform.Scale.y * 0.5f;
+			collider.Bounds.SetScale(transform.Scale);
+		}
+		else {
+			collider.Bounds.left = pos.x - transform.Scale.x * 0.5f;
+			collider.Bounds.top = pos.y + transform.Scale.y * 0.25f;
+			collider.Bounds.SetScale({ transform.Scale.x, transform.Scale.y * 0.5f });
+		}*/
+
+		auto& b = collider.Bounds;
+		if (!GetVariable<Dog::Rect>("roomBounds").overlaps(b)) {
+			Dog::Entity newRoom = CreateEntity();
+			auto& script = newRoom.AddComponent<Dog::NativeScriptComponent>().Bind<SpawnNextRoomScript>();
+			script.SetVariable("currentRoomId", GetVariable<int>("roomId"));
+			script.SetVariable("filename", std::string("Game/Assets/Maps/map.json"));
+		}
+
+		// GetVariable<Dog::Rect>("roomBounds").PrintBounds();
 	}
 };

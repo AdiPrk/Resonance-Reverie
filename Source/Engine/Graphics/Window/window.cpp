@@ -86,7 +86,7 @@ namespace Dog {
         glfwWindowHint(GLFW_SAMPLES, 4);
         glEnable(GL_MULTISAMPLE);
         glEnable(GL_DEPTH_TEST);
-        glDepthMask(GL_TRUE);
+        //glDepthMask(GL_TRUE);
         //glDepthFunc(GL_LEQUAL);
         //glEnable(GL_STENCIL_TEST);
 

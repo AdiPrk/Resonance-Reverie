@@ -65,7 +65,9 @@ namespace Dog {
         CalculateBoundingRect();
     }
 
-    void Camera::GlideTo(glm::vec2 glideTo, Rect bounds, float dt) {
+    void Camera::GlideTo(glm::vec2 glideTo, float dt) {
+        const Rect& bounds = m_MovementBounds;
+
         if (bounds.width >= m_BoundingRect.width) // to avoid crashing with clamp
         {
             glideTo.x = std::clamp(glideTo.x, bounds.left + m_BoundingRect.width / 2.f, bounds.right - m_BoundingRect.width / 2.f);

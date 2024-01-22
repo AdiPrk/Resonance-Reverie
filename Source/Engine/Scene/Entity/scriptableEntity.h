@@ -29,6 +29,10 @@ namespace Dog {
 			return m_Entity.GetScene()->GetEntityByTag(name);
 		}
 
+		std::vector<Entity>& GetEntityGroup(const std::string& groupName) {
+			return m_Entity.GetScene()->GetEntityGroup(groupName);
+		}
+
 		void SetVariable(const std::string& name, const std::any& value) {
 			m_Variables[name] = value;
 		}
@@ -45,6 +49,16 @@ namespace Dog {
 		Entity CreateEntity(const std::string& name = std::string())
 		{
 			return m_Entity.GetScene()->CreateEntity(name);
+		}
+
+		Entity CreateEntityInGroup(const std::string& group, const std::string& name = std::string())
+		{
+			return m_Entity.GetScene()->CreateEntityInGroup(group, name);
+		}
+
+		void DestroyEntity(Entity entity)
+		{
+			return m_Entity.GetScene()->DestroyEntity(entity);
 		}
 
 	protected:

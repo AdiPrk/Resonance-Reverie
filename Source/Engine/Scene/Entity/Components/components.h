@@ -28,6 +28,7 @@ namespace Dog {
 		glm::vec2 Position = { 0.0f, 0.0f };
 		glm::vec2 Scale = { 50.0f, 50.0f };
 		float Rotation = 0;
+		float Depth = 0;
 
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
@@ -129,6 +130,10 @@ namespace Dog {
 			, AngularDamping(angularDamping)
 			, GravityScale(gravityScale) {}
 
+		glm::vec2 GetPosition() {
+			return Utils::MetersToPixels(Body->GetPosition());
+		}
+
 	private:
 		friend Scene;
 		friend Physics;
@@ -216,7 +221,7 @@ namespace Dog {
 		std::unordered_map<std::string, b2Fixture*> Box2dFixtures;
 		std::vector<FixtureDefinition> Box2dFixturesToAdd;
 		std::vector<std::string> Box2dFixturesToRemove;
-
+		Rect Bounds;
 	private:
 		friend Scene;
 		friend Physics;
@@ -236,20 +241,14 @@ namespace Dog {
 		std::unordered_map<std::string, std::any> TemporaryVariables;
 
 		template<typename T>
-		void Bind()
+		NativeScriptComponent& Bind()
 		{
 			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
 			DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
+			return *this;
 		}
 
-		void SetVariable(const std::string& name, const std::any& value) {
-        if (Instance) {
-			throw std::runtime_error("Use SetVariable from ScriptableEntity when the script has already initialized (one frame after binding).");
-			//Instance->SetVariable(name, value);
-        } else {
-            TemporaryVariables[name] = value;
-        }
-    }
+		void SetVariable(const std::string& name, const std::any& value);
 	};
 
 	// -------------------------------- //

@@ -22,13 +22,16 @@ namespace Dog {
 
 		// Create an entity with the transform and tag components
 		Entity CreateEntity(const std::string& name = std::string());
+		Entity CreateEntityInGroup(const std::string& group, const std::string& name = std::string());
 		void DestroyEntity(Entity entity);
 		void DestroyEntityByTag(const std::string& name);
 		Entity GetEntityByTag(const std::string& name);
+		std::vector<Entity>& GetEntityGroup(const std::string& groupName);
 		
 	private:
 		entt::registry m_Registry;
 		std::unordered_map<std::string, Entity> m_TagToEntityMap;
+		std::unordered_map<std::string, std::vector<Entity>> m_EntityGroups;
 		std::string m_Name;
 
 		b2World* m_PhysicsWorld = nullptr;
@@ -43,4 +46,9 @@ namespace Dog {
 		friend class SceneManager;
 	};
 
+	Entity CreateEntity(const std::string& name = std::string());
+	Entity CreateEntityInGroup(const std::string& group, const std::string& name = std::string());
+
+	Entity GetEntity(const std::string& name = std::string());
+	std::vector<Entity>& GetEntityGroup(const std::string& groupName);
 }

@@ -19,11 +19,11 @@ namespace Dog {
         glDeleteVertexArrays(1, &this->quadVAO);
     }
 
-    void SpriteRenderer::DrawSprite(const std::string& textureName, glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, glm::vec2 repetition) {
-        DrawSprite(ResourceManager::GetTexture(textureName), position, size, rotation, color, repetition);
+    void SpriteRenderer::DrawSprite(const std::string& textureName, glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, glm::vec2 repetition, float depth) {
+        DrawSprite(ResourceManager::GetTexture(textureName), position, size, rotation, color, repetition, depth);
     }
 
-    void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, glm::vec2 repetition)
+    void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, glm::vec2 repetition, float depth)
     {
         // prepare transformations
         glm::mat4 model = glm::mat4(1.0f);
@@ -31,8 +31,10 @@ namespace Dog {
         model = glm::rotate(model, rotation, glm::vec3(0.0f, 0.0f, 1.0f)); // then rotate
         model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f)); // translate
         model = glm::scale(model, glm::vec3(size, 1.0f)); // scale by size
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 1.0f));
 
         Renderer::GetActiveShader().SetMatrix4("model", model);
+        //Renderer::GetActiveShader().SetFloat("depth", RandomFloat());
 
         // render textured quad
         Renderer::GetActiveShader().SetVector4f("spriteColor", color);
@@ -59,10 +61,10 @@ namespace Dog {
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     }
 
-    void SpriteRenderer::DrawSpriteFrame(Texture2D& texture, unsigned frame, glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, glm::vec2 repetition)
+    void SpriteRenderer::DrawSpriteFrame(Texture2D& texture, unsigned frame, glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color, glm::vec2 repetition, float depth)
     {
         texture.Index = frame;
-        DrawSprite(texture, position, size, rotation, color, repetition);
+        DrawSprite(texture, position, size, rotation, color, repetition, depth);
     }
 
     void SpriteRenderer::DrawLine(glm::vec2 p1, glm::vec2 p2, float thickness, const std::string& textureName)

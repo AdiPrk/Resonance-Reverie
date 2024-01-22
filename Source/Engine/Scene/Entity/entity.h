@@ -61,8 +61,10 @@ namespace Dog {
 		}
 
 	private:
+		friend Scene;
 		entt::entity m_EntityHandle{ entt::null };
 		Scene* m_Scene = nullptr;
+		std::string m_Group{};
 	};
 
 }

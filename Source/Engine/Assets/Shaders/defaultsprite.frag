@@ -13,4 +13,5 @@ void main()
 {    
     vec2 newTexCoords = TexCoords * repetition;
     fragColor = spriteColor * texture(textureHandle, vec3(newTexCoords, spriteIndex));
+    //fragColor *= gl_FragCoord.z;
 }
