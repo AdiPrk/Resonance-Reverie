@@ -134,9 +134,9 @@ namespace Dog {
 			return Utils::MetersToPixels(Body->GetPosition());
 		}
 
-	private:
 		friend Scene;
 		friend Physics;
+	private:
 		bool m_DoInit = true;
 	};
 
