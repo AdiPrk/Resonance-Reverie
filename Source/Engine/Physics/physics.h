@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Engine/Physics/physicsUtils.h>
+#include "entt.hpp"
 class b2World;
 
 namespace Dog {
